@@ -7,9 +7,12 @@ onBoardingDoNotAskAgain = true
 showPackageIndexes = false
 showStatusBar = false
 scopes = {
-	"last_search.EAB0C2BA" = "warrior free asset"
+	"last_search.EAB0C2BA" = ""
 	"OpenInspectorPreview.EAB0C2BA" = "0"
 	"currentGroup.EAB0C2BA" = "all"
+	"last_search.71A69CD8" = ""
+	"OpenInspectorPreview.71A69CD8" = "0"
+	"currentGroup.71A69CD8" = "all"
 }
 providers = {
 	adb = {
@@ -50,6 +53,31 @@ providers = {
 	scene = {
 		active = true
 		priority = 50
+		defaultAction = null
+	}
+	menu = {
+		active = true
+		priority = 80
+		defaultAction = null
+	}
+	settings = {
+		active = true
+		priority = 100
+		defaultAction = null
+	}
+	help = {
+		active = true
+		priority = -1
+		defaultAction = null
+	}
+	calculator = {
+		active = true
+		priority = 10
+		defaultAction = null
+	}
+	static_methods = {
+		active = true
+		priority = 85
 		defaultAction = null
 	}
 }
