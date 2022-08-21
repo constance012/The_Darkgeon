@@ -24,7 +24,7 @@ public class PlayerMovement : MonoBehaviour
 	{
 		horizontalMove = Input.GetAxisRaw("Horizontal") * moveSpeed;
 
-		if (Input.GetButtonDown("Jump"))
+		if (Input.GetKeyDown(KeyCode.Space))
 			jump = true;
 
 		if (Input.GetButtonDown("Crouch"))
@@ -37,5 +37,15 @@ public class PlayerMovement : MonoBehaviour
 	{
 		controller.Move(horizontalMove * Time.fixedDeltaTime, crouch, jump);
 		jump = false;
+	}
+
+	public void OnLanding()
+	{
+		Debug.Log("Landed.");
+	}
+
+	public void OnCrouching(bool isCrouching)
+	{
+		Debug.Log("Crouching: " + isCrouching);
 	}
 }
