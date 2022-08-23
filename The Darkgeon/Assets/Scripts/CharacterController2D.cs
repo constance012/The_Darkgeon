@@ -55,7 +55,9 @@ public class CharacterController2D : MonoBehaviour
 			if (colliders[i].gameObject != gameObject)
 			{
 				m_Grounded = true;
-				if (!wasGrounded)
+
+				// Landing event only triggers when falling to the ground.
+				if (!wasGrounded && m_Rigidbody2D.velocity.y < 0)
 					OnLandEvent.Invoke();
 			}
 		}
@@ -141,8 +143,10 @@ public class CharacterController2D : MonoBehaviour
 		m_FacingRight = !m_FacingRight;
 
 		// Change the scale to negative to facing left, and vice versa.
-		Vector3 theScale = transform.localScale;
-		theScale.x *= -1;
-		transform.localScale = theScale;
+		//Vector3 theScale = transform.localScale;
+		//theScale.x *= -1;
+		//transform.localScale = theScale;
+
+		transform.Rotate(0f, 180f, 0f);
 	}
 }

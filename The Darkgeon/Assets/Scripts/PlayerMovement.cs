@@ -1,11 +1,10 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
 	// References.
 	[SerializeField] private CharacterController2D controller;
+	[SerializeField] private Animator animator;
 
 	// Fields.
 	public float moveSpeed = 30f;
@@ -17,15 +16,20 @@ public class PlayerMovement : MonoBehaviour
 	private void Awake()
 	{
 		controller = GetComponent<CharacterController2D>();
+		animator = GetComponent<Animator>();
 	}
 
 	// Update is called once per frame
 	private void Update()
 	{
 		horizontalMove = Input.GetAxisRaw("Horizontal") * moveSpeed;
+		animator.SetFloat("Speed", Mathf.Abs(horizontalMove));
 
-		if (Input.GetKeyDown(KeyCode.Space))
+		if (Input.GetButtonDown("Jump"))
+		{
 			jump = true;
+			animator.SetBool("IsJumping", true);
+		}
 
 		if (Input.GetButtonDown("Crouch"))
 			crouch = true;
@@ -41,11 +45,13 @@ public class PlayerMovement : MonoBehaviour
 
 	public void OnLanding()
 	{
-		Debug.Log("Landed.");
+		animator.SetBool("IsJumping", false);
+		Debug.Log(animator.GetBool("IsJumping"));
 	}
 
 	public void OnCrouching(bool isCrouching)
 	{
-		Debug.Log("Crouching: " + isCrouching);
+		animator.SetBool("IsCrouching", isCrouching);
+		Debug.Log("Crouching: " + animator.GetBool("IsCrouching"));
 	}
 }
