@@ -5,6 +5,7 @@ public class PlayerMovement : MonoBehaviour
 	// References.
 	[SerializeField] private CharacterController2D controller;
 	[SerializeField] private Animator animator;
+	[SerializeField] private Rigidbody2D rb2D;
 
 	// Fields.
 	public float moveSpeed = 30f;
@@ -17,6 +18,7 @@ public class PlayerMovement : MonoBehaviour
 	{
 		controller = GetComponent<CharacterController2D>();
 		animator = GetComponent<Animator>();
+		rb2D = GetComponent<Rigidbody2D>();
 	}
 
 	// Update is called once per frame
@@ -24,6 +26,7 @@ public class PlayerMovement : MonoBehaviour
 	{
 		horizontalMove = Input.GetAxisRaw("Horizontal") * moveSpeed;
 		animator.SetFloat("Speed", Mathf.Abs(horizontalMove));
+		animator.SetFloat("yVelocity", rb2D.velocity.y);
 
 		if (Input.GetButtonDown("Jump"))
 		{
