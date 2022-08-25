@@ -138,6 +138,7 @@ GameObject:
   - component: {fileID: 249091175}
   - component: {fileID: 249091174}
   - component: {fileID: 249091178}
+  - component: {fileID: 249091181}
   - component: {fileID: 249091179}
   m_Layer: 3
   m_Name: Player
@@ -262,6 +263,7 @@ MonoBehaviour:
   m_GroundCheck: {fileID: 1067349699}
   m_CeilingCheck: {fileID: 1425246895}
   m_CrouchDisableCollider: {fileID: 0}
+  m_Animator: {fileID: 0}
   OnLandEvent:
     m_PersistentCalls:
       m_Calls:
@@ -371,6 +373,20 @@ RectTransform:
   m_AnchoredPosition: {x: -0.3331, y: -1.1126}
   m_SizeDelta: {x: 0.1919, y: 0.3456}
   m_Pivot: {x: 0.49999997, y: 0.49999997}
+--- !u!114 &249091181
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 249091171}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 04e6f3f6f862f6044bd5dcff7b4b4367, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  animator: {fileID: 0}
+  cooldownTime: 0.7
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0
