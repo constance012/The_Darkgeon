@@ -10,6 +10,7 @@ public class PlayerMovement : MonoBehaviour
 
 	// Fields.
 	public float moveSpeed = 30f;
+	public float climbSpeed = 0.01f;
 	public static bool useLadder = false;
 
 	float horizontalMove;
@@ -30,31 +31,32 @@ public class PlayerMovement : MonoBehaviour
 	{
 		horizontalMove = Input.GetAxisRaw("Horizontal") * moveSpeed;
 		verticalMove = Input.GetAxisRaw("UseLadder");
-		Debug.Log(horizontalMove);
+		Debug.Log(verticalMove);
 
 		animator.SetFloat("Speed", Mathf.Abs(horizontalMove));
 		animator.SetFloat("yVelocity", rb2D.velocity.y);
 
 		if (useLadder && (!animator.GetBool("Grounded") || verticalMove == 0f))
 		{
-			animator.speed = 0;
+			if (animator.GetCurrentAnimatorStateInfo(0).IsName("Ladder"))
+				animator.speed= 0;
 		}
 
 		if (useLadder && verticalMove == 1f)
 		{
 			rb2D.gravityScale = 0;
-			playerPos.position += new Vector3(0f, 0.02f, 0f);
+			playerPos.position += new Vector3(0f, climbSpeed, 0f);
 			animator.SetBool("UseLadder", true);
 			animator.speed = 1;
 		}
 		else if (useLadder && verticalMove == -1f)
 		{
 			rb2D.gravityScale = 0;
-			playerPos.position -= new Vector3(0f, 0.02f, 0f);
+			playerPos.position -= new Vector3(0f, climbSpeed, 0f);
 			animator.SetBool("UseLadder", true);
 			animator.speed = 1;
 		}
-		else if (!useLadder)
+		else if (!useLadder || animator.GetBool("Grounded"))
 		{
 			rb2D.gravityScale = 3;
 			animator.SetBool("UseLadder", false);
