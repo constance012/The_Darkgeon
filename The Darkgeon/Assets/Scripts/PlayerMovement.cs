@@ -6,11 +6,14 @@ public class PlayerMovement : MonoBehaviour
 	[SerializeField] private CharacterController2D controller;
 	[SerializeField] private Animator animator;
 	[SerializeField] private Rigidbody2D rb2D;
+	[SerializeField] private RectTransform playerPos;
 
 	// Fields.
 	public float moveSpeed = 30f;
+	public static bool useLadder = false;
 
 	float horizontalMove;
+	float verticalMove;
 	bool jump = false;
 	bool crouch = false;
 
@@ -19,14 +22,44 @@ public class PlayerMovement : MonoBehaviour
 		controller = GetComponent<CharacterController2D>();
 		animator = GetComponent<Animator>();
 		rb2D = GetComponent<Rigidbody2D>();
+		playerPos = GetComponent<RectTransform>();
 	}
 
 	// Update is called once per frame
 	private void Update()
 	{
 		horizontalMove = Input.GetAxisRaw("Horizontal") * moveSpeed;
+		verticalMove = Input.GetAxisRaw("UseLadder");
+		Debug.Log(horizontalMove);
+
 		animator.SetFloat("Speed", Mathf.Abs(horizontalMove));
 		animator.SetFloat("yVelocity", rb2D.velocity.y);
+
+		if (useLadder && (!animator.GetBool("Grounded") || verticalMove == 0f))
+		{
+			animator.speed = 0;
+		}
+
+		if (useLadder && verticalMove == 1f)
+		{
+			rb2D.gravityScale = 0;
+			playerPos.position += new Vector3(0f, 0.02f, 0f);
+			animator.SetBool("UseLadder", true);
+			animator.speed = 1;
+		}
+		else if (useLadder && verticalMove == -1f)
+		{
+			rb2D.gravityScale = 0;
+			playerPos.position -= new Vector3(0f, 0.02f, 0f);
+			animator.SetBool("UseLadder", true);
+			animator.speed = 1;
+		}
+		else if (!useLadder)
+		{
+			rb2D.gravityScale = 3;
+			animator.SetBool("UseLadder", false);
+			animator.speed = 1;
+		}
 
 		if (Input.GetButtonDown("Jump"))
 		{
