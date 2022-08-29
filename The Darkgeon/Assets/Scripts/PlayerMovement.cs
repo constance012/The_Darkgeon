@@ -15,8 +15,11 @@ public class PlayerMovement : MonoBehaviour
 
 	float horizontalMove;
 	float verticalMove;
+	float dashAllowTime = 0f;
+
 	bool jump = false;
 	bool crouch = false;
+	bool dash = false;
 
 	private void Awake()
 	{
@@ -38,28 +41,32 @@ public class PlayerMovement : MonoBehaviour
 
 		if (useLadder && (!animator.GetBool("Grounded") || verticalMove == 0f))
 		{
-			if (animator.GetCurrentAnimatorStateInfo(0).IsName("Ladder"))
-				animator.speed= 0;
+			if (animator.GetCurrentAnimatorStateInfo(0).IsName("LadderUp") ||
+				animator.GetCurrentAnimatorStateInfo(0).IsName("LadderDown"))
+				animator.speed = 0;
 		}
 
 		if (useLadder && verticalMove == 1f)
 		{
 			rb2D.gravityScale = 0;
 			playerPos.position += new Vector3(0f, climbSpeed, 0f);
-			animator.SetBool("UseLadder", true);
+			animator.SetBool("LadderUp", true);
+			animator.SetBool("LadderDown", false);
 			animator.speed = 1;
 		}
 		else if (useLadder && verticalMove == -1f)
 		{
 			rb2D.gravityScale = 0;
 			playerPos.position -= new Vector3(0f, climbSpeed, 0f);
-			animator.SetBool("UseLadder", true);
+			animator.SetBool("LadderDown", true);
+			animator.SetBool("LadderUp", false);
 			animator.speed = 1;
 		}
 		else if (!useLadder || animator.GetBool("Grounded"))
 		{
 			rb2D.gravityScale = 3;
-			animator.SetBool("UseLadder", false);
+			animator.SetBool("LadderUp", false);
+			animator.SetBool("LadderDown", false);
 			animator.speed = 1;
 		}
 
@@ -67,6 +74,12 @@ public class PlayerMovement : MonoBehaviour
 		{
 			jump = true;
 			animator.SetBool("IsJumping", true);
+		}
+
+		if (Input.GetButtonDown("Dash") && Time.time > dashAllowTime)
+		{
+			dash = true;
+			dashAllowTime = Time.time + 1f;
 		}
 
 		if (Input.GetButtonDown("Crouch"))
@@ -77,8 +90,9 @@ public class PlayerMovement : MonoBehaviour
 
 	private void FixedUpdate()
 	{
-		controller.Move(horizontalMove * Time.fixedDeltaTime, crouch, jump);
+		controller.Move(horizontalMove * Time.fixedDeltaTime, crouch, jump, dash);
 		jump = false;
+		dash = false;
 	}
 
 	public void OnLanding()

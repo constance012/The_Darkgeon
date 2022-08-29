@@ -5,6 +5,7 @@ public class CharacterController2D : MonoBehaviour
 {
 	// References.
 	[SerializeField] private float m_JumpForce = 600f;                          // Amount of force added when the player jumps.
+	[SerializeField] private float m_DashForce = 200f;                          // Amount of force added when the player dashes.
 	[Range(0, 1)][SerializeField] private float m_CrouchSpeed = .36f;           // Amount of maxSpeed applied to crouching movement. 1 = 100%
 	[Range(0, .3f)][SerializeField] private float m_MovementSmoothing = .05f;   // How much to smooth out the movement
 	[SerializeField] private bool m_AirControl = false;                         // Whether or not a player can steer while jumping;
@@ -69,7 +70,7 @@ public class CharacterController2D : MonoBehaviour
 	}
 
 
-	public void Move(float move, bool crouch, bool jump)
+	public void Move(float move, bool crouch, bool jump, bool dash)
 	{
 		// If crouching, check to see if the character can stand up
 		if (!crouch)
@@ -132,12 +133,22 @@ public class CharacterController2D : MonoBehaviour
 				Flip();
 			}
 		}
-		// If the player should jump...
+		
+		// If the player should jump.
 		if (m_Grounded && jump)
 		{
 			// Add a vertical force to the player.
 			m_Grounded = false;
 			m_Rigidbody2D.AddForce(new Vector2(0f, m_JumpForce));
+		}
+
+		// If the player should dash.
+		if (dash)
+		{
+			if (!m_FacingRight)
+				m_Rigidbody2D.AddForce(new Vector2(-m_DashForce, 0f));
+			else
+				m_Rigidbody2D.AddForce(new Vector2(m_DashForce, 0f));
 		}
 	}
 

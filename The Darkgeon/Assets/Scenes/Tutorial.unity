@@ -254,6 +254,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_JumpForce: 600
+  m_DashForce: 1000
   m_CrouchSpeed: 0.4
   m_MovementSmoothing: 0.05
   m_AirControl: 1
@@ -628,7 +629,6 @@ GameObject:
   - component: {fileID: 1618902798}
   - component: {fileID: 1618902800}
   - component: {fileID: 1618902799}
-  - component: {fileID: 1618902801}
   m_Layer: 6
   m_Name: Tilemap_Wall
   m_TagString: Untagged
@@ -1216,26 +1216,6 @@ Tilemap:
     e31: 0
     e32: 0
     e33: 1
---- !u!95 &1618902801
-Animator:
-  serializedVersion: 4
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1618902797}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 5dba3f46b4f36564c966f47a6c5fec13, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_StabilizeFeet: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!1 &1958975120
 GameObject:
   m_ObjectHideFlags: 0
