@@ -32,6 +32,9 @@ public class PlayerMovement : MonoBehaviour
 	// Update is called once per frame
 	private void Update()
 	{
+		if (CharacterController2D.m_IsDashing)
+			return;
+
 		horizontalMove = Input.GetAxisRaw("Horizontal") * moveSpeed;
 		verticalMove = Input.GetAxisRaw("UseLadder");
 		Debug.Log(verticalMove);

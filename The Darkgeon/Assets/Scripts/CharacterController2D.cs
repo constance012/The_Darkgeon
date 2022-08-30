@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -16,11 +17,14 @@ public class CharacterController2D : MonoBehaviour
 	[SerializeField] private Animator m_Animator;
 
 	// Fields.
-	const float k_GroundedRadius = .2f; // Radius of the overlap circle to determine if grounded
+	const float k_GroundedRadius = .2f; // Radius of the overlap circle to determine if grounded.
 	private bool m_Grounded;            // Whether or not the player is grounded.
-	const float k_CeilingRadius = .2f; // Radius of the overlap circle to determine if the player can stand up
-	private Rigidbody2D m_Rigidbody2D;
+	const float k_CeilingRadius = .2f; // Radius of the overlap circle to determine if the player can stand up.
 	private bool m_FacingRight = true;  // For determining which way the player is currently facing.
+	public static bool m_IsDashing;
+	private float m_DashingTime = 0.2f;
+
+	private Rigidbody2D m_Rigidbody2D;
 	private Vector3 m_Velocity = Vector3.zero;
 
 	[Header("Events")]
@@ -145,10 +149,7 @@ public class CharacterController2D : MonoBehaviour
 		// If the player should dash.
 		if (dash)
 		{
-			if (!m_FacingRight)
-				m_Rigidbody2D.AddForce(new Vector2(-m_DashForce, 0f));
-			else
-				m_Rigidbody2D.AddForce(new Vector2(m_DashForce, 0f));
+			StartCoroutine(Dash());
 		}
 	}
 
@@ -157,12 +158,24 @@ public class CharacterController2D : MonoBehaviour
 	{
 		// Switch the way the player is labelled as facing.
 		m_FacingRight = !m_FacingRight;
-
-		// Change the scale to negative to facing left, and vice versa.
-		//Vector3 theScale = transform.localScale;
-		//theScale.x *= -1;
-		//transform.localScale = theScale;
-
 		transform.Rotate(0f, 180f, 0f);
+	}
+
+	private IEnumerator Dash()
+	{
+		m_IsDashing = true;
+		
+		float originalGravity = m_Rigidbody2D.gravityScale;
+		m_Rigidbody2D.gravityScale = 0f;
+
+		if (!m_FacingRight)
+			m_Rigidbody2D.velocity = new Vector2(-1f * m_DashForce, 0f);
+		else
+			m_Rigidbody2D.velocity = new Vector2(m_DashForce, 0f);
+
+		yield return new WaitForSeconds(m_DashingTime);
+
+		m_Rigidbody2D.gravityScale = originalGravity;
+		m_IsDashing = false;
 	}
 }
