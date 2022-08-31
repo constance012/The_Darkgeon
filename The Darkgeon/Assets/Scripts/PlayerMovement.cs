@@ -37,7 +37,6 @@ public class PlayerMovement : MonoBehaviour
 
 		horizontalMove = Input.GetAxisRaw("Horizontal") * moveSpeed;
 		verticalMove = Input.GetAxisRaw("UseLadder");
-		Debug.Log(verticalMove);
 
 		animator.SetFloat("Speed", Mathf.Abs(horizontalMove));
 		animator.SetFloat("yVelocity", rb2D.velocity.y);
@@ -51,7 +50,7 @@ public class PlayerMovement : MonoBehaviour
 
 		if (useLadder && verticalMove == 1f)
 		{
-			rb2D.gravityScale = 0;
+			rb2D.gravityScale = 0f;
 			playerPos.position += new Vector3(0f, climbSpeed, 0f);
 			animator.SetBool("LadderUp", true);
 			animator.SetBool("LadderDown", false);
@@ -59,7 +58,7 @@ public class PlayerMovement : MonoBehaviour
 		}
 		else if (useLadder && verticalMove == -1f)
 		{
-			rb2D.gravityScale = 0;
+			rb2D.gravityScale = 0f;
 			playerPos.position -= new Vector3(0f, climbSpeed, 0f);
 			animator.SetBool("LadderDown", true);
 			animator.SetBool("LadderUp", false);
@@ -67,7 +66,7 @@ public class PlayerMovement : MonoBehaviour
 		}
 		else if (!useLadder || animator.GetBool("Grounded"))
 		{
-			rb2D.gravityScale = 3;
+			rb2D.gravityScale = 2f;
 			animator.SetBool("LadderUp", false);
 			animator.SetBool("LadderDown", false);
 			animator.speed = 1;
@@ -96,6 +95,7 @@ public class PlayerMovement : MonoBehaviour
 		controller.Move(horizontalMove * Time.fixedDeltaTime, crouch, jump, dash);
 		jump = false;
 		dash = false;
+		Debug.Log(rb2D.velocity.x);
 	}
 
 	public void OnLanding()
