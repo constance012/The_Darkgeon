@@ -9,7 +9,6 @@ public class PlayerMovement : MonoBehaviour
 	[SerializeField] private RectTransform playerPos;
 
 	// Fields.
-	public float moveSpeed = 30f;
 	public float climbSpeed = 0.01f;
 	public static bool useLadder = false;
 
@@ -35,9 +34,10 @@ public class PlayerMovement : MonoBehaviour
 		if (CharacterController2D.m_IsDashing)
 			return;
 
-		horizontalMove = Input.GetAxisRaw("Horizontal") * moveSpeed;
+		horizontalMove = Input.GetAxisRaw("Horizontal");
 		verticalMove = Input.GetAxisRaw("UseLadder");
 
+		animator.SetBool("IsRunning", Mathf.Abs(horizontalMove) == 1 ? true : false);
 		animator.SetFloat("Speed", Mathf.Abs(horizontalMove));
 		animator.SetFloat("yVelocity", rb2D.velocity.y);
 

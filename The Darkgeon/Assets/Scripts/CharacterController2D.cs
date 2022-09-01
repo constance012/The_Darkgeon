@@ -35,6 +35,7 @@ public class CharacterController2D : MonoBehaviour
 	[Space]
 
 	[SerializeField] private Animator m_Animator;
+	[SerializeField] private TrailRenderer m_TrailRenderer;
 
 	// Fields.
 	private bool m_Grounded;            // Whether or not the player is grounded.
@@ -63,6 +64,7 @@ public class CharacterController2D : MonoBehaviour
 	{
 		m_Rigidbody2D = GetComponent<Rigidbody2D>();
 		m_Animator = GetComponent<Animator>();
+		m_TrailRenderer = GetComponent<TrailRenderer>();
 		m_CrouchDisableCollider = GetComponent<BoxCollider2D>();
 
 		if (OnLandEvent == null)
@@ -95,7 +97,7 @@ public class CharacterController2D : MonoBehaviour
 	}
 
 
-	public void Move(float move, bool crouch, bool jump, bool dash)
+	public void Move(float moveInput, bool crouch, bool jump, bool dash)
 	{
 		// If crouching, check to see if the character can stand up
 		if (!crouch)
@@ -121,7 +123,7 @@ public class CharacterController2D : MonoBehaviour
 				}
 
 				// Reduce the speed by the crouchSpeed multiplier
-				move *= m_CrouchSpeed;
+				moveInput *= m_CrouchSpeed;
 
 				// Disable one of the colliders when crouching
 				if (m_CrouchDisableCollider != null)
@@ -141,20 +143,20 @@ public class CharacterController2D : MonoBehaviour
 			}
 
 			// If the input is moving the player right and the player is facing left...
-			if (move > 0 && !m_FacingRight)
+			if (moveInput > 0 && !m_FacingRight)
 			{
 				// ... flip the player.
 				Flip();
 			}
 			// Otherwise if the input is moving the player left and the player is facing right...
-			else if (move < 0 && m_FacingRight)
+			else if (moveInput < 0 && m_FacingRight)
 			{
 				// ... flip the player.
 				Flip();
 			}
 
 			// Calculate the speed at the direction we want to move.
-			float targetSpeed = move * m_MoveSpeed;
+			float targetSpeed = moveInput * m_MoveSpeed;
 			
 			// Calculate the difference between current velocity and desired velocity.
 			float speedDiff = targetSpeed - m_Rigidbody2D.velocity.x;
@@ -185,7 +187,7 @@ public class CharacterController2D : MonoBehaviour
 		}
 
 		// Check if we're grounded and are trying to stop (not pressing movement keys).
-		if (m_Grounded && Mathf.Abs(move) < 0.01f)
+		if (m_Grounded && Mathf.Abs(moveInput) < 0.01f)
 		{
 			// Then set the friction force to the minimum value between the m_FrictionAmount and our velocity.
 			float frictionForce = Mathf.Min(Mathf.Abs(m_Rigidbody2D.velocity.x), Mathf.Abs(m_FrictionAmount));
@@ -209,18 +211,20 @@ public class CharacterController2D : MonoBehaviour
 	private IEnumerator Dash()
 	{
 		m_IsDashing = true;
+		m_Animator.SetBool("IsDashing", true);
 		
 		float originalGravity = m_Rigidbody2D.gravityScale;
 		m_Rigidbody2D.gravityScale = 0f;
 
-		if (!m_FacingRight)
-			m_Rigidbody2D.velocity = new Vector2(-1f * m_DashForce, 0f);
-		else
-			m_Rigidbody2D.velocity = new Vector2(m_DashForce, 0f);
+		m_TrailRenderer.emitting = true;
+
+		m_Rigidbody2D.velocity = new Vector2(Mathf.Sign(transform.rotation.y) * m_DashForce, 0f);
 
 		yield return new WaitForSeconds(m_DashingTime);
 
+		m_TrailRenderer.emitting = false;
 		m_Rigidbody2D.gravityScale = originalGravity;
 		m_IsDashing = false;
+		m_Animator.SetBool("IsDashing", false);
 	}
 }
