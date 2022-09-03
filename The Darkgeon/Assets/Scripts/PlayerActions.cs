@@ -34,6 +34,11 @@ public class PlayerActions : MonoBehaviour
 		Debug.Log(lastClickTime);
 		clickCount++;
 
+		if (animator.GetCurrentAnimatorStateInfo(0).IsName("Dash"))
+		{
+			animator.SetTrigger("DashAtk");
+		}
+
 		if (clickCount == 1 && animator.GetCurrentAnimatorStateInfo(0).IsName("Idle"))
 			animator.SetTrigger("Atk1");
 
