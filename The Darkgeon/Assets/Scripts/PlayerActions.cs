@@ -19,6 +19,9 @@ public class PlayerActions : MonoBehaviour
 
 	private void Update()
 	{
+		if (animator.GetCurrentAnimatorStateInfo(0).IsName("Dash-Attack"))
+			animator.SetBool("DashAtk", false);
+		
 		// Check if there is enough time for the next combo to begin.
 		if (Time.time - lastClickTime > comboDelay)
 			clickCount = 0;
@@ -35,9 +38,7 @@ public class PlayerActions : MonoBehaviour
 		clickCount++;
 
 		if (animator.GetCurrentAnimatorStateInfo(0).IsName("Dash"))
-		{
-			animator.SetTrigger("DashAtk");
-		}
+			animator.SetBool("DashAtk", true);
 
 		if (clickCount == 1 && animator.GetCurrentAnimatorStateInfo(0).IsName("Idle"))
 			animator.SetTrigger("Atk1");

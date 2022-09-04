@@ -211,7 +211,7 @@ public class CharacterController2D : MonoBehaviour
 	private IEnumerator Dash()
 	{
 		m_IsDashing = true;
-		m_Animator.SetBool("IsDashing", true);
+		m_Animator.SetTrigger("IsDashing");
 		
 		float originalGravity = m_Rigidbody2D.gravityScale;
 		m_Rigidbody2D.gravityScale = 0f;
@@ -225,6 +225,5 @@ public class CharacterController2D : MonoBehaviour
 		m_TrailRenderer.emitting = false;
 		m_Rigidbody2D.gravityScale = originalGravity;
 		m_IsDashing = false;
-		m_Animator.SetBool("IsDashing", false);
 	}
 }
