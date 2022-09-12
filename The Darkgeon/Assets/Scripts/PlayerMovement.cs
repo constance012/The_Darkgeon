@@ -95,7 +95,6 @@ public class PlayerMovement : MonoBehaviour
 		controller.Move(horizontalMove * Time.fixedDeltaTime, crouch, jump, dash);
 		jump = false;
 		dash = false;
-		Debug.Log(rb2D.velocity.x);
 	}
 
 	public void OnLanding()

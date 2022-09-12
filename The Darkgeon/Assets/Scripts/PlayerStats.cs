@@ -9,7 +9,6 @@ public class PlayerStats : MonoBehaviour
 	[SerializeField] private HealthBar hpBar;
 	[SerializeField] private Transform dmgTextLoc;
 	public GameObject dmgTextPrefab;
-	public TextMeshPro dmgText;
 
 	// Fields.
 	[Header("Stats")]
@@ -44,14 +43,11 @@ public class PlayerStats : MonoBehaviour
 	public void TakeDamage(int dmg)
 	{
 		lastDamagedTime = Time.time;
-		currentHP -= (int)(dmg - armor * damageRecFactor);
+
+		int finalDmg = (int)(dmg - armor * damageRecFactor);
+		currentHP -= finalDmg;
 		hpBar.SetCurrentHealth(currentHP);
 
-		dmgText.color = Color.red;
-		dmgText.text = "-" + (int)(dmg - armor * damageRecFactor);
-		GameObject clone = Instantiate(dmgTextPrefab, transform.position, Quaternion.identity);
-		clone.AddComponent<SelfDestruct>();
-		clone.GetComponent<SelfDestruct>().animator = clone.GetComponent<Animator>();
-		clone.SetActive(true);
+		DamageText.Generate(dmgTextPrefab, dmgTextLoc.position, Color.red, finalDmg);
 	}
 }
