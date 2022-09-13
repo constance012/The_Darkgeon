@@ -8,6 +8,10 @@ public class PlayerStats : MonoBehaviour
 	[Space]
 	[SerializeField] private HealthBar hpBar;
 	[SerializeField] private Transform dmgTextLoc;
+	[SerializeField] private Animator animator;
+	[SerializeField] private CharacterController2D controller;
+	[SerializeField] private PlayerMovement moveScript;
+	[SerializeField] private PlayerActions actionsScript;
 	public GameObject dmgTextPrefab;
 
 	// Fields.
@@ -25,6 +29,10 @@ public class PlayerStats : MonoBehaviour
 	{
 		hpBar = GameObject.Find("Health Bar").GetComponent<HealthBar>();
 		dmgTextLoc = transform.Find("Damage Text Loc");
+		animator = GetComponent<Animator>();
+		controller = GetComponent<CharacterController2D>();
+		moveScript = GetComponent<PlayerMovement>();
+		actionsScript = GetComponent<PlayerActions>();
 	}
 
 	private void Start()
@@ -38,16 +46,28 @@ public class PlayerStats : MonoBehaviour
 	{
 		if (Input.GetKeyDown(KeyCode.E) && Time.time - lastDamagedTime > invincibilityTime)
 			TakeDamage(12);
+
+		if (currentHP <= 0)
+		{
+			animator.SetBool("IsDeath", true);
+			controller.enabled = false;
+			moveScript.enabled = false;
+			actionsScript.enabled = false;
+		}
 	}
 
 	public void TakeDamage(int dmg)
 	{
-		lastDamagedTime = Time.time;
+		if (currentHP > 0)
+		{
+			lastDamagedTime = Time.time;
 
-		int finalDmg = (int)(dmg - armor * damageRecFactor);
-		currentHP -= finalDmg;
-		hpBar.SetCurrentHealth(currentHP);
+			int finalDmg = (int)(dmg - armor * damageRecFactor);
+			currentHP -= finalDmg;
+			hpBar.SetCurrentHealth(currentHP);
 
-		DamageText.Generate(dmgTextPrefab, dmgTextLoc.position, Color.red, finalDmg);
+			animator.SetTrigger("TakingDamage");
+			DamageText.Generate(dmgTextPrefab, dmgTextLoc.position, Color.red, finalDmg);
+		}
 	}
 }
