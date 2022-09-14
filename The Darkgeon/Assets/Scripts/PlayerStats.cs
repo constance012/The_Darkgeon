@@ -1,5 +1,5 @@
+using System.Collections;
 using UnityEngine;
-using TMPro;
 
 public class PlayerStats : MonoBehaviour
 {
@@ -20,10 +20,14 @@ public class PlayerStats : MonoBehaviour
 	public int maxHP = 100;
 	public int armor = 5;
 	public float damageRecFactor = .5f;
+
 	public float invincibilityTime = .5f;
-	
+	public float outOfCombatTime = 5f;
 	public float lastDamagedTime = 0f;
+	
 	int currentHP;
+	int regenRate = 1;
+	float regenDelay = 2f;
 
 	private void Awake()
 	{
@@ -47,6 +51,9 @@ public class PlayerStats : MonoBehaviour
 		if (Input.GetKeyDown(KeyCode.E) && Time.time - lastDamagedTime > invincibilityTime)
 			TakeDamage(12);
 
+		if (Time.time - lastDamagedTime > outOfCombatTime)
+			Regenerate();
+
 		if (currentHP <= 0)
 		{
 			animator.SetBool("IsDeath", true);
@@ -64,10 +71,25 @@ public class PlayerStats : MonoBehaviour
 
 			int finalDmg = (int)(dmg - armor * damageRecFactor);
 			currentHP -= finalDmg;
+			currentHP = Mathf.Clamp(currentHP, 0, 100);
 			hpBar.SetCurrentHealth(currentHP);
 
 			animator.SetTrigger("TakingDamage");
 			DamageText.Generate(dmgTextPrefab, dmgTextLoc.position, Color.red, finalDmg);
+		}
+	}
+
+	private void Regenerate()
+	{
+		regenDelay -= Time.deltaTime;
+
+		if (currentHP > 0 && regenDelay < 0f)
+		{
+			currentHP += regenRate;
+			currentHP = Mathf.Clamp(currentHP, 0, 100);
+			hpBar.SetCurrentHealth(currentHP);
+
+			regenDelay = 2f;
 		}
 	}
 }
