@@ -50,7 +50,7 @@ public class DamageText : MonoBehaviour
 
 	private void Setup(Color txtColor, int damageAmount)
 	{
-		textMesh.text = "-" + damageAmount;
+		textMesh.text = "" + damageAmount;
 		currentTextColor = txtColor;
 		textMesh.color = currentTextColor;
 
