@@ -8,11 +8,13 @@ public class PlayerStats : MonoBehaviour
 	[Space]
 	[SerializeField] private HealthBar hpBar;
 	[SerializeField] private Transform dmgTextLoc;
+	public GameObject dmgTextPrefab;
+
 	[SerializeField] private Animator animator;
 	[SerializeField] private CharacterController2D controller;
+
 	[SerializeField] private PlayerMovement moveScript;
 	[SerializeField] private PlayerActions actionsScript;
-	public GameObject dmgTextPrefab;
 
 	// Fields.
 	[Header("Stats")]
@@ -53,6 +55,9 @@ public class PlayerStats : MonoBehaviour
 
 		if (Time.time - lastDamagedTime > outOfCombatTime)
 			Regenerate();
+
+		if (Time.time - lastDamagedTime > .8f)
+			hpBar.PerformEffect();
 
 		if (currentHP <= 0)
 		{

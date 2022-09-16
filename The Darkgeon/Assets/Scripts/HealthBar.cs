@@ -7,7 +7,8 @@ public class HealthBar : MonoBehaviour
 	// References.
 	[Header("References")]
 	[Space]
-	[SerializeField] private Slider slider;
+	[SerializeField] private Slider hpSlider;
+	[SerializeField] private Slider fxSlider;
 	[SerializeField] private Image fillRect;
 	[SerializeField] private TextMeshProUGUI healthText;
 
@@ -15,24 +16,39 @@ public class HealthBar : MonoBehaviour
 	[Space]
 	public Gradient gradient;
 
+	[Header("Fields")]
+	[Space]
+	public float fxTime = .2f;
+	float smoothVel = .0f;
+
 	void Awake()
 	{
-		slider = GetComponent<Slider>();
+		hpSlider = GetComponent<Slider>();
+		fxSlider = transform.Find("Deplete Effect").GetComponent<Slider>();
 		fillRect = transform.Find("Fill").GetComponent<Image>();
 		healthText = transform.Find("Text Background").Find("Health Text").GetComponent<TextMeshProUGUI>();
 	}
 
 	public void SetMaxHealth(int maxHP)
 	{
-		slider.maxValue = maxHP;
-		slider.value = maxHP;
+		hpSlider.maxValue = maxHP;
+		hpSlider.value = maxHP;
+
+		fxSlider.maxValue = maxHP;
+		fxSlider.value = maxHP;
+		
 		fillRect.color = gradient.Evaluate(1f);
 	}
 
 	public void SetCurrentHealth(int currentHP)
 	{
-		slider.value = currentHP;
-		fillRect.color = gradient.Evaluate(slider.normalizedValue);  // Return the value between 0f and 1f.
-		healthText.text = currentHP + " / " + slider.maxValue;
+		hpSlider.value = currentHP;
+		fillRect.color = gradient.Evaluate(hpSlider.normalizedValue);  // Return the value between 0f and 1f.
+		healthText.text = currentHP + " / " + hpSlider.maxValue;
+	}
+
+	public void PerformEffect()
+	{
+		fxSlider.value = Mathf.SmoothDamp(fxSlider.value, hpSlider.value, ref smoothVel, fxTime);
 	}
 }
