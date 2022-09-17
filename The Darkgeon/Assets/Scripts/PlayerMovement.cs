@@ -41,6 +41,7 @@ public class PlayerMovement : MonoBehaviour
 		animator.SetFloat("Speed", Mathf.Abs(horizontalMove));
 		animator.SetFloat("yVelocity", rb2D.velocity.y);
 
+		// Ladder climbing animation.
 		if (useLadder && (!animator.GetBool("Grounded") || verticalMove == 0f))
 		{
 			if (animator.GetCurrentAnimatorStateInfo(0).IsName("LadderUp") ||
@@ -92,15 +93,13 @@ public class PlayerMovement : MonoBehaviour
 
 	private void FixedUpdate()
 	{
-		controller.Move(horizontalMove * Time.fixedDeltaTime, crouch, jump, dash);
-		jump = false;
-		dash = false;
+		controller.Move(horizontalMove * Time.fixedDeltaTime, crouch, ref jump, ref dash);
 	}
 
 	public void OnLanding()
 	{
 		animator.SetBool("IsJumping", false);
-		Debug.Log(animator.GetBool("IsJumping"));
+		Debug.Log("Jump: " + jump);
 	}
 
 	public void OnCrouching(bool isCrouching)

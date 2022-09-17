@@ -99,7 +99,7 @@ public class CharacterController2D : MonoBehaviour
 	}
 
 
-	public void Move(float moveInput, bool crouch, bool jump, bool dash)
+	public void Move(float moveInput, bool crouch, ref bool jump, ref bool dash)
 	{
 		// If crouching, check to see if the character can stand up
 		if (!crouch)
@@ -180,12 +180,16 @@ public class CharacterController2D : MonoBehaviour
 			// Add a vertical force to the player.
 			m_Grounded = false;
 			m_Rigidbody2D.AddForce(new Vector2(0f, m_JumpForce));
+			
+			jump = false;
+			m_Animator.SetBool("IsJumping", false);
 		}
 
 		// If the player should dash.
 		if (dash)
 		{
 			StartCoroutine(Dash());
+			dash = false;
 		}
 
 		// Check if we're grounded and are trying to stop (not pressing movement keys).

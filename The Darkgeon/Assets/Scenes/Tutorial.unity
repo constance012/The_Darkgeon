@@ -22905,19 +22905,6 @@ Transform:
   m_Father: {fileID: 838943559}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &4070023010773015202
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8084068857179368401}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7512f6f0c555d904cba6db5aed467bd0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  effector: {fileID: 0}
 --- !u!251 &4070023010773015203
 PlatformEffector2D:
   m_ObjectHideFlags: 0
@@ -23060,7 +23047,7 @@ GameObject:
   - component: {fileID: 4727743245753633490}
   - component: {fileID: 4699684408662747757}
   - component: {fileID: 4070023010773015203}
-  - component: {fileID: 4070023010773015202}
+  - component: {fileID: 8084068857179368402}
   m_Layer: 7
   m_Name: Standing Platform
   m_TagString: Platform
@@ -23068,3 +23055,16 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!114 &8084068857179368402
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8084068857179368401}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7512f6f0c555d904cba6db5aed467bd0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  effector: {fileID: 0}
