@@ -6,8 +6,6 @@ public class PlayerActions : MonoBehaviour
 	[SerializeField] private Animator animator;
 
 	// Fields.
-	public float cooldownTime = 0.7f;
-	private float nextFireTime = 0f;
 	public static int clickCount = 0;
 	float lastClickTime = 0f;
 	float comboDelay = 0.7f;  // The cooldown between each combo is 1 second.
@@ -26,9 +24,8 @@ public class PlayerActions : MonoBehaviour
 		if (Time.time - lastClickTime > comboDelay)
 			clickCount = 0;
 
-		if (Time.time > nextFireTime)
-			if (Input.GetMouseButtonDown(0))
-				OnClick();
+		if (Input.GetMouseButtonDown(0))
+			OnClick();
 	}
 	
 	private void OnClick()
