@@ -1,11 +1,12 @@
-using System.Collections;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 public class PlayerStats : MonoBehaviour
 {
 	// References.
 	[Header("References")]
 	[Space]
+	[SerializeField] private Material playerMat;
 	[SerializeField] private HealthBar hpBar;
 	[SerializeField] private Transform dmgTextLoc;
 	public GameObject dmgTextPrefab;
@@ -30,9 +31,11 @@ public class PlayerStats : MonoBehaviour
 	int currentHP;
 	int regenRate = 1;
 	float regenDelay = 2f;
+	//private LocalKeyword isOutlineOn;
 
 	private void Awake()
 	{
+		playerMat = GetComponent<SpriteRenderer>().material;
 		hpBar = GameObject.Find("Health Bar").GetComponent<HealthBar>();
 		dmgTextLoc = transform.Find("Damage Text Loc");
 		animator = GetComponent<Animator>();
@@ -45,13 +48,20 @@ public class PlayerStats : MonoBehaviour
 	{
 		currentHP = maxHP;
 		hpBar.SetMaxHealth(maxHP);
+
+		//var shader = playerMat.shader;
+		//isOutlineOn = new LocalKeyword(shader, "_IS_OUTLINE_ON");
 	}
 
 	// Update is called once per frame
 	private void Update()
 	{
 		if (Input.GetKeyDown(KeyCode.E) && Time.time - lastDamagedTime > invincibilityTime)
+		{
 			TakeDamage(12);
+			//playerMat.SetKeyword(isOutlineOn, !playerMat.IsKeywordEnabled(isOutlineOn));
+			playerMat.SetFloat("_Thickness", playerMat.GetFloat("_Thickness") > 0f ? 0f : .0013f);
+		}
 
 		if (Time.time - lastDamagedTime > outOfCombatTime)
 			Regenerate();
