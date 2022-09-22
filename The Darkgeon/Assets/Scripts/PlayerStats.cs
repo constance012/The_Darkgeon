@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.Rendering;
 
 public class PlayerStats : MonoBehaviour
 {
@@ -17,20 +16,25 @@ public class PlayerStats : MonoBehaviour
 	[SerializeField] private PlayerMovement moveScript;
 	[SerializeField] private PlayerActions actionsScript;
 
+	[SerializeField] private GameObject deathPanel;
+
 	// Fields.
 	[Header("Stats")]
 	[Space]
 	public int maxHP = 100;
+	public int currentHP;
 	public int armor = 5;
 	public float damageRecFactor = .5f;
 
 	public float invincibilityTime = .5f;
 	public float outOfCombatTime = 5f;
 	public float lastDamagedTime = 0f;
-	
-	int currentHP;
+
+	public KillSources killSource;
+
 	int regenRate = 1;
 	float regenDelay = 2f;
+	Vector3 respawnPos;
 	//private LocalKeyword isOutlineOn;
 
 	private void Awake()
@@ -38,16 +42,22 @@ public class PlayerStats : MonoBehaviour
 		playerMat = GetComponent<SpriteRenderer>().material;
 		hpBar = GameObject.Find("Health Bar").GetComponent<HealthBar>();
 		dmgTextLoc = transform.Find("Damage Text Loc");
+		
 		animator = GetComponent<Animator>();
 		controller = GetComponent<CharacterController2D>();
+
 		moveScript = GetComponent<PlayerMovement>();
 		actionsScript = GetComponent<PlayerActions>();
+
+		deathPanel = GameObject.Find("Death Message");
 	}
 
 	private void Start()
 	{
+		deathPanel.SetActive(false);
 		currentHP = maxHP;
 		hpBar.SetMaxHealth(maxHP);
+		respawnPos = transform.position;
 
 		//var shader = playerMat.shader;
 		//isOutlineOn = new LocalKeyword(shader, "_IS_OUTLINE_ON");
@@ -71,10 +81,7 @@ public class PlayerStats : MonoBehaviour
 
 		if (currentHP <= 0)
 		{
-			animator.SetBool("IsDeath", true);
-			controller.enabled = false;
-			moveScript.enabled = false;
-			actionsScript.enabled = false;
+			Death();
 		}
 	}
 
@@ -94,6 +101,22 @@ public class PlayerStats : MonoBehaviour
 		}
 	}
 
+	public void Respawn()
+	{
+		deathPanel.SetActive(false);
+		currentHP = maxHP;
+		hpBar.SetMaxHealth(maxHP);
+
+		controller.enabled = true;
+		moveScript.enabled = true;
+		actionsScript.enabled = true;
+
+		animator.SetTrigger("Respawn");
+		animator.SetBool("IsDeath", false);
+
+		transform.position = respawnPos;
+	}
+
 	private void Regenerate()
 	{
 		regenDelay -= Time.deltaTime;
@@ -107,4 +130,26 @@ public class PlayerStats : MonoBehaviour
 			regenDelay = 2f;
 		}
 	}
+
+	private void Death()
+	{
+		animator.SetBool("IsDeath", true);
+		deathPanel.SetActive(true);
+
+		controller.enabled = false;
+		moveScript.enabled = false;
+		actionsScript.enabled = false;
+	}
+}
+
+public enum KillSources
+{
+	Environment,
+	Bat,
+	Crab,
+	Golem,
+	ReinforcedGolem,
+	Rat,
+	Skull,
+	SpikedSlime
 }

@@ -25,6 +25,7 @@ public class HealthBar : MonoBehaviour
 	{
 		hpSlider = GetComponent<Slider>();
 		fxSlider = transform.Find("Deplete Effect").GetComponent<Slider>();
+
 		fillRect = transform.Find("Fill").GetComponent<Image>();
 		healthText = transform.Find("Text Background").Find("Health Text").GetComponent<TextMeshProUGUI>();
 	}
@@ -38,6 +39,7 @@ public class HealthBar : MonoBehaviour
 		fxSlider.value = maxHP;
 		
 		fillRect.color = gradient.Evaluate(1f);
+		healthText.text = maxHP + " / " + hpSlider.maxValue;
 	}
 
 	public void SetCurrentHealth(int currentHP)
