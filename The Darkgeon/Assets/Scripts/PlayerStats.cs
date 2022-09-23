@@ -1,4 +1,5 @@
 using UnityEngine;
+using TMPro;
 
 public class PlayerStats : MonoBehaviour
 {
@@ -6,7 +7,6 @@ public class PlayerStats : MonoBehaviour
 	[Header("References")]
 	[Space]
 	[SerializeField] private Material playerMat;
-	[SerializeField] private HealthBar hpBar;
 	[SerializeField] private Transform dmgTextLoc;
 	public GameObject dmgTextPrefab;
 
@@ -17,6 +17,12 @@ public class PlayerStats : MonoBehaviour
 	[SerializeField] private PlayerActions actionsScript;
 
 	[SerializeField] private GameObject deathPanel;
+
+	[Header("UI Elements")]
+	[Space]
+	[SerializeField] private HealthBar hpBar;
+	[SerializeField] private TextMeshProUGUI deathMessageText;
+	[SerializeField] private TextMeshProUGUI killSourceText;
 
 	// Fields.
 	[Header("Stats")]
@@ -30,11 +36,14 @@ public class PlayerStats : MonoBehaviour
 	public float outOfCombatTime = 5f;
 	public float lastDamagedTime = 0f;
 
-	public KillSources killSource;
+	public KillSources killSource = KillSources.Unknown;
 
 	int regenRate = 1;
 	float regenDelay = 2f;
+	bool isDeath = false;
 	Vector3 respawnPos;
+
+	private string[] deathMessages = new string[] {"YOUR SOUL HAS BEEN CONSUMED", "YOUR HEAD WAS DETACHED", "YOUR FACE WAS RIPPED OFF", "YOUR BODY WAS EVISCERATED", "YOUR FATE WAS SHATTERED"};
 	//private LocalKeyword isOutlineOn;
 
 	private void Awake()
@@ -50,6 +59,8 @@ public class PlayerStats : MonoBehaviour
 		actionsScript = GetComponent<PlayerActions>();
 
 		deathPanel = GameObject.Find("Death Message");
+		deathMessageText = deathPanel.transform.Find("Message").GetComponent<TextMeshProUGUI>();
+		killSourceText = deathPanel.transform.Find("Kill Source").GetComponent<TextMeshProUGUI>();
 	}
 
 	private void Start()
@@ -69,6 +80,7 @@ public class PlayerStats : MonoBehaviour
 		if (Input.GetKeyDown(KeyCode.E) && Time.time - lastDamagedTime > invincibilityTime)
 		{
 			TakeDamage(12);
+			killSource = KillSources.Unknown;
 			//playerMat.SetKeyword(isOutlineOn, !playerMat.IsKeywordEnabled(isOutlineOn));
 			playerMat.SetFloat("_Thickness", playerMat.GetFloat("_Thickness") > 0f ? 0f : .0013f);
 		}
@@ -79,9 +91,11 @@ public class PlayerStats : MonoBehaviour
 		if (Time.time - lastDamagedTime > .8f)
 			hpBar.PerformEffect();
 
-		if (currentHP <= 0)
+		if (currentHP <= 0 && !isDeath)
 		{
+			SetDeathMessage();
 			Death();
+			isDeath = true;
 		}
 	}
 
@@ -91,7 +105,7 @@ public class PlayerStats : MonoBehaviour
 		{
 			lastDamagedTime = Time.time;
 
-			int finalDmg = (int)(dmg - armor * damageRecFactor);
+			int finalDmg = Mathf.RoundToInt(dmg - armor * damageRecFactor);
 			currentHP -= finalDmg;
 			currentHP = Mathf.Clamp(currentHP, 0, 100);
 			hpBar.SetCurrentHealth(currentHP);
@@ -115,6 +129,7 @@ public class PlayerStats : MonoBehaviour
 		animator.SetBool("IsDeath", false);
 
 		transform.position = respawnPos;
+		isDeath = false;
 	}
 
 	private void Regenerate()
@@ -140,10 +155,48 @@ public class PlayerStats : MonoBehaviour
 		moveScript.enabled = false;
 		actionsScript.enabled = false;
 	}
+
+	private void SetDeathMessage()
+	{
+		int randomIndex = Random.Range(0, deathMessages.Length);
+		deathMessageText.text = deathMessages[randomIndex];
+
+		switch (killSource)
+		{
+			case KillSources.Environment:
+				killSourceText.text = "Kill By: Environment";
+				break;
+			case KillSources.Bat:
+				killSourceText.text = "Kill By: Bat";
+				break;
+			case KillSources.Crab:
+				killSourceText.text = "Kill By: Crab";
+				break;
+			case KillSources.Golem:
+				killSourceText.text = "Kill By: Golem";
+				break;
+			case KillSources.ReinforcedGolem:
+				killSourceText.text = "Kill By: Reinforced Golem";
+				break;
+			case KillSources.Rat:
+				killSourceText.text = "Kill By: Rat";
+				break;
+			case KillSources.Skull:
+				killSourceText.text = "Kill By: Floating Skull";
+				break;
+			case KillSources.SpikedSlime:
+				killSourceText.text = "Kill By: Spiked Slime";
+				break;
+			default:
+				killSourceText.text = "Kill By: Unknown";
+				break;
+		}
+	}
 }
 
 public enum KillSources
 {
+	Unknown,
 	Environment,
 	Bat,
 	Crab,

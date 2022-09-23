@@ -1720,7 +1720,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerMat: {fileID: 0}
-  hpBar: {fileID: 0}
   dmgTextLoc: {fileID: 0}
   dmgTextPrefab: {fileID: 1002002582291494483, guid: 010fe3952a6d9ba4a81d8d56d99c52a3, type: 3}
   animator: {fileID: 0}
@@ -1728,6 +1727,9 @@ MonoBehaviour:
   moveScript: {fileID: 0}
   actionsScript: {fileID: 0}
   deathPanel: {fileID: 0}
+  hpBar: {fileID: 0}
+  deathMessageText: {fileID: 0}
+  killSourceText: {fileID: 0}
   maxHP: 100
   currentHP: 0
   armor: 5
@@ -2222,7 +2224,7 @@ MonoBehaviour:
   m_MinValue: 0
   m_MaxValue: 100
   m_WholeNumbers: 1
-  m_Value: 92
+  m_Value: 86
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -4934,7 +4936,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0, g: 0, b: 0, a: 0.27450982}
+  m_Color: {r: 0, g: 0, b: 0, a: 0.39215687}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
