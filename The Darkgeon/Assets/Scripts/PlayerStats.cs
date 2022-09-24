@@ -23,6 +23,7 @@ public class PlayerStats : MonoBehaviour
 	[SerializeField] private HealthBar hpBar;
 	[SerializeField] private TextMeshProUGUI deathMessageText;
 	[SerializeField] private TextMeshProUGUI killSourceText;
+	[SerializeField] private Transform worldCanvas;
 
 	// Fields.
 	[Header("Stats")]
@@ -61,6 +62,7 @@ public class PlayerStats : MonoBehaviour
 		deathPanel = GameObject.Find("Death Message");
 		deathMessageText = deathPanel.transform.Find("Message").GetComponent<TextMeshProUGUI>();
 		killSourceText = deathPanel.transform.Find("Kill Source").GetComponent<TextMeshProUGUI>();
+		worldCanvas = GameObject.Find("World Canvas").transform;
 	}
 
 	private void Start()
@@ -111,7 +113,7 @@ public class PlayerStats : MonoBehaviour
 			hpBar.SetCurrentHealth(currentHP);
 
 			animator.SetTrigger("TakingDamage");
-			DamageText.Generate(dmgTextPrefab, dmgTextLoc.position, Color.red, finalDmg);
+			DamageText.Generate(dmgTextPrefab, worldCanvas, dmgTextLoc.position, Color.red, finalDmg);
 		}
 	}
 

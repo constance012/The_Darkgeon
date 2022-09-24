@@ -7,7 +7,7 @@ public class DamageText : MonoBehaviour
 	[Header("References.")]
 	[Space]
 
-	[SerializeField] private TextMeshPro textMesh;
+	[SerializeField] private TextMeshProUGUI textMesh;
 	
 	// Fields.
 	[Header("Fields.")]
@@ -21,7 +21,7 @@ public class DamageText : MonoBehaviour
 
 	private void Awake()
 	{
-		textMesh = GetComponent<TextMeshPro>();
+		textMesh = GetComponent<TextMeshProUGUI>();
 	}
 
 	private void Update()
@@ -39,9 +39,11 @@ public class DamageText : MonoBehaviour
 
 	}
 
-	public static DamageText Generate(GameObject prefab, Vector3 pos, Color txtColor, int damageAmount)
+	public static DamageText Generate(GameObject prefab, Transform canvas, Vector3 pos, Color txtColor, int damageAmount)
 	{
 		GameObject dmgTextTransform = Instantiate(prefab, pos, Quaternion.identity);
+		dmgTextTransform.transform.SetParent(canvas, true);
+
 		DamageText dmgText = dmgTextTransform.GetComponent<DamageText>();
 		
 		dmgText.Setup(txtColor, damageAmount);
