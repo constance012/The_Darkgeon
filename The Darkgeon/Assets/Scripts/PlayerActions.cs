@@ -2,17 +2,27 @@ using UnityEngine;
 
 public class PlayerActions : MonoBehaviour
 {
-	// Reference.
+	// References.
+	[Header("References")]
+	[Space]
 	[SerializeField] private Animator animator;
 
 	// Fields.
+	[Header("Player Attack")]
+	[Space]
+
+	[SerializeField] private Transform atkPoint;
+	[SerializeField] private LayerMask enemyLayers;
+	public float atkRange = .5f;
+
 	public static int clickCount = 0;
 	float lastClickTime = 0f;
-	float comboDelay = 0.7f;  // The cooldown between each combo is 1 second.
+	float comboDelay = 0.5f;  // The cooldown between each combo is 1 second.
 
 	private void Awake()
 	{
 		animator = GetComponent<Animator>();
+		atkPoint = transform.Find("Attack Point").transform;
 	}
 
 	private void Update()
@@ -25,26 +35,53 @@ public class PlayerActions : MonoBehaviour
 			clickCount = 0;
 
 		if (Input.GetMouseButtonDown(0))
-			OnClick();
+			Attack();
 	}
 	
-	private void OnClick()
+	private void Attack()
 	{
 		lastClickTime = Time.time;
 		Debug.Log(lastClickTime);
 		clickCount++;
 
+		bool canDoAtk1 = animator.GetCurrentAnimatorStateInfo(0).IsName("Idle") || animator.GetCurrentAnimatorStateInfo(0).IsName("Run");
+		bool canDoAtk2 = animator.GetCurrentAnimatorStateInfo(0).IsName("Attack1");
+		bool isAtk1 = false;
+		bool isAtk2 = false;
+
+		Collider2D[] hitList = Physics2D.OverlapCircleAll(atkPoint.position, atkRange, enemyLayers);
+
 		if (animator.GetCurrentAnimatorStateInfo(0).IsName("Dash"))
 			animator.SetBool("DashAtk", true);
 
-		if (clickCount == 1 && animator.GetCurrentAnimatorStateInfo(0).IsName("Idle"))
+		if (clickCount == 1 && canDoAtk1)
+		{
 			animator.SetTrigger("Atk1");
+			isAtk1 = true;
+		}
 
 		clickCount = Mathf.Clamp(clickCount, 0, 3);
 
-		if (clickCount == 2 && animator.GetCurrentAnimatorStateInfo(0).IsName("Attack1"))
+		if (clickCount == 2 && canDoAtk2)
 		{
 			animator.SetTrigger("Atk2");
+			isAtk2 = true;
 		}
+
+		foreach (Collider2D enemy in hitList)
+		{
+			if (isAtk1)
+				Debug.Log("Damage dealt: 15");
+			else if (isAtk2)
+				Debug.Log("Damage dealt: 12");
+		}
+	}
+
+	private void OnDrawGizmosSelected()
+	{
+		if (atkPoint == null)
+			return;
+
+		Gizmos.DrawWireSphere(atkPoint.position, atkRange);
 	}
 }
