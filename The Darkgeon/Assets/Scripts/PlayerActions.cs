@@ -22,7 +22,7 @@ public class PlayerActions : MonoBehaviour
 	private void Awake()
 	{
 		animator = GetComponent<Animator>();
-		atkPoint = transform.Find("Attack Point").transform;
+		atkPoint = transform.Find("Attack Point");
 	}
 
 	private void Update()
