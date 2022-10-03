@@ -22,7 +22,6 @@ public class PlayerActions : MonoBehaviour
 	private void Awake()
 	{
 		animator = GetComponent<Animator>();
-		atkPoint = transform.Find("Attack Point");
 	}
 
 	private void Update()
@@ -71,9 +70,9 @@ public class PlayerActions : MonoBehaviour
 		foreach (Collider2D enemy in hitList)
 		{
 			if (isAtk1)
-				Debug.Log("Damage dealt: 15");
+				enemy.GetComponent<EnemyStat>().TakeDamage(15);
 			else if (isAtk2)
-				Debug.Log("Damage dealt: 12");
+				enemy.GetComponent<EnemyStat>().TakeDamage(12);
 		}
 	}
 

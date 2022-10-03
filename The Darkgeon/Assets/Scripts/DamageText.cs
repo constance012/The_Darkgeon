@@ -41,10 +41,10 @@ public class DamageText : MonoBehaviour
 
 	public static DamageText Generate(GameObject prefab, Transform canvas, Vector3 pos, Color txtColor, int damageAmount)
 	{
-		GameObject dmgTextTransform = Instantiate(prefab, pos, Quaternion.identity);
-		dmgTextTransform.transform.SetParent(canvas, true);
+		GameObject dmgTextObj = Instantiate(prefab, pos, Quaternion.identity);
+		dmgTextObj.transform.SetParent(canvas, true);
 
-		DamageText dmgText = dmgTextTransform.GetComponent<DamageText>();
+		DamageText dmgText = dmgTextObj.GetComponent<DamageText>();
 		
 		dmgText.Setup(txtColor, damageAmount);
 		return dmgText;
