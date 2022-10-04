@@ -6,20 +6,28 @@ public class EnemyStat : MonoBehaviour
 	[Header("References")]
 	[Space]
 	[SerializeField] private EnemyHPBar hpBar;
+	[SerializeField] private Transform dmgTextPos;
+
 	[SerializeField] private Transform worldCanvas;
+	[SerializeField] private Animator animator;
+
+	public GameObject dmgTextPrefab;
 
 	[Header("Stats")]
 	[Space]
 	public int maxHealth = 50;
 	public int currentHP;
-	public int armor = 5;
+	public int armor = 0;
 	public float dmgRecFactor = .25f;
 	public float disposeTime = 5f;
 
 	private void Awake()
 	{
 		hpBar = transform.Find("Enemy Health Bar").GetComponent<EnemyHPBar>();
+		dmgTextPos = transform.Find("Damage Text Pos").transform;
+
 		worldCanvas = GameObject.Find("World Canvas").transform;
+		animator = GetComponent<Animator>();
 	}
 
 	private void Start()
@@ -43,15 +51,19 @@ public class EnemyStat : MonoBehaviour
 			int finalDmg = Mathf.RoundToInt(dmg - armor * dmgRecFactor);
 			
 			currentHP -= finalDmg;
-			currentHP = Mathf.Clamp(currentHP, 0, 100);
+			currentHP = Mathf.Clamp(currentHP, 0, maxHealth);
 
 			hpBar.SetCurrentHealth(currentHP);
+
+			animator.SetTrigger("Hit");
+			DamageText.Generate(dmgTextPrefab, worldCanvas, dmgTextPos.position, Color.yellow, finalDmg);
 		}
 	}
 
 	private IEnumerator Die()
 	{
-		// Play animation.
+		animator.SetBool("IsDeath", true);
+
 		gameObject.GetComponent<Rigidbody2D>().simulated = false;
 		hpBar.gameObject.SetActive(false);
 

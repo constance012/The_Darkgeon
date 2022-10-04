@@ -109,7 +109,7 @@ public class PlayerStats : MonoBehaviour
 
 			int finalDmg = Mathf.RoundToInt(dmg - armor * damageRecFactor);
 			currentHP -= finalDmg;
-			currentHP = Mathf.Clamp(currentHP, 0, 100);
+			currentHP = Mathf.Clamp(currentHP, 0, maxHP);
 			hpBar.SetCurrentHealth(currentHP);
 
 			animator.SetTrigger("TakingDamage");
@@ -141,7 +141,7 @@ public class PlayerStats : MonoBehaviour
 		if (currentHP > 0 && regenDelay < 0f)
 		{
 			currentHP += regenRate;
-			currentHP = Mathf.Clamp(currentHP, 0, 100);
+			currentHP = Mathf.Clamp(currentHP, 0, maxHP);
 			hpBar.SetCurrentHealth(currentHP);
 
 			regenDelay = 2f;
