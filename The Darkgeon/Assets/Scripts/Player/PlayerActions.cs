@@ -15,10 +15,8 @@ public class PlayerActions : MonoBehaviour
 	public LayerMask enemyLayers;
 	public float atkRange = .5f;
 
-	public static int clickCount = 0;
-
-	public float lastComboTime = 0f;
-	public float inputWaitTime = 0f;
+	[HideInInspector] public float lastComboTime;
+	[HideInInspector] public float inputWaitTime;
 	float comboDelay = 0.5f;  // The cooldown between each combo is 0.3 second.
 
 	private void Awake()
@@ -53,13 +51,12 @@ public class PlayerActions : MonoBehaviour
 				animator.SetTrigger("Atk1");
 			}
 
-			inputWaitTime = 1f;
+			inputWaitTime = 2f;
 		}
 
 		else
 		{
 			animator.SetTrigger("Atk2");
-			inputWaitTime = 0f;
 		}
 	}
 

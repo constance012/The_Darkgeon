@@ -35,7 +35,7 @@ public class PlayerStats : MonoBehaviour
 
 	public float invincibilityTime = .5f;
 	public float outOfCombatTime = 5f;
-	public float lastDamagedTime = 0f;
+	[HideInInspector] public float lastDamagedTime = 0f;
 
 	public KillSources killSource = KillSources.Unknown;
 

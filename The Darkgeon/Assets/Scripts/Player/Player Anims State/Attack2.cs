@@ -31,6 +31,9 @@ public class Attack2 : StateMachineBehaviour
 
 			dmgDealt = true;
 		}
+
+		if (action.inputWaitTime != 0f)
+			action.inputWaitTime = 0f;
 	}
 
 	// OnStateExit is called when a transition ends and the state machine finishes evaluating this state
