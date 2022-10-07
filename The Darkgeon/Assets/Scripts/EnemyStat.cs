@@ -7,9 +7,13 @@ public class EnemyStat : MonoBehaviour
 	[Space]
 	[SerializeField] private EnemyHPBar hpBar;
 	[SerializeField] private Transform dmgTextPos;
+	[SerializeField] private Transform centerPoint;
 
 	[SerializeField] private Transform worldCanvas;
 	[SerializeField] private Animator animator;
+	[SerializeField] private Rigidbody2D rb2d;
+
+	[SerializeField] private PlayerStats player;
 
 	public GameObject dmgTextPrefab;
 
@@ -28,6 +32,10 @@ public class EnemyStat : MonoBehaviour
 
 		worldCanvas = GameObject.Find("World Canvas").transform;
 		animator = GetComponent<Animator>();
+		rb2d = GetComponent<Rigidbody2D>();
+		centerPoint = transform.Find("Center Point");
+
+		player = GameObject.Find("Player").GetComponent<PlayerStats>();
 	}
 
 	private void Start()
@@ -57,6 +65,8 @@ public class EnemyStat : MonoBehaviour
 
 			animator.SetTrigger("Hit");
 			DamageText.Generate(dmgTextPrefab, worldCanvas, dmgTextPos.position, Color.yellow, finalDmg);
+
+			StartCoroutine(BeingKnockedBack());
 		}
 	}
 
@@ -71,5 +81,18 @@ public class EnemyStat : MonoBehaviour
 
 		Destroy(hpBar.gameObject);
 		Destroy(gameObject);
+	}
+
+	private IEnumerator BeingKnockedBack()
+	{
+		transform.GetComponent<CrabBehaviour>().enabled = false;
+
+		Vector2 knockbackDir = new Vector2(Mathf.Sign(centerPoint.position.x - player.transform.position.x), 0f);
+		rb2d.AddForce(player.knockBackForce * knockbackDir, ForceMode2D.Impulse);
+
+		yield return new WaitForSeconds(.1f);
+
+		rb2d.velocity = Vector3.zero;
+		transform.GetComponent<CrabBehaviour>().enabled = true;
 	}
 }
