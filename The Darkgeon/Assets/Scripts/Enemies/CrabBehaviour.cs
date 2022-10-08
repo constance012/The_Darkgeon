@@ -6,11 +6,13 @@ public class CrabBehaviour : MonoBehaviour
 	[Space]
 	[SerializeField] private Rigidbody2D rb2d;
 	[SerializeField] private Animator animator;
-
+	[Space]
 	[SerializeField] private Transform edgeCheck;
 	[SerializeField] private Transform centerPoint;
+	[SerializeField] private Transform attackPoint;
 	[SerializeField] private LayerMask whatIsGround;
-
+	[SerializeField] private LayerMask whatIsPlayer;
+	[Space]
 	[SerializeField] private PlayerStats player;
 
 	[Header("Fields")]
@@ -21,9 +23,12 @@ public class CrabBehaviour : MonoBehaviour
 	public float inSightRange;
 
 	bool isPatrol = true;
-	bool mustFlip;
-	bool isTouchingWall;
+	bool mustFlip, isTouchingWall;
 	bool facingRight = true;
+	[SerializeField] bool alreadyAttacked = false;
+	bool playerSpotted, canAttackPlayer;
+
+	float timeBetweenAtk = 2f;
 
 	private void Awake()
 	{
@@ -39,15 +44,23 @@ public class CrabBehaviour : MonoBehaviour
 
 		animator.SetFloat("Speed", Mathf.Abs(rb2d.velocity.x));
 
+		// Check if the player is in what range of the enemy.
 		float distToPlayer = Vector2.Distance(transform.position, player.transform.position);
+		playerSpotted = distToPlayer <= inSightRange;
+		canAttackPlayer = Physics2D.OverlapCircle(centerPoint.position, attackRange, whatIsPlayer);
 
-		if (distToPlayer <= inSightRange)
+		if (!playerSpotted && !canAttackPlayer)
+		{
+			isPatrol = true;
+			Patrol();
+		}
+		if (playerSpotted && !canAttackPlayer)
 		{
 			isPatrol = false;
 			ChasePlayer();
 		}
-		else
-			isPatrol = true;
+		if (canAttackPlayer)
+			Attack();
 	}
 
 	private void FixedUpdate()
@@ -62,15 +75,13 @@ public class CrabBehaviour : MonoBehaviour
 			isTouchingWall = true;
 	}
 
-	private void OnTriggerExit2D(Collider2D collision)
-	{
-		isTouchingWall = false;
-	}
-
 	private void Patrol()
 	{
 		if (mustFlip || isTouchingWall)
+		{
 			Flip();
+			isTouchingWall = false;
+		}
 
 		rb2d.velocity = facingRight ? new Vector2(walkSpeed * Time.fixedDeltaTime, rb2d.velocity.y) 
 									: new Vector2(-walkSpeed * Time.fixedDeltaTime, rb2d.velocity.y);
@@ -78,19 +89,36 @@ public class CrabBehaviour : MonoBehaviour
 
 	private void ChasePlayer()
 	{
-		if (centerPoint.position.x < player.transform.position.x)
+		// Chase is faster than patrol.
+		float direction = Mathf.Sign(player.transform.position.x - centerPoint.position.x) * 1.5f;  
+
+		rb2d.velocity = new Vector2(walkSpeed * direction * Time.fixedDeltaTime, rb2d.velocity.y);
+
+		if (!facingRight && direction > 0f)
+			Flip();
+
+		else if (facingRight && direction < 0f)
+			Flip();
+	}
+
+	private void Attack()
+	{
+		// Make sure the enemy doesn't move.
+		rb2d.velocity = Vector3.zero;
+
+		if (!alreadyAttacked)
 		{
-			rb2d.velocity = new Vector2(walkSpeed * 1.5f * Time.fixedDeltaTime, rb2d.velocity.y);
+			int randomNum = Random.Range(1, 4);
+			animator.SetTrigger("Atk" + randomNum);
 
-			if (!facingRight) Flip();
+			alreadyAttacked = true;
+			Invoke(nameof(ResetAttack), timeBetweenAtk);  // Can attack every 2 seconds.
 		}
+	}
 
-		else if (centerPoint.position.x > player.transform.position.x)
-		{
-			rb2d.velocity = new Vector2(walkSpeed * -1.5f * Time.fixedDeltaTime, rb2d.velocity.y);
-
-			if (facingRight) Flip();
-		}
+	private void ResetAttack()
+	{
+		alreadyAttacked = false;
 	}
 
 	private void Flip()
@@ -105,11 +133,11 @@ public class CrabBehaviour : MonoBehaviour
 
 	private void OnDrawGizmosSelected()
 	{
-		if (edgeCheck == null || centerPoint == null)
+		if (edgeCheck == null || centerPoint == null || attackPoint == null)
 			return;
 
 		Gizmos.DrawWireSphere(edgeCheck.position, checkRadius);
-		Gizmos.DrawWireSphere(centerPoint.position, attackRange);
+		Gizmos.DrawWireSphere(attackPoint.position, attackRange);
 		Gizmos.DrawWireSphere(centerPoint.position, inSightRange);
 	}
 }
