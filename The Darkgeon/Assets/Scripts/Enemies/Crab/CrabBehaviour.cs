@@ -9,9 +9,9 @@ public class CrabBehaviour : MonoBehaviour
 	[Space]
 	[SerializeField] private Transform edgeCheck;
 	[SerializeField] private Transform centerPoint;
-	[SerializeField] private Transform attackPoint;
+	public Transform attackPoint;
+	public LayerMask whatIsPlayer;
 	[SerializeField] private LayerMask whatIsGround;
-	[SerializeField] private LayerMask whatIsPlayer;
 	[Space]
 	[SerializeField] private PlayerStats player;
 
@@ -39,9 +39,6 @@ public class CrabBehaviour : MonoBehaviour
 
 	private void Update()
 	{
-		if (isPatrol)
-			Patrol();
-
 		animator.SetFloat("Speed", Mathf.Abs(rb2d.velocity.x));
 
 		// Check if the player is in what range of the enemy.
@@ -49,17 +46,17 @@ public class CrabBehaviour : MonoBehaviour
 		playerSpotted = distToPlayer <= inSightRange;
 		canAttackPlayer = Physics2D.OverlapCircle(centerPoint.position, attackRange, whatIsPlayer);
 
-		if (!playerSpotted && !canAttackPlayer)
+		if ((!playerSpotted && !canAttackPlayer) || player.isDeath)
 		{
 			isPatrol = true;
 			Patrol();
 		}
-		if (playerSpotted && !canAttackPlayer)
+		else if (playerSpotted && !canAttackPlayer)
 		{
 			isPatrol = false;
 			ChasePlayer();
 		}
-		if (canAttackPlayer)
+		else if (canAttackPlayer)
 			Attack();
 	}
 

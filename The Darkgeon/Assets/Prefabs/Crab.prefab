@@ -201,7 +201,7 @@ MonoBehaviour:
   dmgTextPrefab: {fileID: 1002002582291494483, guid: 010fe3952a6d9ba4a81d8d56d99c52a3, type: 3}
   maxHealth: 500
   currentHP: 0
-  armor: 0
+  armor: 10
   dmgRecFactor: 0.25
   disposeTime: 5
 --- !u!114 &5818629754301121029
@@ -221,12 +221,12 @@ MonoBehaviour:
   edgeCheck: {fileID: 7650718340843937049}
   centerPoint: {fileID: 5649026995876315913}
   attackPoint: {fileID: 4619837858754419681}
-  whatIsGround:
-    serializedVersion: 2
-    m_Bits: 343
   whatIsPlayer:
     serializedVersion: 2
     m_Bits: 8
+  whatIsGround:
+    serializedVersion: 2
+    m_Bits: 343
   player: {fileID: 0}
   walkSpeed: 50
   checkRadius: 0.1

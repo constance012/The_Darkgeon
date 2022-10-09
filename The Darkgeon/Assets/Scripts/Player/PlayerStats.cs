@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using TMPro;
 
@@ -12,6 +13,7 @@ public class PlayerStats : MonoBehaviour
 
 	[SerializeField] private Animator animator;
 	[SerializeField] private CharacterController2D controller;
+	[SerializeField] private Rigidbody2D rb2d;
 
 	[SerializeField] private PlayerMovement moveScript;
 	[SerializeField] private PlayerActions actionsScript;
@@ -32,17 +34,20 @@ public class PlayerStats : MonoBehaviour
 	public int currentHP;
 	public int armor = 5;
 	public float damageRecFactor = .5f;
-
+	public bool isDeath = false;
+	
+	[Space]
 	public float invincibilityTime = .5f;
 	public float outOfCombatTime = 5f;
 	[HideInInspector] public float lastDamagedTime = 0f;
 	[HideInInspector] public float knockBackForce = .5f;
-
+	
+	[Space]	
 	public KillSources killSource = KillSources.Unknown;
+	[HideInInspector] public Transform attacker = null;  // Position of the attacker.
 
 	int regenRate = 1;
 	float regenDelay = 2f;
-	bool isDeath = false;
 	Vector3 respawnPos;
 
 	private string[] deathMessages = new string[] {"YOUR SOUL HAS BEEN CONSUMED", "YOUR HEAD WAS DETACHED", "YOUR FACE WAS RIPPED OFF", "YOUR BODY WAS EVISCERATED", "YOUR FATE WAS SHATTERED"};
@@ -56,6 +61,7 @@ public class PlayerStats : MonoBehaviour
 		
 		animator = GetComponent<Animator>();
 		controller = GetComponent<CharacterController2D>();
+		rb2d = GetComponent<Rigidbody2D>();
 
 		moveScript = GetComponent<PlayerMovement>();
 		actionsScript = GetComponent<PlayerActions>();
@@ -82,8 +88,9 @@ public class PlayerStats : MonoBehaviour
 	{
 		if (Input.GetKeyDown(KeyCode.E) && Time.time - lastDamagedTime > invincibilityTime)
 		{
-			TakeDamage(12);
+			attacker = null;
 			killSource = KillSources.Unknown;
+			TakeDamage(12);
 			//playerMat.SetKeyword(isOutlineOn, !playerMat.IsKeywordEnabled(isOutlineOn));
 			playerMat.SetFloat("_Thickness", playerMat.GetFloat("_Thickness") > 0f ? 0f : .0013f);
 		}
@@ -115,6 +122,8 @@ public class PlayerStats : MonoBehaviour
 
 			animator.SetTrigger("TakingDamage");
 			DamageText.Generate(dmgTextPrefab, worldCanvas, dmgTextLoc.position, Color.red, finalDmg);
+
+			StartCoroutine(BeingKnockedBack());
 		}
 	}
 
@@ -193,6 +202,23 @@ public class PlayerStats : MonoBehaviour
 			default:
 				killSourceText.text = "Kill By: Unknown";
 				break;
+		}
+	}
+
+	private IEnumerator BeingKnockedBack()
+	{
+		if (attacker != null)
+		{
+			// Make sure the object doesn't move.
+			transform.GetComponent<PlayerMovement>().enabled = false;
+
+			Vector2 knockbackDir = new Vector2(Mathf.Sign(transform.position.x - attacker.position.x), 0f);
+			rb2d.AddForce(3 * knockbackDir, ForceMode2D.Impulse);
+
+			yield return new WaitForSeconds(.15f);
+
+			rb2d.velocity = Vector3.zero;
+			transform.GetComponent<PlayerMovement>().enabled = true;
 		}
 	}
 }

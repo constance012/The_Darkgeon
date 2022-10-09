@@ -85,12 +85,13 @@ public class EnemyStat : MonoBehaviour
 
 	private IEnumerator BeingKnockedBack()
 	{
+		// Make sure the object doesn't move.
 		transform.GetComponent<CrabBehaviour>().enabled = false;
 
 		Vector2 knockbackDir = new Vector2(Mathf.Sign(centerPoint.position.x - player.transform.position.x), 0f);
 		rb2d.AddForce(player.knockBackForce * knockbackDir, ForceMode2D.Impulse);
 
-		yield return new WaitForSeconds(.1f);
+		yield return new WaitForSeconds(.15f);
 
 		rb2d.velocity = Vector3.zero;
 		transform.GetComponent<CrabBehaviour>().enabled = true;
