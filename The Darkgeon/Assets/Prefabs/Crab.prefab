@@ -146,7 +146,7 @@ BoxCollider2D:
   m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0.120000005, y: -0.016198926}
+  m_Offset: {x: 0.1, y: -0.016198926}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
@@ -233,6 +233,8 @@ MonoBehaviour:
   attackRange: 0.35
   inSightRange: 0
   alreadyAttacked: 0
+  abandonTimer: 10
+  spottingTimer: 3
 --- !u!1 &1906861128848420086
 GameObject:
   m_ObjectHideFlags: 0

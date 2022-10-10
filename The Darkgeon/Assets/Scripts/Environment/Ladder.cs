@@ -4,7 +4,7 @@ public class Ladder : MonoBehaviour
 {
 	private void OnTriggerEnter2D(Collider2D collision)
 	{
-		if (collision.tag == "Player")
+		if (collision.CompareTag("Player"))
 		{
 			Debug.Log("Enter.");
 			PlayerMovement.useLadder = true;
@@ -13,7 +13,7 @@ public class Ladder : MonoBehaviour
 
 	private void OnTriggerExit2D(Collider2D collision)
 	{
-		if (collision.tag == "Player")
+		if (collision.CompareTag("Player"))
 		{
 			Debug.Log("Exit.");
 			PlayerMovement.useLadder = false;

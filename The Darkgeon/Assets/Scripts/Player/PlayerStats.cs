@@ -40,7 +40,7 @@ public class PlayerStats : MonoBehaviour
 	public float invincibilityTime = .5f;
 	public float outOfCombatTime = 5f;
 	[HideInInspector] public float lastDamagedTime = 0f;
-	[HideInInspector] public float knockBackForce = .5f;
+	[HideInInspector] public int knockBackForce = 5;
 	
 	[Space]	
 	public KillSources killSource = KillSources.Unknown;
@@ -88,8 +88,6 @@ public class PlayerStats : MonoBehaviour
 	{
 		if (Input.GetKeyDown(KeyCode.E) && Time.time - lastDamagedTime > invincibilityTime)
 		{
-			attacker = null;
-			killSource = KillSources.Unknown;
 			TakeDamage(12);
 			//playerMat.SetKeyword(isOutlineOn, !playerMat.IsKeywordEnabled(isOutlineOn));
 			playerMat.SetFloat("_Thickness", playerMat.GetFloat("_Thickness") > 0f ? 0f : .0013f);
@@ -109,8 +107,11 @@ public class PlayerStats : MonoBehaviour
 		}
 	}
 
-	public void TakeDamage(int dmg)
+	public void TakeDamage(int dmg, Transform attacker = null, KillSources source = KillSources.Unknown)
 	{
+		this.attacker = attacker;  // The transform of the attacker, default is null.
+		killSource = source;  // The kill source, default is unknown.
+
 		if (currentHP > 0)
 		{
 			lastDamagedTime = Time.time;

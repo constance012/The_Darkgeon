@@ -1744,10 +1744,11 @@ MonoBehaviour:
   currentHP: 0
   armor: 5
   damageRecFactor: 0.5
+  isDeath: 0
   invincibilityTime: 0.5
   outOfCombatTime: 5
   lastDamagedTime: 0
-  knockBackForce: 30
+  knockBackForce: 5
   killSource: 0
   attacker: {fileID: 0}
 --- !u!1 &313518353
@@ -25016,6 +25017,10 @@ PrefabInstance:
       propertyPath: groundCheck
       value: 
       objectReference: {fileID: 980186174}
+    - target: {fileID: 5818629754301121029, guid: 175a6a426ecff0b4ca5b39bccffc1798, type: 3}
+      propertyPath: abandonTimer
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: 5818629754301121029, guid: 175a6a426ecff0b4ca5b39bccffc1798, type: 3}
       propertyPath: inSightRange
       value: 3

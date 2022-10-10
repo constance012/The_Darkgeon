@@ -8,6 +8,7 @@ public class EnemyStat : MonoBehaviour
 	[SerializeField] private EnemyHPBar hpBar;
 	[SerializeField] private Transform dmgTextPos;
 	[SerializeField] private Transform centerPoint;
+	[SerializeField] private CrabBehaviour behaviour;
 
 	[SerializeField] private Transform worldCanvas;
 	[SerializeField] private Animator animator;
@@ -33,6 +34,7 @@ public class EnemyStat : MonoBehaviour
 		worldCanvas = GameObject.Find("World Canvas").transform;
 		animator = GetComponent<Animator>();
 		rb2d = GetComponent<Rigidbody2D>();
+		behaviour = GetComponent<CrabBehaviour>();
 		centerPoint = transform.Find("Center Point");
 
 		player = GameObject.Find("Player").GetComponent<PlayerStats>();
@@ -54,6 +56,8 @@ public class EnemyStat : MonoBehaviour
 
 	public void TakeDamage(int dmg)
 	{
+		behaviour.spottingTimer = 0f;
+
 		if (currentHP > 0)
 		{
 			int finalDmg = Mathf.RoundToInt(dmg - armor * dmgRecFactor);
@@ -86,7 +90,7 @@ public class EnemyStat : MonoBehaviour
 	private IEnumerator BeingKnockedBack()
 	{
 		// Make sure the object doesn't move.
-		transform.GetComponent<CrabBehaviour>().enabled = false;
+		behaviour.enabled = false;
 
 		Vector2 knockbackDir = new Vector2(Mathf.Sign(centerPoint.position.x - player.transform.position.x), 0f);
 		rb2d.AddForce(player.knockBackForce * knockbackDir, ForceMode2D.Impulse);
@@ -94,6 +98,6 @@ public class EnemyStat : MonoBehaviour
 		yield return new WaitForSeconds(.15f);
 
 		rb2d.velocity = Vector3.zero;
-		transform.GetComponent<CrabBehaviour>().enabled = true;
+		behaviour.enabled = true;
 	}
 }

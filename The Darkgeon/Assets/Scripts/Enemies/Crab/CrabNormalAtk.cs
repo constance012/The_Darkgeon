@@ -24,9 +24,7 @@ public class CrabNormalAtk : StateMachineBehaviour
 			if (hitObj != null)
 			{
 				PlayerStats player = hitObj.GetComponent<PlayerStats>();
-				player.killSource = KillSources.Crab;
-				player.attacker = animator.transform;  // Set the player's attacker.
-				player.TakeDamage(13);
+				player.TakeDamage(13, animator.transform, KillSources.Crab);
 			}
 
 			dmgDealt = true;
