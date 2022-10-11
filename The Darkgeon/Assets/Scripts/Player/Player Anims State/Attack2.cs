@@ -41,6 +41,7 @@ public class Attack2 : StateMachineBehaviour
 	{
 		dmgDealt = false;
 		action.lastComboTime = Time.time;
+		animator.GetComponent<PlayerMovement>().enabled = true;
 	}
 
 	// OnStateMove is called right after Animator.OnAnimatorMove()

@@ -129,6 +129,7 @@ public class CrabBehaviour : MonoBehaviour
 
 		rb2d.velocity = new Vector2(walkSpeed * direction * Time.fixedDeltaTime, rb2d.velocity.y);
 
+		// Jump if there's an obstacle ahead.
 		if (isTouchingWall && timeBetweenJump <= 0f)
 		{
 			rb2d.velocity = new Vector2(rb2d.velocity.x, 5f);

@@ -39,22 +39,23 @@ public class PlayerActions : MonoBehaviour
 	
 	private void Attack()
 	{
+		GetComponent<PlayerMovement>().enabled = false;
+		GetComponent<Rigidbody2D>().velocity = Vector3.zero;
+		animator.SetBool("IsRunning", false);
+		animator.SetFloat("Speed", 0f);
+
 		if (inputWaitTime <= 0f)
 		{
-			bool canDoAtk1 = animator.GetCurrentAnimatorStateInfo(0).IsName("Idle") || animator.GetCurrentAnimatorStateInfo(0).IsName("Run");
-
 			if (animator.GetCurrentAnimatorStateInfo(0).IsName("Dash"))
 				animator.SetBool("DashAtk", true);
 
-			if (canDoAtk1)
-			{
+			if (animator.GetBool("Grounded"))
 				animator.SetTrigger("Atk1");
-			}
 
 			inputWaitTime = 2f;
 		}
 
-		else
+		else if(inputWaitTime > 0f && animator.GetBool("Grounded"))
 		{
 			animator.SetTrigger("Atk2");
 		}

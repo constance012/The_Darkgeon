@@ -37,6 +37,7 @@ public class Attack1 : StateMachineBehaviour
 	override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
 	{
 		dmgDealt = false;
+		animator.GetComponent<PlayerMovement>().enabled = true;
 	}
 
 	// OnStateMove is called right after Animator.OnAnimatorMove()
