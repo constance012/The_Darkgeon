@@ -48,21 +48,34 @@ public class CrabBehaviour : MonoBehaviour
 	{
 		animator.SetFloat("Speed", Mathf.Abs(rb2d.velocity.x));
 
-		// Check if the player is in what range of the enemy.
-		float distToPlayer = Vector2.Distance(centerPoint.position, player.transform.position);
-		
-		playerInAggro = distToPlayer <= inSightRange;
-		canAttackPlayer = Physics2D.OverlapCircle(centerPoint.position, attackRange, whatIsPlayer);
+		if (isPatrol)
+			Patrol();
 
+		if (!GameManager.isPlayerDeath)
+		{
+			// Check if the player is in what range of the enemy.
+			float distToPlayer = Vector2.Distance(centerPoint.position, player.transform.position);
+			playerInAggro = distToPlayer <= inSightRange;
+			canAttackPlayer = Physics2D.OverlapCircle(centerPoint.position, attackRange, whatIsPlayer);
+		}
+		else
+		{
+			playerInAggro = canAttackPlayer = false;
+			isPatrol = true;
+			spottingTimer = 3f;
+			abandonTimer = 0f;
+			return;  // If the player's death, simply return.
+		}
+
+		#region Behaviours against the player if she's alive.
+		// If the abandon timer runs, then just patrol around.
 		if (abandonTimer <= 0f)
 		{
 			isPatrol = true;
 			spottingTimer = 3f;
 		}
 
-		if (isPatrol)
-			Patrol();
-
+		// If the player is out of the aggro range.
 		if (!playerInAggro)
 		{
 			if (spottingTimer <= 0f)
@@ -74,9 +87,10 @@ public class CrabBehaviour : MonoBehaviour
 				spottingTimer = 3f;
 		}
 
+		// If the player is within the aggro range but outside the atk range.
 		else if (playerInAggro && !canAttackPlayer)
 		{
-			abandonTimer = 10f;
+			abandonTimer = 8f;
 			bool isPlayerBehind = player.transform.position.x < centerPoint.position.x;
 
 			if (spottingTimer <= 0f)
@@ -89,8 +103,10 @@ public class CrabBehaviour : MonoBehaviour
 				spottingTimer -= Time.deltaTime;
 		}
 
+		// If the player is within the atk range.
 		else if (canAttackPlayer)
 			Attack();
+		#endregion
 	}
 
 	private void FixedUpdate()
@@ -105,10 +121,9 @@ public class CrabBehaviour : MonoBehaviour
 			isTouchingWall = true;
 	}
 
+	#region Crab's behaviours
 	private void Patrol()
 	{
-		abandonTimer = 10f;
-
 		if (mustFlip || isTouchingWall)
 		{
 			Flip();
@@ -163,6 +178,7 @@ public class CrabBehaviour : MonoBehaviour
 	{
 		alreadyAttacked = false;
 	}
+	#endregion
 
 	private void Flip()
 	{

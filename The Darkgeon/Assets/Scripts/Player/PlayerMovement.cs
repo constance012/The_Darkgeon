@@ -42,14 +42,14 @@ public class PlayerMovement : MonoBehaviour
 		animator.SetFloat("yVelocity", rb2D.velocity.y);
 
 		// Ladder climbing animation.
-		if (useLadder && (!animator.GetBool("Grounded") || verticalMove == 0f))
+		if (useLadder && (!animator.GetBool("Grounded") || verticalMove == 0f))  // Stand still on a ladder.
 		{
 			if (animator.GetCurrentAnimatorStateInfo(0).IsName("LadderUp") ||
 				animator.GetCurrentAnimatorStateInfo(0).IsName("LadderDown"))
 				animator.speed = 0;
 		}
 
-		if (useLadder && verticalMove == 1f)
+		if (useLadder && verticalMove == 1f)  // Climb up.
 		{
 			rb2D.gravityScale = 0f;
 			playerPos.position += new Vector3(0f, climbSpeed, 0f);
@@ -57,7 +57,7 @@ public class PlayerMovement : MonoBehaviour
 			animator.SetBool("LadderDown", false);
 			animator.speed = 1;
 		}
-		else if (useLadder && verticalMove == -1f)
+		else if (useLadder && verticalMove == -1f)  // Climb down.
 		{
 			rb2D.gravityScale = 0f;
 			playerPos.position -= new Vector3(0f, climbSpeed, 0f);

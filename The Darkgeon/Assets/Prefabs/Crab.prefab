@@ -110,7 +110,7 @@ Rigidbody2D:
   m_UseAutoMass: 0
   m_Mass: 1
   m_LinearDrag: 0
-  m_AngularDrag: 0.05
+  m_AngularDrag: 0
   m_GravityScale: 2
   m_Material: {fileID: 0}
   m_Interpolate: 0
@@ -126,7 +126,7 @@ CircleCollider2D:
   m_GameObject: {fileID: 870357710861358019}
   m_Enabled: 1
   m_Density: 1
-  m_Material: {fileID: 6200000, guid: d618ebc0e80100d45b4e6bafb232e7fb, type: 2}
+  m_Material: {fileID: 6200000, guid: 1227cca4748deb8498b35f9ac540e053, type: 2}
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
@@ -194,6 +194,7 @@ MonoBehaviour:
   hpBar: {fileID: 0}
   dmgTextPos: {fileID: 0}
   centerPoint: {fileID: 0}
+  behaviour: {fileID: 0}
   worldCanvas: {fileID: 0}
   animator: {fileID: 0}
   rb2d: {fileID: 0}
@@ -226,15 +227,15 @@ MonoBehaviour:
     m_Bits: 8
   whatIsGround:
     serializedVersion: 2
-    m_Bits: 343
+    m_Bits: 64
   player: {fileID: 0}
-  walkSpeed: 50
+  walkSpeed: 30
   checkRadius: 0.1
   attackRange: 0.35
-  inSightRange: 0
-  alreadyAttacked: 0
-  abandonTimer: 10
+  inSightRange: 3
   spottingTimer: 3
+  abandonTimer: 8
+  alreadyAttacked: 0
 --- !u!1 &1906861128848420086
 GameObject:
   m_ObjectHideFlags: 0

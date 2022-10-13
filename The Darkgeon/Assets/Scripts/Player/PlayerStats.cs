@@ -12,20 +12,12 @@ public class PlayerStats : MonoBehaviour
 	public GameObject dmgTextPrefab;
 
 	[SerializeField] private Animator animator;
-	[SerializeField] private CharacterController2D controller;
 	[SerializeField] private Rigidbody2D rb2d;
-
-	[SerializeField] private PlayerMovement moveScript;
-	[SerializeField] private PlayerActions actionsScript;
-
-	[SerializeField] private GameObject deathPanel;
 
 	[Header("UI Elements")]
 	[Space]
-	[SerializeField] private HealthBar hpBar;
-	[SerializeField] private TextMeshProUGUI deathMessageText;
-	[SerializeField] private TextMeshProUGUI killSourceText;
 	[SerializeField] private Transform worldCanvas;
+	public HealthBar hpBar;
 
 	// Fields.
 	[Header("Stats")]
@@ -34,7 +26,6 @@ public class PlayerStats : MonoBehaviour
 	public int currentHP;
 	public int armor = 5;
 	public float damageRecFactor = .5f;
-	public bool isDeath = false;
 	
 	[Space]
 	public float invincibilityTime = .5f;
@@ -44,13 +35,12 @@ public class PlayerStats : MonoBehaviour
 	
 	[Space]	
 	public KillSources killSource = KillSources.Unknown;
+	public Vector3 respawnPos;
 	[HideInInspector] public Transform attacker = null;  // Position of the attacker.
 
 	int regenRate = 1;
 	float regenDelay = 2f;
-	Vector3 respawnPos;
 
-	private string[] deathMessages = new string[] {"YOUR SOUL HAS BEEN CONSUMED", "YOUR HEAD WAS DETACHED", "YOUR FACE WAS RIPPED OFF", "YOUR BODY WAS EVISCERATED", "YOUR FATE WAS SHATTERED"};
 	//private LocalKeyword isOutlineOn;
 
 	private void Awake()
@@ -58,23 +48,14 @@ public class PlayerStats : MonoBehaviour
 		playerMat = GetComponent<SpriteRenderer>().material;
 		hpBar = GameObject.Find("Health Bar").GetComponent<HealthBar>();
 		dmgTextLoc = transform.Find("Damage Text Loc");
-		
-		animator = GetComponent<Animator>();
-		controller = GetComponent<CharacterController2D>();
-		rb2d = GetComponent<Rigidbody2D>();
-
-		moveScript = GetComponent<PlayerMovement>();
-		actionsScript = GetComponent<PlayerActions>();
-
-		deathPanel = GameObject.Find("Death Message");
-		deathMessageText = deathPanel.transform.Find("Message").GetComponent<TextMeshProUGUI>();
-		killSourceText = deathPanel.transform.Find("Kill Source").GetComponent<TextMeshProUGUI>();
 		worldCanvas = GameObject.Find("World Canvas").transform;
+
+		animator = GetComponent<Animator>();
+		rb2d = GetComponent<Rigidbody2D>();
 	}
 
 	private void Start()
 	{
-		deathPanel.SetActive(false);
 		currentHP = maxHP;
 		hpBar.SetMaxHealth(maxHP);
 		respawnPos = transform.position;
@@ -98,13 +79,6 @@ public class PlayerStats : MonoBehaviour
 
 		if (Time.time - lastDamagedTime > .8f)
 			hpBar.PerformEffect();
-
-		if (currentHP <= 0 && !isDeath)
-		{
-			SetDeathMessage();
-			Death();
-			isDeath = true;
-		}
 	}
 
 	public void TakeDamage(int dmg, Transform attacker = null, KillSources source = KillSources.Unknown)
@@ -128,23 +102,6 @@ public class PlayerStats : MonoBehaviour
 		}
 	}
 
-	public void Respawn()
-	{
-		deathPanel.SetActive(false);
-		currentHP = maxHP;
-		hpBar.SetMaxHealth(maxHP);
-
-		controller.enabled = true;
-		moveScript.enabled = true;
-		actionsScript.enabled = true;
-
-		animator.SetTrigger("Respawn");
-		animator.SetBool("IsDeath", false);
-
-		transform.position = respawnPos;
-		isDeath = false;
-	}
-
 	private void Regenerate()
 	{
 		regenDelay -= Time.deltaTime;
@@ -156,53 +113,6 @@ public class PlayerStats : MonoBehaviour
 			hpBar.SetCurrentHealth(currentHP);
 
 			regenDelay = 2f;
-		}
-	}
-
-	private void Death()
-	{
-		animator.SetBool("IsDeath", true);
-		deathPanel.SetActive(true);
-
-		controller.enabled = false;
-		moveScript.enabled = false;
-		actionsScript.enabled = false;
-	}
-
-	private void SetDeathMessage()
-	{
-		int randomIndex = Random.Range(0, deathMessages.Length);
-		deathMessageText.text = deathMessages[randomIndex];
-
-		switch (killSource)
-		{
-			case KillSources.Environment:
-				killSourceText.text = "Kill By: Environment";
-				break;
-			case KillSources.Bat:
-				killSourceText.text = "Kill By: Bat";
-				break;
-			case KillSources.Crab:
-				killSourceText.text = "Kill By: Crab";
-				break;
-			case KillSources.Golem:
-				killSourceText.text = "Kill By: Golem";
-				break;
-			case KillSources.ReinforcedGolem:
-				killSourceText.text = "Kill By: Reinforced Golem";
-				break;
-			case KillSources.Rat:
-				killSourceText.text = "Kill By: Rat";
-				break;
-			case KillSources.Skull:
-				killSourceText.text = "Kill By: Floating Skull";
-				break;
-			case KillSources.SpikedSlime:
-				killSourceText.text = "Kill By: Spiked Slime";
-				break;
-			default:
-				killSourceText.text = "Kill By: Unknown";
-				break;
 		}
 	}
 
