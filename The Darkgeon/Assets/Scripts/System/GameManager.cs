@@ -49,7 +49,7 @@ public class GameManager : MonoBehaviour
 		if (playerStats.currentHP <= 0 && !isPlayerDeath)
 		{
 			SetDeathMessage(playerStats.killSource);
-			Death();
+			Die();
 			isPlayerDeath = true;
 		}
 
@@ -75,7 +75,7 @@ public class GameManager : MonoBehaviour
 		isPlayerDeath = false;
 	}
 
-	private void Death()
+	private void Die()
 	{
 		playerAnim.SetBool("IsDeath", true);
 		deathPanel.SetActive(true);

@@ -16,6 +16,6 @@ public class Spikes : MonoBehaviour
 	{
 		if (collision.collider.CompareTag("Player")
 			&& Time.time - playerStats.lastDamagedTime > playerStats.invincibilityTime)
-			playerStats.TakeDamage(15, null, KillSources.Environment);
+			playerStats.TakeDamage(15, 0, null, KillSources.Environment);
 	}
 }

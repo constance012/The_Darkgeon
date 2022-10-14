@@ -15,8 +15,8 @@ public class PlayerActions : MonoBehaviour
 	public LayerMask enemyLayers;
 	public float atkRange = .5f;
 
+	[HideInInspector] public bool isComboDone = true;
 	[HideInInspector] public float lastComboTime;
-	[HideInInspector] public float inputWaitTime;
 	float comboDelay = 0.5f;  // The cooldown between each combo is 0.3 second.
 
 	private void Awake()
@@ -28,36 +28,31 @@ public class PlayerActions : MonoBehaviour
 	{
 		if (animator.GetCurrentAnimatorStateInfo(0).IsName("Dash-Attack"))
 			animator.SetBool("DashAtk", false);
-		
-		// Check if there is enough time for the next combo to begin.
-		if (inputWaitTime > 0f)
-			inputWaitTime -= Time.deltaTime;
 
-		if (Input.GetMouseButtonDown(0) && Time.time - lastComboTime >= comboDelay)
+		Debug.Log(isComboDone);
+		// Check if there is enough time for the next combo to begin.
+		if (Input.GetMouseButtonDown(0) && isComboDone)
 			Attack();
 	}
 	
 	private void Attack()
 	{
-		GetComponent<PlayerMovement>().enabled = false;
-		GetComponent<Rigidbody2D>().velocity = Vector3.zero;
-		animator.SetBool("IsRunning", false);
-		animator.SetFloat("Speed", 0f);
-
-		if (inputWaitTime <= 0f)
+		if (Time.time - lastComboTime >= comboDelay)
 		{
+			// Make sure the player can not move.
+			GetComponent<PlayerMovement>().enabled = false;
+			GetComponent<Rigidbody2D>().velocity = Vector3.zero;
+			animator.SetBool("IsRunning", false);
+			animator.SetFloat("Speed", 0f);
+
 			if (animator.GetCurrentAnimatorStateInfo(0).IsName("Dash"))
 				animator.SetBool("DashAtk", true);
 
+			// Only attacking if grounded.
 			if (animator.GetBool("Grounded"))
 				animator.SetTrigger("Atk1");
 
-			inputWaitTime = 2f;
-		}
-
-		else if(inputWaitTime > 0f && animator.GetBool("Grounded"))
-		{
-			animator.SetTrigger("Atk2");
+			isComboDone = false;
 		}
 	}
 

@@ -5,6 +5,7 @@ public class CrabNormalAtk : StateMachineBehaviour
 	[Header("Reference")]
 	[Space]
 	[SerializeField] private CrabBehaviour behaviour;
+	[SerializeField] private EnemyStat stats;
 
 	bool dmgDealt;
 
@@ -12,6 +13,7 @@ public class CrabNormalAtk : StateMachineBehaviour
 	override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
 	{
 		behaviour = animator.GetComponent<CrabBehaviour>();
+		stats = animator.GetComponent<EnemyStat>();
 	}
 
 	// OnStateUpdate is called on each Update frame between OnStateEnter and OnStateExit callbacks
@@ -22,7 +24,7 @@ public class CrabNormalAtk : StateMachineBehaviour
 			Collider2D hitObj = Physics2D.OverlapCircle(behaviour.attackPoint.position, behaviour.attackRange, behaviour.whatIsPlayer);
 
 			if (hitObj != null)
-				hitObj.GetComponent<PlayerStats>().TakeDamage(13, animator.transform, KillSources.Crab);
+				hitObj.GetComponent<PlayerStats>().TakeDamage(13, stats.knockBackVal, animator.transform, KillSources.Crab);
 
 			dmgDealt = true;
 		}

@@ -26,12 +26,13 @@ public class PlayerStats : MonoBehaviour
 	public int currentHP;
 	public int armor = 5;
 	public float damageRecFactor = .5f;
+	[Range(0f, 1f)] public float knockBackRes = .2f;
 	
 	[Space]
 	public float invincibilityTime = .5f;
 	public float outOfCombatTime = 5f;
 	[HideInInspector] public float lastDamagedTime = 0f;
-	[HideInInspector] public int knockBackForce = 5;
+	[HideInInspector] public float knockBackVal = 1.5f;
 	
 	[Space]	
 	public KillSources killSource = KillSources.Unknown;
@@ -81,7 +82,7 @@ public class PlayerStats : MonoBehaviour
 			hpBar.PerformEffect();
 	}
 
-	public void TakeDamage(int dmg, Transform attacker = null, KillSources source = KillSources.Unknown)
+	public void TakeDamage(int dmg, float knockBackVal = 0f, Transform attacker = null, KillSources source = KillSources.Unknown)
 	{
 		this.attacker = attacker;  // The transform of the attacker, default is null.
 		killSource = source;  // The kill source, default is unknown.
@@ -98,7 +99,7 @@ public class PlayerStats : MonoBehaviour
 			animator.SetTrigger("TakingDamage");
 			DamageText.Generate(dmgTextPrefab, worldCanvas, dmgTextLoc.position, Color.red, finalDmg);
 
-			StartCoroutine(BeingKnockedBack());
+			StartCoroutine(BeingKnockedBack(knockBackVal));
 		}
 	}
 
@@ -116,19 +117,20 @@ public class PlayerStats : MonoBehaviour
 		}
 	}
 
-	private IEnumerator BeingKnockedBack()
+	private IEnumerator BeingKnockedBack(float knockBackValue)
 	{
 		if (attacker != null)
 		{
 			// Make sure the object doesn't move.
+			rb2d.velocity = Vector3.zero;
 			transform.GetComponent<PlayerMovement>().enabled = false;
 
-			Vector2 knockbackDir = new Vector2(Mathf.Sign(transform.position.x - attacker.position.x), 0f);
-			rb2d.AddForce(3 * knockbackDir, ForceMode2D.Impulse);
+			float knockbackDir = Mathf.Sign(transform.position.x - attacker.position.x);  // The direction of the knock back.
+			knockBackValue = knockBackValue * (1f - knockBackRes) * knockbackDir;  // Calculate the actual knock back value.
+			rb2d.velocity = new Vector2(knockBackValue, 0f);
 
 			yield return new WaitForSeconds(.15f);
 
-			rb2d.velocity = Vector3.zero;
 			transform.GetComponent<PlayerMovement>().enabled = true;
 		}
 	}

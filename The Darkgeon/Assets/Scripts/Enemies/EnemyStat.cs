@@ -7,8 +7,11 @@ public class EnemyStat : MonoBehaviour
 	[Space]
 	[SerializeField] private EnemyHPBar hpBar;
 	[SerializeField] private Transform dmgTextPos;
+
 	[SerializeField] private Transform centerPoint;
+	[SerializeField] private Transform groundCheck;
 	[SerializeField] private CrabBehaviour behaviour;
+	[SerializeField] private LayerMask whatIsGround;
 
 	[SerializeField] private Transform worldCanvas;
 	[SerializeField] private Animator animator;
@@ -23,8 +26,14 @@ public class EnemyStat : MonoBehaviour
 	public int maxHealth = 50;
 	public int currentHP;
 	public int armor = 0;
-	public float dmgRecFactor = .25f;
+	public float dmgRecFactor = .5f;
 	public float disposeTime = 5f;
+	[Range(0f, 1f)] public float knockBackRes = .2f;
+
+	[HideInInspector] public float knockBackVal = 2f;
+
+	bool isDeath;
+	bool grounded;
 
 	private void Awake()
 	{
@@ -36,6 +45,7 @@ public class EnemyStat : MonoBehaviour
 		rb2d = GetComponent<Rigidbody2D>();
 		behaviour = GetComponent<CrabBehaviour>();
 		centerPoint = transform.Find("Center Point");
+		groundCheck = transform.Find("Ground Check");
 
 		player = GameObject.Find("Player").GetComponent<PlayerStats>();
 	}
@@ -50,11 +60,29 @@ public class EnemyStat : MonoBehaviour
 
 	private void Update()
 	{
-		if (currentHP <= 0)
+		if (currentHP <= 0 && !isDeath)
+		{
+			StopAllCoroutines();
 			StartCoroutine(Die());
+			isDeath = true;
+		}
+
+		if (isDeath && grounded)
+			rb2d.simulated = false;
 	}
 
-	public void TakeDamage(int dmg)
+	// Check if the enemy is grounded.
+	private void FixedUpdate()
+	{
+		grounded = false;
+
+		Collider2D[] colliders = Physics2D.OverlapCircleAll(groundCheck.position, .1f, whatIsGround);
+		foreach (Collider2D collider in colliders)
+			if (collider.CompareTag("Ground"))
+				grounded = true;
+	}
+
+	public void TakeDamage(int dmg, float knockBackVal = 0f)
 	{
 		behaviour.spottingTimer = 0f;
 
@@ -70,7 +98,7 @@ public class EnemyStat : MonoBehaviour
 			animator.SetTrigger("Hit");
 			DamageText.Generate(dmgTextPrefab, worldCanvas, dmgTextPos.position, Color.yellow, finalDmg);
 
-			StartCoroutine(BeingKnockedBack());
+			StartCoroutine(BeingKnockedBack(knockBackVal));
 		}
 	}
 
@@ -78,7 +106,7 @@ public class EnemyStat : MonoBehaviour
 	{
 		animator.SetBool("IsDeath", true);
 
-		gameObject.GetComponent<Rigidbody2D>().simulated = false;
+		behaviour.enabled = false;
 		hpBar.gameObject.SetActive(false);
 
 		yield return new WaitForSeconds(disposeTime);
@@ -87,17 +115,18 @@ public class EnemyStat : MonoBehaviour
 		Destroy(gameObject);
 	}
 
-	private IEnumerator BeingKnockedBack()
+	private IEnumerator BeingKnockedBack(float knockBackValue)
 	{
 		// Make sure the object doesn't move.
+		rb2d.velocity = Vector3.zero;
 		behaviour.enabled = false;
 
-		Vector2 knockbackDir = new Vector2(Mathf.Sign(centerPoint.position.x - player.transform.position.x), 0f);
-		rb2d.AddForce(player.knockBackForce * knockbackDir, ForceMode2D.Impulse);
+		float knockbackDir = Mathf.Sign(centerPoint.position.x - player.transform.position.x);  // The direction of the knock back.
+		knockBackValue = knockBackValue * (1f - knockBackRes) * knockbackDir;  // Calculate the actual knock back value.
+		rb2d.velocity = new Vector2(knockBackValue, 0f);
 
 		yield return new WaitForSeconds(.15f);
 
-		rb2d.velocity = Vector3.zero;
 		behaviour.enabled = true;
 	}
 }

@@ -1606,7 +1606,7 @@ MonoBehaviour:
     m_Bits: 256
   atkRange: 0.5
   lastComboTime: 0
-  inputWaitTime: 0
+  isComboDone: 1
 --- !u!96 &249091182
 TrailRenderer:
   serializedVersion: 2
@@ -1738,10 +1738,11 @@ MonoBehaviour:
   currentHP: 0
   armor: 5
   damageRecFactor: 0.5
+  knockBackRes: 0.2
   invincibilityTime: 0.5
   outOfCombatTime: 5
   lastDamagedTime: 0
-  knockBackForce: 5
+  knockBackVal: 15
   killSource: 0
   respawnPos: {x: 0, y: 0, z: 0}
   attacker: {fileID: 0}

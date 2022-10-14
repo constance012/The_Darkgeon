@@ -5,6 +5,7 @@ public class CrabDoubleAtk : StateMachineBehaviour
 	[Header("Reference")]
 	[Space]
 	[SerializeField] private CrabBehaviour behaviour;
+	[SerializeField] private EnemyStat stats;
 
 	bool firstHitLanded;
 	bool secondHitLanded;
@@ -13,6 +14,7 @@ public class CrabDoubleAtk : StateMachineBehaviour
 	override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
 	{
 		behaviour = animator.GetComponent<CrabBehaviour>();
+		stats = animator.GetComponent<EnemyStat>();
 	}
 
 	// OnStateUpdate is called on each Update frame between OnStateEnter and OnStateExit callbacks
@@ -28,14 +30,14 @@ public class CrabDoubleAtk : StateMachineBehaviour
 			// First hit doesn't knock the player back.
 			if (stateInfo.normalizedTime > .3f && !firstHitLanded)
 			{
-				hitObj.GetComponent<PlayerStats>().TakeDamage(9, null, KillSources.Crab);
+				hitObj.GetComponent<PlayerStats>().TakeDamage(9, 0, null, KillSources.Crab);
 				firstHitLanded = true;
 			}
 
 			// Second hit knocks the player back.
 			if (stateInfo.normalizedTime > .7f)
 			{
-				hitObj.GetComponent<PlayerStats>().TakeDamage(13, animator.transform, KillSources.Crab);
+				hitObj.GetComponent<PlayerStats>().TakeDamage(13, stats.knockBackVal , animator.transform, KillSources.Crab);
 				secondHitLanded = true;
 			}
 
