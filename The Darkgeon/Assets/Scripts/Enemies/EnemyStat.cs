@@ -26,14 +26,15 @@ public class EnemyStat : MonoBehaviour
 	public int maxHealth = 50;
 	public int currentHP;
 	public int armor = 0;
+	public float atkDamage = 15f;
 	public float dmgRecFactor = .5f;
 	public float disposeTime = 5f;
 	[Range(0f, 1f)] public float knockBackRes = .2f;
 
 	[HideInInspector] public float knockBackVal = 2f;
+	[HideInInspector] public bool grounded;
 
 	bool isDeath;
-	bool grounded;
 
 	private void Awake()
 	{
@@ -82,7 +83,7 @@ public class EnemyStat : MonoBehaviour
 				grounded = true;
 	}
 
-	public void TakeDamage(int dmg, float knockBackVal = 0f)
+	public void TakeDamage(float dmg, float knockBackVal = 0f)
 	{
 		behaviour.spottingTimer = 0f;
 

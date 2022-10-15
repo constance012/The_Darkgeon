@@ -47,7 +47,6 @@ public class CharacterController2D : MonoBehaviour
 	private float m_DashingTime = 0.2f;
 
 	private Rigidbody2D m_Rigidbody2D;
-	private Vector3 m_Velocity = Vector3.zero;
 
 	[Header("Events")]
 	[Space]

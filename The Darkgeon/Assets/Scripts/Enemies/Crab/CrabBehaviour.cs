@@ -6,6 +6,7 @@ public class CrabBehaviour : MonoBehaviour
 	[Space]
 	[SerializeField] private Rigidbody2D rb2d;
 	[SerializeField] private Animator animator;
+	[SerializeField] private PhysicsMaterial2D physicMat;
 	
 	[Space]
 	[SerializeField] private Transform edgeCheck;
@@ -16,6 +17,7 @@ public class CrabBehaviour : MonoBehaviour
 	
 	[Space]
 	[SerializeField] private PlayerStats player;
+	[SerializeField] private EnemyStat stats;
 
 	[Header("Fields")]
 	[Space]
@@ -41,6 +43,8 @@ public class CrabBehaviour : MonoBehaviour
 	{
 		rb2d = GetComponent<Rigidbody2D>();
 		animator = GetComponent<Animator>();
+		stats = GetComponent<EnemyStat>();
+		physicMat = GetComponent<CircleCollider2D>().sharedMaterial;
 		player = GameObject.Find("Player").GetComponent<PlayerStats>();
 	}
 
@@ -111,11 +115,13 @@ public class CrabBehaviour : MonoBehaviour
 
 	private void FixedUpdate()
 	{
+		physicMat.friction = stats.grounded ? .5f : 0f;
+
 		if (isPatrol)
 			mustFlip = !Physics2D.OverlapCircle(edgeCheck.position, checkRadius, whatIsGround);
 	}
 
-	private void OnTriggerStay2D(Collider2D collision)
+	private void OnTriggerEnter2D(Collider2D collision)
 	{
 		if (collision.CompareTag("Ground"))
 			isTouchingWall = true;
@@ -145,9 +151,9 @@ public class CrabBehaviour : MonoBehaviour
 		rb2d.velocity = new Vector2(walkSpeed * direction * Time.fixedDeltaTime, rb2d.velocity.y);
 
 		// Jump if there's an obstacle ahead.
-		if (isTouchingWall && timeBetweenJump <= 0f)
+		if (isTouchingWall && stats.grounded && timeBetweenJump <= 0f)
 		{
-			rb2d.velocity = new Vector2(rb2d.velocity.x, 5f);
+			rb2d.velocity = new Vector2(0f, 7f);
 			isTouchingWall = false;
 			timeBetweenJump = 2f;
 		}

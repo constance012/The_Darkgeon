@@ -12,6 +12,7 @@ public class Attack1 : StateMachineBehaviour
 
 	bool dmgDealt;
 	bool isAtk2Triggered;
+	float dmgMultiplier = .8f;
 
 	// OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
 	override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
@@ -29,7 +30,7 @@ public class Attack1 : StateMachineBehaviour
 
 			foreach (Collider2D enemy in hitList)
 			{
-				enemy.GetComponent<EnemyStat>().TakeDamage(15, stats.knockBackVal);
+				enemy.GetComponent<EnemyStat>().TakeDamage(stats.atkDamage * dmgMultiplier, stats.knockBackVal);
 			}
 
 			dmgDealt = true;
@@ -50,7 +51,7 @@ public class Attack1 : StateMachineBehaviour
 		{
 			action.isComboDone = true;
 			action.lastComboTime = Time.time;
-			animator.GetComponent<PlayerMovement>().enabled = true;
+			animator.GetComponent<PlayerMovement>().enabled = true;  // The player can move again as soon as the animation is completed.
 		}
 
 		dmgDealt = isAtk2Triggered = false;

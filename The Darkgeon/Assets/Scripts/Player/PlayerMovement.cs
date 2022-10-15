@@ -2,13 +2,15 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
-	// References.
+	[Header("References")]
+	[Space]
 	[SerializeField] private CharacterController2D controller;
 	[SerializeField] private Animator animator;
 	[SerializeField] private Rigidbody2D rb2D;
 	[SerializeField] private RectTransform playerPos;
 
-	// Fields.
+	[Header("Fields")]
+	[Space]
 	public float climbSpeed = 0.01f;
 	public static bool useLadder = false;
 

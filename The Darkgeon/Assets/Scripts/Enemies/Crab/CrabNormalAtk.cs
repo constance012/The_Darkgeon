@@ -8,6 +8,7 @@ public class CrabNormalAtk : StateMachineBehaviour
 	[SerializeField] private EnemyStat stats;
 
 	bool dmgDealt;
+	float dmgMultiplier = .7f;
 
 	// OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
 	override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
@@ -24,7 +25,7 @@ public class CrabNormalAtk : StateMachineBehaviour
 			Collider2D hitObj = Physics2D.OverlapCircle(behaviour.attackPoint.position, behaviour.attackRange, behaviour.whatIsPlayer);
 
 			if (hitObj != null)
-				hitObj.GetComponent<PlayerStats>().TakeDamage(13, stats.knockBackVal, animator.transform, KillSources.Crab);
+				hitObj.GetComponent<PlayerStats>().TakeDamage(stats.atkDamage * dmgMultiplier, stats.knockBackVal, animator.transform, KillSources.Crab);
 
 			dmgDealt = true;
 		}

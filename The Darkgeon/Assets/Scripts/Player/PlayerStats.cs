@@ -25,6 +25,7 @@ public class PlayerStats : MonoBehaviour
 	public int maxHP = 100;
 	public int currentHP;
 	public int armor = 5;
+	public float atkDamage = 20f;
 	public float damageRecFactor = .5f;
 	[Range(0f, 1f)] public float knockBackRes = .2f;
 	
@@ -82,7 +83,7 @@ public class PlayerStats : MonoBehaviour
 			hpBar.PerformEffect();
 	}
 
-	public void TakeDamage(int dmg, float knockBackVal = 0f, Transform attacker = null, KillSources source = KillSources.Unknown)
+	public void TakeDamage(float dmg, float knockBackVal = 0f, Transform attacker = null, KillSources source = KillSources.Unknown)
 	{
 		this.attacker = attacker;  // The transform of the attacker, default is null.
 		killSource = source;  // The kill source, default is unknown.

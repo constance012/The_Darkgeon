@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class Attack2 : StateMachineBehaviour
+public class DashAttack : StateMachineBehaviour
 {
 	[Header("Reference")]
 	[Space]
@@ -11,7 +11,7 @@ public class Attack2 : StateMachineBehaviour
 	[Space]
 
 	bool dmgDealt;
-	float dmgMultiplier = .65f;
+	float dmgMultiplier = 1.1f;
 
 	// OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
 	override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
@@ -23,9 +23,10 @@ public class Attack2 : StateMachineBehaviour
 	// OnStateUpdate is called on each Update frame between OnStateEnter and OnStateExit callbacks
 	override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
 	{
-		if (!dmgDealt && stateInfo.normalizedTime > .5f)
+		if (!dmgDealt && stateInfo.normalizedTime > .4f)
 		{
-			Collider2D[] hitList = Physics2D.OverlapCircleAll(action.atkPoint.position, action.atkRange, action.enemyLayers);
+			// Dash attack has a larger range than regular attacks.
+			Collider2D[] hitList = Physics2D.OverlapCircleAll(action.atkPoint.position, action.atkRange + .2f, action.enemyLayers);
 
 			foreach (Collider2D enemy in hitList)
 			{
@@ -42,6 +43,7 @@ public class Attack2 : StateMachineBehaviour
 		dmgDealt = false;
 		action.isComboDone = true;
 		action.lastComboTime = Time.time;
+		animator.SetBool("DashAtk", false);  // Disable the bool.
 		animator.GetComponent<PlayerMovement>().enabled = true;  // The player can move again as soon as the animation is completed.
 	}
 

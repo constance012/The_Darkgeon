@@ -26,9 +26,6 @@ public class PlayerActions : MonoBehaviour
 
 	private void Update()
 	{
-		if (animator.GetCurrentAnimatorStateInfo(0).IsName("Dash-Attack"))
-			animator.SetBool("DashAtk", false);
-
 		Debug.Log(isComboDone);
 		// Check if there is enough time for the next combo to begin.
 		if (Input.GetMouseButtonDown(0) && isComboDone)
@@ -45,11 +42,12 @@ public class PlayerActions : MonoBehaviour
 			animator.SetBool("IsRunning", false);
 			animator.SetFloat("Speed", 0f);
 
+			// Only attack during dashing.
 			if (animator.GetCurrentAnimatorStateInfo(0).IsName("Dash"))
 				animator.SetBool("DashAtk", true);
 
-			// Only attacking if grounded.
-			if (animator.GetBool("Grounded"))
+			// Only attacking if grounded and not dashing.
+			else if (animator.GetBool("Grounded"))
 				animator.SetTrigger("Atk1");
 
 			isComboDone = false;
