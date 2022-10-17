@@ -28,7 +28,7 @@ public class PlayerActions : MonoBehaviour
 	{
 		Debug.Log(isComboDone);
 		// Check if there is enough time for the next combo to begin.
-		if (Input.GetMouseButtonDown(0) && isComboDone)
+		if (Input.GetMouseButtonDown(0) && isComboDone && animator.GetBool("Grounded"))
 			Attack();
 	}
 	
@@ -47,7 +47,7 @@ public class PlayerActions : MonoBehaviour
 				animator.SetBool("DashAtk", true);
 
 			// Only attacking if grounded and not dashing.
-			else if (animator.GetBool("Grounded"))
+			else
 				animator.SetTrigger("Atk1");
 
 			isComboDone = false;

@@ -18,6 +18,7 @@ public class DashAttack : StateMachineBehaviour
 	{
 		action = animator.GetComponent<PlayerActions>();
 		stats = animator.GetComponent<PlayerStats>();
+		FindObjectOfType<AudioManager>().Play("Dash Attack 1");
 	}
 
 	// OnStateUpdate is called on each Update frame between OnStateEnter and OnStateExit callbacks

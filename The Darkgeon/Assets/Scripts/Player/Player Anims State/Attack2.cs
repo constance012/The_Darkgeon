@@ -18,6 +18,7 @@ public class Attack2 : StateMachineBehaviour
 	{
 		action = animator.GetComponent<PlayerActions>();
 		stats = animator.GetComponent<PlayerStats>();
+		FindObjectOfType<AudioManager>().Play("Normal Attack 2");
 	}
 
 	// OnStateUpdate is called on each Update frame between OnStateEnter and OnStateExit callbacks

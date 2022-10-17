@@ -27,8 +27,8 @@ public class CrabBehaviour : MonoBehaviour
 	public float inSightRange;
 
 	[Space]
-	public float spottingTimer = 3f;
-	[SerializeField] float abandonTimer = 8f;
+	public float m_SpottingTimer = 3f;
+	[SerializeField] float m_AbandonTimer = 8f;
 	[SerializeField] bool alreadyAttacked = false;
 	
 	bool isPatrol = true;
@@ -38,6 +38,8 @@ public class CrabBehaviour : MonoBehaviour
 
 	float timeBetweenAtk = 1.5f;
 	float timeBetweenJump = 2f;
+	float abandonTimer;
+	public float spottingTimer;
 
 	private void Awake()
 	{
@@ -46,6 +48,11 @@ public class CrabBehaviour : MonoBehaviour
 		stats = GetComponent<EnemyStat>();
 		physicMat = GetComponent<CircleCollider2D>().sharedMaterial;
 		player = GameObject.Find("Player").GetComponent<PlayerStats>();
+	}
+
+	private void Start()
+	{
+		spottingTimer = m_SpottingTimer;
 	}
 
 	private void Update()
@@ -66,7 +73,7 @@ public class CrabBehaviour : MonoBehaviour
 		{
 			playerInAggro = canAttackPlayer = false;
 			isPatrol = true;
-			spottingTimer = 3f;
+			spottingTimer = m_SpottingTimer;
 			abandonTimer = 0f;
 			return;  // If the player's death, simply return.
 		}
@@ -76,7 +83,7 @@ public class CrabBehaviour : MonoBehaviour
 		if (abandonTimer <= 0f)
 		{
 			isPatrol = true;
-			spottingTimer = 3f;
+			spottingTimer = m_SpottingTimer;
 		}
 
 		// If the player is out of the aggro range.
@@ -88,13 +95,13 @@ public class CrabBehaviour : MonoBehaviour
 				abandonTimer -= Time.deltaTime;
 			}
 			else
-				spottingTimer = 3f;
+				spottingTimer = m_SpottingTimer;
 		}
 
 		// If the player is within the aggro range but outside the atk range.
 		else if (playerInAggro && !canAttackPlayer)
 		{
-			abandonTimer = 8f;
+			abandonTimer = m_AbandonTimer;
 			bool isPlayerBehind = player.transform.position.x < centerPoint.position.x;
 
 			if (spottingTimer <= 0f)

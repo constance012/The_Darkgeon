@@ -10,7 +10,7 @@ public class Attack1 : StateMachineBehaviour
 	[Header("Fields.")]
 	[Space]
 
-	bool dmgDealt;
+	bool dmgDealt, soundPlayed;
 	bool isAtk2Triggered;
 	float dmgMultiplier = .8f;
 
@@ -24,6 +24,12 @@ public class Attack1 : StateMachineBehaviour
 	// OnStateUpdate is called on each Update frame between OnStateEnter and OnStateExit callbacks
 	override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
 	{
+		if (!soundPlayed && stateInfo.normalizedTime > .5f)
+		{
+			FindObjectOfType<AudioManager>().Play("Normal Attack 1");
+			soundPlayed = true;
+		}
+
 		if (!dmgDealt && stateInfo.normalizedTime > .7f)
 		{
 			Collider2D[] hitList = Physics2D.OverlapCircleAll(action.atkPoint.position, action.atkRange, action.enemyLayers);
@@ -54,7 +60,7 @@ public class Attack1 : StateMachineBehaviour
 			animator.GetComponent<PlayerMovement>().enabled = true;  // The player can move again as soon as the animation is completed.
 		}
 
-		dmgDealt = isAtk2Triggered = false;
+		dmgDealt = isAtk2Triggered = soundPlayed = false;
 	}
 
 	// OnStateMove is called right after Animator.OnAnimatorMove()
