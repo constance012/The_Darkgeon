@@ -26,7 +26,6 @@ public class PlayerActions : MonoBehaviour
 
 	private void Update()
 	{
-		Debug.Log(isComboDone);
 		// Check if there is enough time for the next combo to begin.
 		if (Input.GetMouseButtonDown(0) && isComboDone && animator.GetBool("Grounded"))
 			Attack();
