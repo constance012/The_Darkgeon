@@ -18,7 +18,8 @@ public class DashAttack : StateMachineBehaviour
 	{
 		action = animator.GetComponent<PlayerActions>();
 		stats = animator.GetComponent<PlayerStats>();
-		FindObjectOfType<AudioManager>().Play("Dash Attack 1");
+		animator.GetComponent<Rigidbody2D>().velocity = Vector3.zero;
+		FindObjectOfType<AudioManager>().Play("Dash Attack " + Random.Range(1, 3));
 	}
 
 	// OnStateUpdate is called on each Update frame between OnStateEnter and OnStateExit callbacks
@@ -45,7 +46,7 @@ public class DashAttack : StateMachineBehaviour
 		action.isComboDone = true;
 		action.lastComboTime = Time.time;
 		animator.SetBool("DashAtk", false);  // Disable the bool.
-		animator.GetComponent<PlayerMovement>().enabled = true;  // The player can move again as soon as the animation is completed.
+		PlayerActions.ceasePlayerInput = false;  // The player can move again as soon as the animation is completed.
 	}
 
 	// OnStateMove is called right after Animator.OnAnimatorMove()

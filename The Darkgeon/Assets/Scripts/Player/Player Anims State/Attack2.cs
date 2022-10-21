@@ -43,7 +43,7 @@ public class Attack2 : StateMachineBehaviour
 		dmgDealt = false;
 		action.isComboDone = true;
 		action.lastComboTime = Time.time;
-		animator.GetComponent<PlayerMovement>().enabled = true;  // The player can move again as soon as the animation is completed.
+		PlayerActions.ceasePlayerInput = false;  // The player can move again as soon as the animation is completed.
 	}
 
 	// OnStateMove is called right after Animator.OnAnimatorMove()

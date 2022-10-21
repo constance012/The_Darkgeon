@@ -52,7 +52,7 @@ public class Attack1 : StateMachineBehaviour
 		{
 			action.isComboDone = true;
 			action.lastComboTime = Time.time;
-			animator.GetComponent<PlayerMovement>().enabled = true;  // The player can move again as soon as the animation is completed.
+			PlayerActions.ceasePlayerInput = false;  // The player can move again as soon as the animation is completed.
 		}
 
 		dmgDealt = isAtk2Triggered = false;

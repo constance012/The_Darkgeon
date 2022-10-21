@@ -17,6 +17,7 @@ public class PlayerActions : MonoBehaviour
 
 	[HideInInspector] public bool isComboDone = true;
 	[HideInInspector] public float lastComboTime;
+	public static bool ceasePlayerInput;
 	float comboDelay = 0.5f;  // The cooldown between each combo is 0.3 second.
 
 	private void Awake()
@@ -27,7 +28,7 @@ public class PlayerActions : MonoBehaviour
 	private void Update()
 	{
 		// Check if there is enough time for the next combo to begin.
-		if (Input.GetMouseButtonDown(0) && isComboDone && animator.GetBool("Grounded"))
+		if (Input.GetMouseButtonDown(0) && animator.GetBool("Grounded") && isComboDone)
 			Attack();
 	}
 	
@@ -36,8 +37,7 @@ public class PlayerActions : MonoBehaviour
 		if (Time.time - lastComboTime >= comboDelay)
 		{
 			// Make sure the player can not move.
-			GetComponent<PlayerMovement>().enabled = false;
-			GetComponent<Rigidbody2D>().velocity = Vector3.zero;
+			ceasePlayerInput = true;
 			animator.SetBool("IsRunning", false);
 			animator.SetFloat("Speed", 0f);
 

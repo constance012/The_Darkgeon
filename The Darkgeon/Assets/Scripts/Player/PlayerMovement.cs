@@ -11,11 +11,8 @@ public class PlayerMovement : MonoBehaviour
 
 	[Header("Fields")]
 	[Space]
-	public float climbSpeed = 0.01f;
-	public static bool useLadder = false;
 
 	float horizontalMove;
-	float verticalMove;
 	float dashAllowTime = 0f;
 
 	bool jump = false;
@@ -33,47 +30,17 @@ public class PlayerMovement : MonoBehaviour
 	// Update is called once per frame
 	private void Update()
 	{
-		if (CharacterController2D.m_IsDashing)
+		if (CharacterController2D.m_IsDashing || PlayerActions.ceasePlayerInput)
+		{
+			horizontalMove = 0f;
 			return;
+		}
 
 		horizontalMove = Input.GetAxisRaw("Horizontal");
-		verticalMove = Input.GetAxisRaw("UseLadder");
 
 		animator.SetBool("IsRunning", Mathf.Abs(horizontalMove) == 1 ? true : false);
 		animator.SetFloat("Speed", Mathf.Abs(horizontalMove));
 		animator.SetFloat("yVelocity", rb2D.velocity.y);
-
-		// Ladder climbing animation.
-		if (useLadder && (!animator.GetBool("Grounded") || verticalMove == 0f))  // Stand still on a ladder.
-		{
-			if (animator.GetCurrentAnimatorStateInfo(0).IsName("LadderUp") ||
-				animator.GetCurrentAnimatorStateInfo(0).IsName("LadderDown"))
-				animator.speed = 0;
-		}
-
-		if (useLadder && verticalMove == 1f)  // Climb up.
-		{
-			rb2D.gravityScale = 0f;
-			playerPos.position += new Vector3(0f, climbSpeed, 0f);
-			animator.SetBool("LadderUp", true);
-			animator.SetBool("LadderDown", false);
-			animator.speed = 1;
-		}
-		else if (useLadder && verticalMove == -1f)  // Climb down.
-		{
-			rb2D.gravityScale = 0f;
-			playerPos.position -= new Vector3(0f, climbSpeed, 0f);
-			animator.SetBool("LadderDown", true);
-			animator.SetBool("LadderUp", false);
-			animator.speed = 1;
-		}
-		else if (!useLadder || animator.GetBool("Grounded"))
-		{
-			rb2D.gravityScale = 2f;
-			animator.SetBool("LadderUp", false);
-			animator.SetBool("LadderDown", false);
-			animator.speed = 1;
-		}
 
 		if (Input.GetButtonDown("Jump"))
 		{

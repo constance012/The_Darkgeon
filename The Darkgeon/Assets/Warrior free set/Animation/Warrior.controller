@@ -752,6 +752,12 @@ AnimatorStateTransition:
   - m_ConditionMode: 4
     m_ConditionEvent: yVelocity
     m_EventTreshold: -0.1
+  - m_ConditionMode: 2
+    m_ConditionEvent: LadderUp
+    m_EventTreshold: 0
+  - m_ConditionMode: 2
+    m_ConditionEvent: LadderDown
+    m_EventTreshold: 0
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: -5364901019161156752}
   m_Solo: 0

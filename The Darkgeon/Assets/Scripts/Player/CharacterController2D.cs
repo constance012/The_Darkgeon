@@ -11,8 +11,8 @@ public class CharacterController2D : MonoBehaviour
 	[SerializeField] private float m_MoveSpeed = 10f;
 	[SerializeField] private float m_Acceleration = 7f;
 	[SerializeField] private float m_Deceleration = 7f;
-	[SerializeField] private float m_VelPower = 0.9f;
-	[SerializeField] private float m_FrictionAmount = 0.2f;
+	[SerializeField] private float m_VelPower = .9f;
+	[SerializeField] private float m_FrictionAmount = .2f;
 	//[Range(0, .3f)][SerializeField] private float m_MovementSmoothing = .05f;   // How much to smooth out the movement
 	[Range(0, 1)][SerializeField] private float m_CrouchSpeed = .36f;           // Amount of maxSpeed applied to crouching movement. 1 = 100%
 
@@ -44,7 +44,7 @@ public class CharacterController2D : MonoBehaviour
 
 	private bool m_FacingRight = true;  // For determining which way the player is currently facing.
 	public static bool m_IsDashing;
-	private float m_DashingTime = 0.2f;
+	private float m_DashingTime = .2f;
 
 	private Rigidbody2D m_Rigidbody2D;
 
@@ -230,5 +230,9 @@ public class CharacterController2D : MonoBehaviour
 		m_TrailRenderer.emitting = false;
 		m_Rigidbody2D.gravityScale = originalGravity;
 		m_IsDashing = false;
+
+		yield return new WaitForSeconds(.2f);
+
+		m_Rigidbody2D.velocity = Vector3.zero;
 	}
 }

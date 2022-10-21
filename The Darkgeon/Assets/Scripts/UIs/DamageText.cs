@@ -15,9 +15,12 @@ public class DamageText : MonoBehaviour
 
 	public float disappearTime = 0f;
 	public float disappearSpeed = 3f;
-	public const float aliveTime = 1f;
 	public float yVelocity = .5f;
+	public float desiredFontSize = .15f;
+	public const float aliveTime = 1f;
 	public Color currentTextColor;
+
+	float smoothVel;
 
 	private void Awake()
 	{
@@ -27,6 +30,7 @@ public class DamageText : MonoBehaviour
 	private void Update()
 	{
 		transform.position += new Vector3(0f, yVelocity * Time.deltaTime);
+		textMesh.fontSize = Mathf.SmoothDamp(textMesh.fontSize, desiredFontSize, ref smoothVel, .05f);
 
 		if (Time.time > disappearTime)
 		{
@@ -55,6 +59,7 @@ public class DamageText : MonoBehaviour
 		textMesh.text = "" + damageAmount;
 		currentTextColor = txtColor;
 		textMesh.color = currentTextColor;
+		textMesh.fontSize = 0f;
 
 		if (disappearTime == 0f)
 			disappearTime = Time.time + aliveTime;
