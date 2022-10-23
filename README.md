@@ -9,5 +9,6 @@ Credits for arts and sprites:
 + Enemy Galore 1 by Admurin - https://assetstore.unity.com/packages/2d/characters/enemy-galore-1-pixel-art-208921
 + Warrior Free Asset by Clembod - https://assetstore.unity.com/packages/2d/characters/warrior-free-asset-195707
 + Medieval pixel art asset Free by Blackspire - https://assetstore.unity.com/packages/2d/environments/medieval-pixel-art-asset-free-130131
++ Pixel Art Platformer - Village Props by Cainos - https://assetstore.unity.com/packages/2d/environments/pixel-art-platformer-village-props-166114
 
 © 2022 CST Games (except those arts and sprites listed above).
