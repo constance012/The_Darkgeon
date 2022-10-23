@@ -6,6 +6,7 @@ public class Flickering : MonoBehaviour
 {
 	// Reference.
 	[SerializeField] private Light2D light2D;
+	public float flickerTime = 1f;
 
 	private void Awake()
 	{
@@ -23,7 +24,7 @@ public class Flickering : MonoBehaviour
 		{
 			light2D.intensity = Random.Range(.9f, 1.3f);
 
-			yield return new WaitForSeconds(.5f);
+			yield return new WaitForSeconds(flickerTime);
 		}
 	}
 

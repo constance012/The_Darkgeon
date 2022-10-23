@@ -6,14 +6,14 @@ public class EnemyStat : MonoBehaviour
 	[Header("References")]
 	[Space]
 	[SerializeField] private EnemyHPBar hpBar;
-	[SerializeField] private Transform dmgTextPos;
+	public Transform dmgTextPos;
+	public Transform worldCanvas;
 
 	[SerializeField] private Transform centerPoint;
 	[SerializeField] private Transform groundCheck;
 	[SerializeField] private CrabBehaviour behaviour;
 	[SerializeField] private LayerMask whatIsGround;
 
-	[SerializeField] private Transform worldCanvas;
 	[SerializeField] private Animator animator;
 	[SerializeField] private Rigidbody2D rb2d;
 
@@ -97,7 +97,7 @@ public class EnemyStat : MonoBehaviour
 			hpBar.SetCurrentHealth(currentHP);
 
 			animator.SetTrigger("Hit");
-			DamageText.Generate(dmgTextPrefab, worldCanvas, dmgTextPos.position, Color.yellow, finalDmg);
+			DamageText.Generate(dmgTextPrefab, worldCanvas, dmgTextPos.position, Color.yellow, finalDmg.ToString());
 
 			StartCoroutine(BeingKnockedBack(knockBackVal));
 		}

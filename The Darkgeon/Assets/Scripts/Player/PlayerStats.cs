@@ -1,6 +1,5 @@
 using System.Collections;
 using UnityEngine;
-using TMPro;
 
 public class PlayerStats : MonoBehaviour
 {
@@ -98,7 +97,7 @@ public class PlayerStats : MonoBehaviour
 			hpBar.SetCurrentHealth(currentHP);
 
 			animator.SetTrigger("TakingDamage");
-			DamageText.Generate(dmgTextPrefab, worldCanvas, dmgTextLoc.position, Color.red, finalDmg);
+			DamageText.Generate(dmgTextPrefab, worldCanvas, dmgTextLoc.position, Color.red, finalDmg.ToString());
 
 			StartCoroutine(BeingKnockedBack(knockBackVal));
 		}

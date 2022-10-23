@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections;
 
 public class CrabBehaviour : MonoBehaviour
 {
@@ -25,12 +26,14 @@ public class CrabBehaviour : MonoBehaviour
 	public float checkRadius;
 	public float attackRange;
 	public float inSightRange;
+	public float abilityDuration;
 
 	[Space]
 	public float m_SpottingTimer = 3f;
 	[SerializeField] float m_AbandonTimer = 8f;
-	[SerializeField] bool alreadyAttacked = false;
 	
+	// Private fields.
+	bool alreadyAttacked, abilityUsed;
 	bool isPatrol = true;
 	bool mustFlip, isTouchingWall;
 	bool facingRight = true;
@@ -39,7 +42,7 @@ public class CrabBehaviour : MonoBehaviour
 	float timeBetweenAtk = 1.5f;
 	float timeBetweenJump = 2f;
 	float abandonTimer;
-	public float spottingTimer;
+	[HideInInspector] public float spottingTimer;
 
 	private void Awake()
 	{
@@ -61,6 +64,13 @@ public class CrabBehaviour : MonoBehaviour
 
 		if (isPatrol)
 			Patrol();
+
+		if(!abilityUsed && ((double)stats.currentHP/stats.maxHealth) <= .5)
+		{
+			StartCoroutine(UseAbility());
+			abilityUsed = true;
+		}
+			
 
 		if (!GameManager.isPlayerDeath)
 		{
@@ -191,6 +201,34 @@ public class CrabBehaviour : MonoBehaviour
 	{
 		alreadyAttacked = false;
 	}
+
+	// Crab's Ability: Hard Shell.
+	private IEnumerator UseAbility()
+	{
+		float baseSpeed = walkSpeed;
+		float baseAtkSpeed = timeBetweenAtk;
+		int baseArmor = stats.armor;
+		float baseAtkDamage = stats.atkDamage;
+		float baseKBRes = stats.knockBackRes;
+
+		animator.SetTrigger("Ability");
+		DamageText.Generate(stats.dmgTextPrefab, stats.worldCanvas, stats.dmgTextPos.position, new Color(.84f, .45f, .15f), "Hard Shell");
+
+		walkSpeed /= 2;
+		timeBetweenAtk *= 2;
+		stats.armor *= 2;
+		stats.atkDamage *= 2;
+		stats.knockBackRes *= 2;
+
+		yield return new WaitForSeconds(abilityDuration);
+
+		walkSpeed = baseSpeed;
+		timeBetweenAtk = baseAtkSpeed;
+		stats.armor = baseArmor;
+		stats.atkDamage = baseAtkDamage;
+		stats.knockBackRes = baseKBRes;
+	}
+
 	#endregion
 
 	private void Flip()
