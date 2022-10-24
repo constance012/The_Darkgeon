@@ -7,7 +7,6 @@ public class CharacterController2D : MonoBehaviour
 	// References.
 	[Header("Movement")]
 	[Space]
-
 	[SerializeField] private float m_MoveSpeed = 10f;
 	[SerializeField] private float m_Acceleration = 7f;
 	[SerializeField] private float m_Deceleration = 7f;
@@ -16,16 +15,16 @@ public class CharacterController2D : MonoBehaviour
 	//[Range(0, .3f)][SerializeField] private float m_MovementSmoothing = .05f;   // How much to smooth out the movement
 	[Range(0, 1)][SerializeField] private float m_CrouchSpeed = .36f;           // Amount of maxSpeed applied to crouching movement. 1 = 100%
 
-	[Header("Jump, Dash")]
+	[Header("Jump, Dash, Slopes Handle")]
 	[Space]
-
 	[SerializeField] private float m_JumpForce = 600f;                          // Amount of force added when the player jumps.
 	[SerializeField] private float m_DashForce = 200f;                          // Amount of force added when the player dashes.
-	[SerializeField] private bool m_AirControl = false;                         // Whether or not a player can steer while jumping;
+	[SerializeField] private bool m_AirControl;                         // Whether or not a player can steer while jumping;
+	[SerializeField] private float m_SlopeCheckDistance;
+	[Range(10f, 89f)][SerializeField] private float m_MaxSlopeAngle;
 
 	[Header("Checks")]
 	[Space]
-
 	[SerializeField] private LayerMask m_WhatIsGround;                          // A mask determining what is ground to the character
 	[SerializeField] private Transform m_GroundCheck;                           // A position marking where to check if the player is grounded.
 	[SerializeField] private Transform m_CeilingCheck;                          // A position marking where to check for ceilings
@@ -33,31 +32,38 @@ public class CharacterController2D : MonoBehaviour
 
 	[Header("References")]
 	[Space]
-
 	[SerializeField] private Animator m_Animator;
 	[SerializeField] private TrailRenderer m_TrailRenderer;
-
-	// Fields.
-	private bool m_Grounded;            // Whether or not the player is grounded.
-	const float k_GroundedRadius = .2f; // Radius of the overlap circle to determine if grounded.
-	const float k_CeilingRadius = .2f; // Radius of the overlap circle to determine if the player can stand up.
-
-	private bool m_FacingRight = true;  // For determining which way the player is currently facing.
-	public static bool m_IsDashing;
-	private float m_DashingTime = .2f;
-
-	private Rigidbody2D m_Rigidbody2D;
+	[SerializeField] private PhysicsMaterial2D slippery;
+	[SerializeField] private PhysicsMaterial2D grippy;
 
 	[Header("Events")]
 	[Space]
-
 	public UnityEvent OnLandEvent;
 
 	[System.Serializable]
 	public class BoolEvent : UnityEvent<bool> { }
 
 	public BoolEvent OnCrouchEvent;
-	private bool m_wasCrouching = false;
+
+	// Fields.
+	private bool m_wasCrouching;
+	private bool m_Grounded;            // Whether or not the player is grounded.
+	private bool m_FacingRight = true;  // For determining which way the player is currently facing.
+	private bool onSlope;
+	private bool canWalkOnSlope;
+	public static bool m_IsDashing;
+
+	const float k_GroundedRadius = .2f; // Radius of the overlap circle to determine if grounded.
+	const float k_CeilingRadius = .2f; // Radius of the overlap circle to determine if the player can stand up.
+	private float m_DashingTime = .2f;
+
+	private float slopeDownAngle;  // Down because the raycast is shooting down.
+	private float slopeDownAngleOld;
+	private float slopeSideAngle;
+
+	private Rigidbody2D m_Rigidbody2D;
+	private Vector2 slopeNormalPerp;  // A vector to store the perpendicular normal vector of the RaycastHit's object.
 
 	private void Awake()
 	{
@@ -75,28 +81,9 @@ public class CharacterController2D : MonoBehaviour
 
 	private void FixedUpdate()
 	{
-		m_Animator.SetBool("Grounded", m_Grounded);
-
-		bool wasGrounded = m_Grounded;
-		m_Grounded = false;
-
-		// The player is grounded if a circlecast to the groundcheck position hits anything designated as ground
-		// This can be done using layers instead but Sample Assets will not overwrite your project settings.
-		Collider2D[] colliders = Physics2D.OverlapCircleAll(m_GroundCheck.position, k_GroundedRadius, m_WhatIsGround);
-
-		for (int i = 0; i < colliders.Length; i++)
-		{
-			if (colliders[i].gameObject != gameObject)
-			{
-				m_Grounded = true;
-
-				// Landing event only triggers when falling to the ground.
-				if (!wasGrounded && m_Rigidbody2D.velocity.y < 0)
-					OnLandEvent.Invoke();
-			}
-		}
+		CheckGround();
+		CheckSlope();
 	}
-
 
 	public void Move(float moveInput, bool crouch, ref bool jump, ref bool dash)
 	{
@@ -105,9 +92,7 @@ public class CharacterController2D : MonoBehaviour
 		{
 			// If the character has a ceiling preventing them from standing up, keep them crouching
 			if (Physics2D.OverlapCircle(m_CeilingCheck.position, k_CeilingRadius, m_WhatIsGround))
-			{
 				crouch = true;
-			}
 		}
 
 		//only control the player if grounded or airControl is turned on
@@ -158,7 +143,7 @@ public class CharacterController2D : MonoBehaviour
 
 			// Calculate the speed at the direction we want to move.
 			float targetSpeed = moveInput * m_MoveSpeed;
-			
+
 			// Calculate the difference between current velocity and desired velocity.
 			float speedDiff = targetSpeed - m_Rigidbody2D.velocity.x;
 
@@ -169,23 +154,30 @@ public class CharacterController2D : MonoBehaviour
 			// And multiplies by the sign to reaplly direction.
 			float moveForce = Mathf.Pow(Mathf.Abs(speedDiff) * accelRate, m_VelPower) * Mathf.Sign(speedDiff);
 
-			// Applies the force to the rigidbody, multiplying by Vector2.right so that it only affects the X axis.
-			m_Rigidbody2D.AddForce(moveForce * Vector2.right);
+			// Applies the force to the rigidbody, respectively when on slope or not.
+			if (onSlope && canWalkOnSlope)
+			{
+				// Negative because the direction of the perpendicular vector.
+				m_Rigidbody2D.AddForce(-moveForce * slopeNormalPerp);
+				//onSlope = false;
+			}
+			else if (!onSlope || !canWalkOnSlope)
+				m_Rigidbody2D.AddForce(moveForce * Vector2.right);
 		}
-		
+
 		// If the player should jump.
-		if (m_Grounded && jump)
+		if (m_Grounded && jump && canWalkOnSlope)
 		{
 			// Add a vertical force to the player.
 			m_Grounded = false;
 			m_Rigidbody2D.AddForce(new Vector2(0f, m_JumpForce));
-			
+
 			jump = false;
 			m_Animator.SetBool("IsJumping", false);
 		}
 
 		// If the player should dash.
-		if (dash)
+		if (dash && !onSlope)
 		{
 			StartCoroutine(Dash());
 			dash = false;
@@ -194,17 +186,115 @@ public class CharacterController2D : MonoBehaviour
 		// Check if we're grounded and are trying to stop (not pressing movement keys).
 		if (m_Grounded && Mathf.Abs(moveInput) < 0.01f)
 		{
-			// Then set the friction force to the minimum value between the m_FrictionAmount and our velocity.
-			float frictionForce = Mathf.Min(Mathf.Abs(m_Rigidbody2D.velocity.x), Mathf.Abs(m_FrictionAmount));
+			if (onSlope && canWalkOnSlope)
+				m_Rigidbody2D.sharedMaterial = grippy;
+			
+			else if (onSlope && !canWalkOnSlope)
+				m_Rigidbody2D.sharedMaterial = slippery;
+			
+			else  // If not on slopes.
+			{
+				// Then set the friction force to the minimum value between the m_FrictionAmount and our velocity.
+				float frictionForce = Mathf.Min(Mathf.Abs(m_Rigidbody2D.velocity.x), Mathf.Abs(m_FrictionAmount));
 
-			// Set it to the movement direction.
-			frictionForce *= Mathf.Sign(m_Rigidbody2D.velocity.x);
+				// Set it to the movement direction.
+				frictionForce *= Mathf.Sign(m_Rigidbody2D.velocity.x);
 
-			// Then applies it against the movement direction.
-			m_Rigidbody2D.AddForce(-frictionForce * Vector2.right, ForceMode2D.Impulse);
+				// Then applies it against the movement direction.
+				m_Rigidbody2D.AddForce(-frictionForce * Vector2.right, ForceMode2D.Impulse);
+			}
 		}
+		else
+			m_Rigidbody2D.sharedMaterial = slippery;
 	}
 
+	#region Check for ground and slopes
+	private void CheckGround()
+	{
+		m_Animator.SetBool("Grounded", m_Grounded);
+
+		bool wasGrounded = m_Grounded;
+		m_Grounded = false;
+
+		// The player is grounded if a circlecast to the groundcheck position hits anything designated as ground
+		// This can be done using layers instead but Sample Assets will not overwrite your project settings.
+		Collider2D[] colliders = Physics2D.OverlapCircleAll(m_GroundCheck.position, k_GroundedRadius, m_WhatIsGround);
+
+		for (int i = 0; i < colliders.Length; i++)
+			if (colliders[i].gameObject != gameObject)
+			{
+				m_Grounded = true;
+
+				// Landing event only triggers when falling to the ground.
+				if (!wasGrounded && m_Rigidbody2D.velocity.y < 0)
+					OnLandEvent.Invoke();
+			}
+	}
+
+	private void CheckSlope()
+	{
+		Vector2 checkPos = m_GroundCheck.position;
+
+		CheckSlopeHorizontal(checkPos);
+		CheckSlopeVertical(checkPos);
+	}
+
+	private void CheckSlopeHorizontal(Vector2 checkPos)
+	{
+		RaycastHit2D frontHit = Physics2D.Raycast(checkPos, transform.right, m_SlopeCheckDistance, m_WhatIsGround);
+		RaycastHit2D backHit = Physics2D.Raycast(checkPos, -transform.right, m_SlopeCheckDistance, m_WhatIsGround);
+		
+		if (frontHit)
+		{
+			onSlope = true;
+			slopeSideAngle = Vector2.Angle(frontHit.normal, Vector2.up);
+		}
+		else if (backHit)
+		{
+			onSlope = true;
+			slopeSideAngle = Vector2.Angle(backHit.normal, Vector2.up);
+		}
+		else
+		{
+			onSlope = false;
+			slopeSideAngle = 0f;
+		}
+
+		Debug.DrawRay(frontHit.point, frontHit.normal, Color.yellow);
+		Debug.DrawRay(backHit.point, backHit.normal, Color.yellow);
+	}
+
+	private void CheckSlopeVertical(Vector2 checkPos)
+	{
+		RaycastHit2D hit = Physics2D.Raycast(checkPos, Vector2.down, m_SlopeCheckDistance, m_WhatIsGround);
+
+		if (hit)
+		{
+			// Get the normalized perpendicular vector to our hit's normal vector.
+			// The resulted vector always rotated 90-deg counter-clockwise.
+			slopeNormalPerp = Vector2.Perpendicular(hit.normal).normalized;
+
+			// The angle between the y-axis and our normal, which happens to be the angle between the x-axis and the slope.
+			slopeDownAngle = Vector2.Angle(hit.normal, Vector2.up);
+
+			if (slopeDownAngle != slopeDownAngleOld)
+				onSlope = true;
+
+			slopeDownAngleOld = slopeDownAngle;
+
+			Debug.Log("On Slope: " + onSlope);
+			Debug.DrawRay(hit.point, slopeNormalPerp, Color.red);
+			Debug.DrawRay(hit.point, hit.normal, Color.yellow);
+		}
+
+		if (slopeSideAngle >= 90f)
+			onSlope = canWalkOnSlope = false;
+		else if (slopeDownAngle > m_MaxSlopeAngle || slopeSideAngle > m_MaxSlopeAngle)
+			canWalkOnSlope = false;
+		else
+			canWalkOnSlope = true;
+	}
+	#endregion
 
 	private void Flip()
 	{
