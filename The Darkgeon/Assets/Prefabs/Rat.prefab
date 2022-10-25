@@ -15,9 +15,9 @@ GameObject:
   - component: {fileID: 4766418364067015443}
   - component: {fileID: 870357710861358018}
   - component: {fileID: 8463974544176908619}
-  - component: {fileID: 5818629754301121029}
+  - component: {fileID: 7209353689076910821}
   m_Layer: 8
-  m_Name: Crab
+  m_Name: Rat
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -86,7 +86,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 6197056623017412966, guid: 25e3c3e2a286eee48bba19e8d339e062, type: 3}
+  m_Sprite: {fileID: -3286189400204805870, guid: bacb39275657a5c41b462455d80cd045, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -131,9 +131,9 @@ CircleCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: -0.04, y: -0.06}
+  m_Offset: {x: 0.01472656, y: -0.09344399}
   serializedVersion: 2
-  m_Radius: 0.110494085
+  m_Radius: 0.06792895
 --- !u!61 &4766418364067015443
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -147,7 +147,7 @@ BoxCollider2D:
   m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0.1, y: -0.016198926}
+  m_Offset: {x: 0.11672211, y: -0.05268331}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
@@ -158,7 +158,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.045067728, y: 0.09437685}
+  m_Size: {x: 0.04202748, y: 0.10349791}
   m_EdgeRadius: 0
 --- !u!95 &870357710861358018
 Animator:
@@ -170,7 +170,7 @@ Animator:
   m_GameObject: {fileID: 870357710861358019}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: baa67eee7fa8b9c4ba2715714aefac30, type: 2}
+  m_Controller: {fileID: 9100000, guid: b2af98cfbf96ce841963b37ec392cf64, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -205,17 +205,17 @@ MonoBehaviour:
   player: {fileID: 0}
   dmgTextPrefab: {fileID: 1002002582291494483, guid: 010fe3952a6d9ba4a81d8d56d99c52a3, type: 3}
   behaviour: {fileID: 0}
-  name: Crab
-  maxHealth: 150
+  name: Rat
+  maxHealth: 75
   currentHP: 0
-  armor: 10
-  atkDamage: 15
+  armor: 3
+  atkDamage: 7
   dmgRecFactor: 0.5
   disposeTime: 5
-  knockBackRes: 0.4
+  knockBackRes: 0.1
   knockBackVal: 1.5
   grounded: 0
---- !u!114 &5818629754301121029
+--- !u!114 &7209353689076910821
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -224,7 +224,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 870357710861358019}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1d23d9579a127bc47afb3e6af5dbf5b8, type: 3}
+  m_Script: {fileID: 11500000, guid: bf755acabe4639441ab90efe4e73820f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   rb2d: {fileID: 0}
@@ -241,13 +241,13 @@ MonoBehaviour:
     m_Bits: 64
   player: {fileID: 0}
   stats: {fileID: 0}
-  walkSpeed: 30
+  walkSpeed: 80
   checkRadius: 0.1
-  attackRange: 0.35
-  inSightRange: 3
+  attackRange: 0.3
+  inSightRange: 2
   abilityDuration: 10
-  m_SpottingTimer: 3
-  m_AbandonTimer: 8
+  m_SpottingTimer: 1
+  m_AbandonTimer: 10
   spottingTimer: 0
 --- !u!1 &1906861128848420086
 GameObject:
@@ -335,7 +335,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3162074475146735210}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.03, y: -0.067, z: 0}
+  m_LocalPosition: {x: 0.003, y: -0.131, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -366,7 +366,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4302293597239561557}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.085, y: -0.065, z: 0}
+  m_LocalPosition: {x: 0.156, y: -0.092, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -397,7 +397,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4841751524032114424}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.044, y: -0.161, z: 0}
+  m_LocalPosition: {x: 0, y: -0.161, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -428,7 +428,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8950487505517261924}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.169, z: 0}
+  m_LocalPosition: {x: 0, y: 0.046, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

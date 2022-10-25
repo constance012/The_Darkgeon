@@ -1,21 +1,20 @@
 using UnityEngine;
-using System.Collections;
 
-public class CrabBehaviour : MonoBehaviour
+public class RatBehaviour : MonoBehaviour
 {
 	[Header("Reference")]
 	[Space]
 	[SerializeField] private Rigidbody2D rb2d;
 	[SerializeField] private Animator animator;
 	[SerializeField] private PhysicsMaterial2D physicMat;
-	
+
 	[Space]
 	[SerializeField] private Transform edgeCheck;
 	[SerializeField] private Transform centerPoint;
 	public Transform attackPoint;
 	public LayerMask whatIsPlayer;
 	[SerializeField] private LayerMask whatIsGround;
-	
+
 	[Space]
 	[SerializeField] private PlayerStats player;
 	[SerializeField] private EnemyStat stats;
@@ -31,7 +30,7 @@ public class CrabBehaviour : MonoBehaviour
 	[Space]
 	public float m_SpottingTimer = 3f;
 	[SerializeField] float m_AbandonTimer = 8f;
-	
+
 	// Private fields.
 	bool alreadyAttacked, abilityUsed;
 	bool isPatrol = true;
@@ -65,12 +64,11 @@ public class CrabBehaviour : MonoBehaviour
 		if (isPatrol)
 			Patrol();
 
-		if(!abilityUsed && ((double)stats.currentHP/stats.maxHealth) <= .5)
+		if (!abilityUsed && ((double)stats.currentHP / stats.maxHealth) <= .5)
 		{
-			StartCoroutine(UseAbility());
+			Debug.Log("Ability used");
 			abilityUsed = true;
 		}
-			
 
 		if (!GameManager.isPlayerDeath)
 		{
@@ -144,7 +142,7 @@ public class CrabBehaviour : MonoBehaviour
 			isTouchingWall = true;
 	}
 
-	#region Crab's behaviours
+	#region Rat's behaviours
 	private void Patrol()
 	{
 		if (mustFlip || isTouchingWall)
@@ -153,7 +151,7 @@ public class CrabBehaviour : MonoBehaviour
 			isTouchingWall = false;
 		}
 
-		rb2d.velocity = facingRight ? new Vector2(walkSpeed * Time.fixedDeltaTime, rb2d.velocity.y) 
+		rb2d.velocity = facingRight ? new Vector2(walkSpeed * Time.fixedDeltaTime, rb2d.velocity.y)
 									: new Vector2(-walkSpeed * Time.fixedDeltaTime, rb2d.velocity.y);
 	}
 
@@ -163,7 +161,7 @@ public class CrabBehaviour : MonoBehaviour
 		timeBetweenJump -= Time.deltaTime;
 
 		// Chase is faster than patrol.
-		float direction = Mathf.Sign(player.transform.position.x - centerPoint.position.x) * 1.5f;  
+		float direction = Mathf.Sign(player.transform.position.x - centerPoint.position.x) * 1.5f;
 
 		rb2d.velocity = new Vector2(walkSpeed * direction * Time.fixedDeltaTime, rb2d.velocity.y);
 
@@ -189,8 +187,7 @@ public class CrabBehaviour : MonoBehaviour
 
 		if (!alreadyAttacked)
 		{
-			int randomNum = Random.Range(1, 4);
-			animator.SetTrigger("Atk" + randomNum);
+			animator.SetTrigger("Atk");
 
 			alreadyAttacked = true;
 			Invoke(nameof(ResetAttack), timeBetweenAtk);  // Can attack every 2 seconds.
@@ -200,33 +197,6 @@ public class CrabBehaviour : MonoBehaviour
 	private void ResetAttack()
 	{
 		alreadyAttacked = false;
-	}
-
-	// Crab's Ability: Hard Shell.
-	private IEnumerator UseAbility()
-	{
-		float baseSpeed = walkSpeed;
-		float baseAtkSpeed = timeBetweenAtk;
-		int baseArmor = stats.armor;
-		float baseAtkDamage = stats.atkDamage;
-		float baseKBRes = stats.knockBackRes;
-
-		animator.SetTrigger("Ability");
-		DamageText.Generate(stats.dmgTextPrefab, stats.worldCanvas, stats.dmgTextPos.position, new Color(.84f, .45f, .15f), "Hard Shell");
-
-		walkSpeed /= 2;
-		timeBetweenAtk *= 2;
-		stats.armor *= 2;
-		stats.atkDamage *= 2;
-		stats.knockBackRes *= 2;
-
-		yield return new WaitForSeconds(abilityDuration);
-
-		walkSpeed = baseSpeed;
-		timeBetweenAtk = baseAtkSpeed;
-		stats.armor = baseArmor;
-		stats.atkDamage = baseAtkDamage;
-		stats.knockBackRes = baseKBRes;
 	}
 	#endregion
 
