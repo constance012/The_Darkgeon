@@ -28,11 +28,11 @@ public class EnemyStat : MonoBehaviour
 	public int currentHP;
 	public int armor = 0;
 	public float atkDamage = 15f;
+	public float knockBackVal = 2f;
 	public float dmgRecFactor = .5f;
 	public float disposeTime = 5f;
 	[Range(0f, 1f)] public float knockBackRes = .2f;
 
-	[HideInInspector] public float knockBackVal = 2f;
 	[HideInInspector] public bool grounded;
 
 	bool isDeath;

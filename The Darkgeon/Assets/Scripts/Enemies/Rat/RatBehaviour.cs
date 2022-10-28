@@ -29,16 +29,16 @@ public class RatBehaviour : MonoBehaviour
 
 	[Space]
 	public float m_SpottingTimer = 3f;
-	[SerializeField] float m_AbandonTimer = 8f;
+	[SerializeField] private float m_AbandonTimer = 8f;
+	[SerializeField] private float timeBetweenAtk = 1.5f;
 
 	// Private fields.
+	public bool facingRight = true;
 	bool alreadyAttacked, abilityUsed;
 	bool isPatrol = true;
 	bool mustFlip, isTouchingWall;
-	bool facingRight = true;
 	bool playerInAggro, canAttackPlayer;
 
-	float timeBetweenAtk = 1.5f;
 	float timeBetweenJump = 2f;
 	float abandonTimer;
 	[HideInInspector] public float spottingTimer;
@@ -75,7 +75,9 @@ public class RatBehaviour : MonoBehaviour
 			// Check if the player is in what range of the enemy.
 			float distToPlayer = Vector2.Distance(centerPoint.position, player.transform.position);
 			playerInAggro = distToPlayer <= inSightRange;
-			canAttackPlayer = Physics2D.OverlapCircle(centerPoint.position, attackRange, whatIsPlayer);
+			
+			// Bigger range for hopping towards player when attacks.
+			canAttackPlayer = Physics2D.OverlapCircle(centerPoint.position, attackRange + .3f, whatIsPlayer);
 		}
 		else
 		{
@@ -182,11 +184,11 @@ public class RatBehaviour : MonoBehaviour
 
 	private void Attack()
 	{
-		// Make sure the enemy doesn't move.
-		rb2d.velocity = Vector3.zero;
-
 		if (!alreadyAttacked)
 		{
+			// Make sure the enemy doesn't move.
+			rb2d.velocity = Vector3.zero;
+
 			animator.SetTrigger("Atk");
 
 			alreadyAttacked = true;

@@ -282,7 +282,7 @@ public class CharacterController2D : MonoBehaviour
 
 			slopeDownAngleOld = slopeDownAngle;
 
-			Debug.Log("On Slope: " + onSlope);
+			//Debug.Log("On Slope: " + onSlope);
 			Debug.DrawRay(hit.point, slopeNormalPerp, Color.red);
 			Debug.DrawRay(hit.point, hit.normal, Color.yellow);
 		}
