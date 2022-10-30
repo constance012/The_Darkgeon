@@ -34,7 +34,7 @@ public class RatBehaviour : MonoBehaviour
 
 	// Private fields.
 	public bool facingRight = true;
-	bool alreadyAttacked, abilityUsed;
+	bool alreadyAttacked;
 	bool isPatrol = true;
 	bool mustFlip, isTouchingWall;
 	bool playerInAggro, canAttackPlayer;
@@ -63,12 +63,6 @@ public class RatBehaviour : MonoBehaviour
 
 		if (isPatrol)
 			Patrol();
-
-		if (!abilityUsed && ((double)stats.currentHP / stats.maxHealth) <= .5)
-		{
-			Debug.Log("Ability used");
-			abilityUsed = true;
-		}
 
 		if (!GameManager.isPlayerDeath)
 		{
