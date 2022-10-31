@@ -18,6 +18,7 @@ public class GameManager : MonoBehaviour
 	[SerializeField] private TextMeshProUGUI killSourceText;
 
 	[SerializeField] private GameObject deathPanel;
+	[SerializeField] private GameObject pauseMenu;
 
 	[Header("Fields")]
 	[Space]
@@ -26,6 +27,9 @@ public class GameManager : MonoBehaviour
 	private string[] deathMessages = new string[] { "YOUR SOUL HAS BEEN CONSUMED", "YOUR HEAD WAS DETACHED", 
 													"YOUR FACE WAS RIPPED OFF", "YOUR BODY WAS EVISCERATED", 
 													"THEY SPLIT YOU IN TWO", "YOUR FATE WAS SHATTERED" };
+
+	public static bool isPause;
+
 	private void Awake()
 	{
 		playerAnim = GameObject.FindWithTag("Player").GetComponent<Animator>();
@@ -37,15 +41,21 @@ public class GameManager : MonoBehaviour
 		deathPanel = GameObject.Find("Death Message");
 		deathMessageText = deathPanel.transform.Find("Message").GetComponent<TextMeshProUGUI>();
 		killSourceText = deathPanel.transform.Find("Kill Source").GetComponent<TextMeshProUGUI>();
+
+		pauseMenu = GameObject.Find("Pause Menu");
 	}
 
 	private void Start()
 	{
 		deathPanel.SetActive(false);
+		pauseMenu.SetActive(false);
 	}
 
 	private void Update()
 	{
+		if (Input.GetKeyDown(KeyCode.Escape) && !isPlayerDeath)
+			Invoke(!isPause ? nameof(Pause) : nameof(Unpause), 0f);
+		
 		if (playerStats.currentHP <= 0 && !isPlayerDeath)
 		{
 			SetDeathMessage(playerStats.killSource);
@@ -84,7 +94,7 @@ public class GameManager : MonoBehaviour
 	}
 	#endregion
 
-	#region Death Screen Setup
+	#region UI Controls
 	private void SetDeathMessage(KillSources sources)
 	{
 		int randomIndex = Random.Range(0, deathMessages.Length);
@@ -120,6 +130,20 @@ public class GameManager : MonoBehaviour
 				killSourceText.text = "Kill By: Unknown";
 				break;
 		}
+	}
+
+	private void Pause()
+	{
+		pauseMenu.SetActive(true);
+		Time.timeScale = 0f;
+		isPause = true;
+	}
+
+	public void Unpause()
+	{
+		pauseMenu.SetActive(false);
+		Time.timeScale = 1f;
+		isPause = false;
 	}
 	#endregion
 }

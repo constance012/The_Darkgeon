@@ -7,6 +7,7 @@ public class RatNormalAtk : StateMachineBehaviour
 	[SerializeField] private RatBehaviour behaviour;
 	[SerializeField] private EnemyStat stats;
 	[SerializeField] private Rigidbody2D rb2d;
+	[SerializeField] private Debuff bleeding;
 
 	bool dmgDealt, hopped;
 	float dmgMultiplier = .9f;
@@ -35,7 +36,10 @@ public class RatNormalAtk : StateMachineBehaviour
 				Collider2D hitObj = Physics2D.OverlapCircle(behaviour.attackPoint.position, behaviour.attackRange, behaviour.whatIsPlayer);
 
 				if (hitObj != null)
+				{
 					hitObj.GetComponent<PlayerStats>().TakeDamage(stats.atkDamage * dmgMultiplier, stats.knockBackVal, animator.transform, KillSources.Rat);
+					FindObjectOfType<DebuffManager>().ApplyDebuff(bleeding);
+				}
 
 				dmgDealt = true;
 			}

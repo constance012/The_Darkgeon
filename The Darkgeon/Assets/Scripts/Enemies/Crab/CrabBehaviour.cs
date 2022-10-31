@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Collections;
 
-public class CrabBehaviour : MonoBehaviour
+public class CrabBehaviour : MonoBehaviour, IEnemyBehaviour
 {
 	[Header("Reference")]
 	[Space]
@@ -145,7 +145,7 @@ public class CrabBehaviour : MonoBehaviour
 	}
 
 	#region Crab's behaviours
-	private void Patrol()
+	public void Patrol()
 	{
 		if (mustFlip || isTouchingWall)
 		{
@@ -157,7 +157,7 @@ public class CrabBehaviour : MonoBehaviour
 									: new Vector2(-walkSpeed * Time.fixedDeltaTime, rb2d.velocity.y);
 	}
 
-	private void ChasePlayer()
+	public void ChasePlayer()
 	{
 		isPatrol = false;
 		timeBetweenJump -= Time.deltaTime;
@@ -182,7 +182,7 @@ public class CrabBehaviour : MonoBehaviour
 			Flip();
 	}
 
-	private void Attack()
+	public void Attack()
 	{
 		// Make sure the enemy doesn't move.
 		rb2d.velocity = Vector3.zero;
@@ -197,7 +197,7 @@ public class CrabBehaviour : MonoBehaviour
 		}
 	}
 
-	private void ResetAttack()
+	public void ResetAttack()
 	{
 		alreadyAttacked = false;
 	}
@@ -212,7 +212,7 @@ public class CrabBehaviour : MonoBehaviour
 		float baseKBRes = stats.knockBackRes;
 
 		animator.SetTrigger("Ability");
-		DamageText.Generate(stats.dmgTextPrefab, stats.worldCanvas, stats.dmgTextPos.position, new Color(.84f, .45f, .15f), "Hard Shell");
+		DamageText.Generate(stats.dmgTextPrefab, stats.dmgTextPos.position, new Color(.84f, .45f, .15f), "Hard Shell");
 
 		walkSpeed /= 2;
 		timeBetweenAtk *= 2;
@@ -230,7 +230,7 @@ public class CrabBehaviour : MonoBehaviour
 	}
 	#endregion
 
-	private void Flip()
+	public void Flip()
 	{
 		isPatrol = false;
 

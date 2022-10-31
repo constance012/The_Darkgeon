@@ -137,6 +137,7 @@ MonoBehaviour:
   behaviour: {fileID: 0}
   stats: {fileID: 0}
   rb2d: {fileID: 0}
+  bleeding: {fileID: 11400000, guid: 75078578676d2874a94ad00863c083c6, type: 2}
 --- !u!1101 &-2962997421987507957
 AnimatorStateTransition:
   m_ObjectHideFlags: 1
@@ -204,7 +205,7 @@ AnimatorStateMachine:
     m_Position: {x: 190, y: 230, z: 0}
   - serializedVersion: 1
     m_State: {fileID: -714106324535960226}
-    m_Position: {x: 610, y: 90, z: 0}
+    m_Position: {x: 620, y: 90, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 5361552127604220194}
     m_Position: {x: 450, y: -20, z: 0}

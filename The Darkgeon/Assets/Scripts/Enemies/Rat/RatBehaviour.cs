@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class RatBehaviour : MonoBehaviour
+public class RatBehaviour : MonoBehaviour, IEnemyBehaviour
 {
 	[Header("Reference")]
 	[Space]
@@ -139,7 +139,7 @@ public class RatBehaviour : MonoBehaviour
 	}
 
 	#region Rat's behaviours
-	private void Patrol()
+	public void Patrol()
 	{
 		if (mustFlip || isTouchingWall)
 		{
@@ -151,7 +151,7 @@ public class RatBehaviour : MonoBehaviour
 									: new Vector2(-walkSpeed * Time.fixedDeltaTime, rb2d.velocity.y);
 	}
 
-	private void ChasePlayer()
+	public void ChasePlayer()
 	{
 		isPatrol = false;
 		timeBetweenJump -= Time.deltaTime;
@@ -176,7 +176,7 @@ public class RatBehaviour : MonoBehaviour
 			Flip();
 	}
 
-	private void Attack()
+	public void Attack()
 	{
 		if (!alreadyAttacked)
 		{
@@ -190,13 +190,13 @@ public class RatBehaviour : MonoBehaviour
 		}
 	}
 
-	private void ResetAttack()
+	public void ResetAttack()
 	{
 		alreadyAttacked = false;
 	}
 	#endregion
 
-	private void Flip()
+	public void Flip()
 	{
 		isPatrol = false;
 

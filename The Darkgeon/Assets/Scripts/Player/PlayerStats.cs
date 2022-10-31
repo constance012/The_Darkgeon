@@ -15,7 +15,6 @@ public class PlayerStats : MonoBehaviour
 
 	[Header("UI Elements")]
 	[Space]
-	[SerializeField] private Transform worldCanvas;
 	public HealthBar hpBar;
 
 	// Fields.
@@ -49,7 +48,6 @@ public class PlayerStats : MonoBehaviour
 		playerMat = GetComponent<SpriteRenderer>().material;
 		hpBar = GameObject.Find("Health Bar").GetComponent<HealthBar>();
 		dmgTextLoc = transform.Find("Damage Text Loc");
-		worldCanvas = GameObject.Find("World Canvas").transform;
 
 		animator = GetComponent<Animator>();
 		rb2d = GetComponent<Rigidbody2D>();
@@ -97,7 +95,7 @@ public class PlayerStats : MonoBehaviour
 			hpBar.SetCurrentHealth(currentHP);
 
 			animator.SetTrigger("TakingDamage");
-			DamageText.Generate(dmgTextPrefab, worldCanvas, dmgTextLoc.position, Color.red, finalDmg.ToString());
+			DamageText.Generate(dmgTextPrefab, dmgTextLoc.position, finalDmg.ToString());
 
 			StartCoroutine(BeingKnockedBack(knockBackVal));
 		}

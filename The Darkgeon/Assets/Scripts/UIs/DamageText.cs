@@ -43,6 +43,33 @@ public class DamageText : MonoBehaviour
 
 	}
 
+	#region Generate Method Overloads
+	public static DamageText Generate(GameObject prefab, Vector3 pos, string textContent)
+	{
+		Transform canvas = GameObject.Find("World Canvas").transform;
+
+		GameObject dmgTextObj = Instantiate(prefab, pos, Quaternion.identity);
+		dmgTextObj.transform.SetParent(canvas, true);
+
+		DamageText dmgText = dmgTextObj.GetComponent<DamageText>();
+
+		dmgText.Setup(Color.red, textContent);
+		return dmgText;
+	}
+
+	public static DamageText Generate(GameObject prefab, Vector3 pos, Color txtColor, string textContent)
+	{
+		Transform canvas = GameObject.Find("World Canvas").transform;
+
+		GameObject dmgTextObj = Instantiate(prefab, pos, Quaternion.identity);
+		dmgTextObj.transform.SetParent(canvas, true);
+
+		DamageText dmgText = dmgTextObj.GetComponent<DamageText>();
+
+		dmgText.Setup(txtColor, textContent);
+		return dmgText;
+	}
+
 	public static DamageText Generate(GameObject prefab, Transform canvas, Vector3 pos, Color txtColor, string textContent)
 	{
 		GameObject dmgTextObj = Instantiate(prefab, pos, Quaternion.identity);
@@ -53,6 +80,7 @@ public class DamageText : MonoBehaviour
 		dmgText.Setup(txtColor, textContent);
 		return dmgText;
 	}
+	#endregion
 
 	private void Setup(Color txtColor, string textContent)
 	{

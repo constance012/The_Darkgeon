@@ -48,7 +48,7 @@ public class PlayerMovement : MonoBehaviour
 			animator.SetBool("IsJumping", true);
 		}
 
-		if (Input.GetButtonDown("Dash") && Time.time > dashAllowTime)
+		if (Input.GetButtonDown("Dash") && Time.time > dashAllowTime && !controller.onSlope)
 		{
 			dash = true;
 			dashAllowTime = Time.time + 1f;

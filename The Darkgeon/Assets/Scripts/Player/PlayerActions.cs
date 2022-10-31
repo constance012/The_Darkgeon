@@ -34,7 +34,7 @@ public class PlayerActions : MonoBehaviour
 	
 	private void Attack()
 	{
-		if (Time.time - lastComboTime >= comboDelay)
+		if (Time.time - lastComboTime >= comboDelay && !GameManager.isPause)
 		{
 			// Make sure the player can not move.
 			ceasePlayerInput = true;

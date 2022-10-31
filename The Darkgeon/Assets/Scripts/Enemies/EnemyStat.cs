@@ -98,7 +98,7 @@ public class EnemyStat : MonoBehaviour
 			hpBar.SetCurrentHealth(currentHP);
 
 			animator.SetTrigger("Hit");
-			DamageText.Generate(dmgTextPrefab, worldCanvas, dmgTextPos.position, Color.yellow, finalDmg.ToString());
+			DamageText.Generate(dmgTextPrefab, dmgTextPos.position, Color.yellow, finalDmg.ToString());
 
 			StartCoroutine(BeingKnockedBack(knockBackVal));
 		}
