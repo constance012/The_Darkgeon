@@ -34,11 +34,14 @@ public class RatNormalAtk : StateMachineBehaviour
 
 			if (stateInfo.normalizedTime > .6f) {
 				Collider2D hitObj = Physics2D.OverlapCircle(behaviour.attackPoint.position, behaviour.attackRange, behaviour.whatIsPlayer);
+				int inflictChange = Random.Range(1, 6);
 
 				if (hitObj != null)
 				{
 					hitObj.GetComponent<PlayerStats>().TakeDamage(stats.atkDamage * dmgMultiplier, stats.knockBackVal, animator.transform, KillSources.Rat);
-					FindObjectOfType<DebuffManager>().ApplyDebuff(bleeding);
+					
+					//if (inflictChange == 1)
+						FindObjectOfType<DebuffManager>().ApplyDebuff(Instantiate(bleeding));
 				}
 
 				dmgDealt = true;

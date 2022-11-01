@@ -7,7 +7,7 @@ public class PlayerStats : MonoBehaviour
 	[Header("References")]
 	[Space]
 	[SerializeField] private Material playerMat;
-	[SerializeField] private Transform dmgTextLoc;
+	public Transform dmgTextLoc;
 	public GameObject dmgTextPrefab;
 
 	[SerializeField] private Animator animator;
@@ -36,6 +36,7 @@ public class PlayerStats : MonoBehaviour
 	[Space]	
 	public KillSources killSource = KillSources.Unknown;
 	public Vector3 respawnPos;
+	public bool canRegen;
 	[HideInInspector] public Transform attacker = null;  // Position of the attacker.
 
 	int regenRate = 1;
@@ -105,7 +106,7 @@ public class PlayerStats : MonoBehaviour
 	{
 		regenDelay -= Time.deltaTime;
 
-		if (currentHP > 0 && regenDelay < 0f)
+		if (currentHP > 0 && regenDelay < 0f && canRegen)
 		{
 			currentHP += regenRate;
 			currentHP = Mathf.Clamp(currentHP, 0, maxHP);
