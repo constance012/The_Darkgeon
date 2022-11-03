@@ -5,15 +5,22 @@ public class Debuff : ScriptableObject
 {
 	public new string name;
 	public string description;
+	public float baseDuration;
 	public float duration;
+	public bool isActive;
 
 	public Sprite icon;
 
-	[Header("Health Related Debuffs")]
+	[Header("Health Related Debuff")]
 	[Space]
 	public int healthLossRate;
 	public float healthLossDelay;
 	public bool canRegenerate;
+
+	[Header("Movement Related Debuff")]
+	[Space]
+	[Range(.2f, .9f)] public float speedReduceFactor;
+	public bool isSpeedReduced;
 
 	//public void Bleeding(DebuffManager manager, PlayerStats player, Animator playerAnim)
 	//{

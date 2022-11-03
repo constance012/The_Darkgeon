@@ -8,6 +8,7 @@ public class RatNormalAtk : StateMachineBehaviour
 	[SerializeField] private EnemyStat stats;
 	[SerializeField] private Rigidbody2D rb2d;
 	[SerializeField] private Debuff bleeding;
+	[SerializeField] private Debuff slowness;
 
 	bool dmgDealt, hopped;
 	float dmgMultiplier = .9f;
@@ -42,6 +43,7 @@ public class RatNormalAtk : StateMachineBehaviour
 					
 					//if (inflictChange == 1)
 						FindObjectOfType<DebuffManager>().ApplyDebuff(Instantiate(bleeding));
+						FindObjectOfType<DebuffManager>().ApplyDebuff(Instantiate(slowness));
 				}
 
 				dmgDealt = true;

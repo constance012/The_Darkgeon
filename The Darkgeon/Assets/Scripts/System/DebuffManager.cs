@@ -9,6 +9,7 @@ public class DebuffManager : MonoBehaviour
 	[Header("References")]
 	[Space]
 	[SerializeField] private PlayerStats player;
+	[SerializeField] private CharacterController2D controller;
 	[SerializeField] private Animator playerAnim;
 	[SerializeField] private Transform debuffPanel;
 	[SerializeField] private GameObject debuffPrefab;
@@ -18,35 +19,53 @@ public class DebuffManager : MonoBehaviour
 
 	[Header("Fields")]
 	[Space]
-	[HideInInspector] public float healthLossDelayOrigin;
 	private int navIndex = 0;
 
 	private void Awake()
 	{
 		player = GameObject.FindWithTag("Player").GetComponent<PlayerStats>();
+		controller = player.GetComponent<CharacterController2D>();
 		playerAnim = player.GetComponent<Animator>();
 		debuffPanel = GameObject.Find("Debuff Panel").transform;
 	}
 
 	private void Start()
 	{
-		
+		StartCoroutine(HandleDebuffs());
 	}
 
 	private void Update()
 	{
-		if (debuffList.Count == 0)
-			return;
-
-		navIndex++;
-
-		if (navIndex >= debuffList.Count)
-			navIndex = 0;
-
-		currentDebuff = debuffList[navIndex];
-
-		Invoke(debuffList[navIndex].name, 0f);
+		if (currentDebuff != null)
+			currentDebuff.duration -= Time.deltaTime;
 	}
+
+	//private void Update()
+	//{
+	//	if (debuffList.Count == 0)
+	//		return;
+
+	//	navIndex++;
+
+	//	if (navIndex >= debuffList.Count)
+	//		navIndex = 0;
+
+	//	currentDebuff = debuffList[navIndex];
+
+	//	// If the current debuff is active, then just decrease its duration overtime.
+	//	if (currentDebuff.isActive)
+	//	{
+	//		currentDebuff.duration -= Time.deltaTime;
+	//		return;
+	//	}
+
+	//	// Only start the coroutine once.
+	//	else if (currentDebuff.duration == currentDebuff.baseDuration)
+	//	{
+	//		StartCoroutine(currentDebuff.name);
+	//		currentDebuff.isActive = true;
+	//	}
+	//}
 
 	public void ApplyDebuff(Debuff debuff)
 	{
@@ -54,7 +73,6 @@ public class DebuffManager : MonoBehaviour
 		if (debuffPanel.Find(debuff.name) == null)
 		{
 			debuffList.Add(debuff);
-			healthLossDelayOrigin = debuff.healthLossDelay;
 
 			GameObject debuffUIObj = Instantiate(debuffPrefab, debuffPanel);
 
@@ -77,6 +95,7 @@ public class DebuffManager : MonoBehaviour
 
 	public void ClearAllDebuff()
 	{
+		StopAllCoroutines();
 		debuffList.Clear();
 		foreach (Transform debuff in debuffPanel)
 			Destroy(debuff.gameObject);
@@ -84,29 +103,77 @@ public class DebuffManager : MonoBehaviour
 
 	private void Bleeding()
 	{
-		currentDebuff.duration -= Time.deltaTime;
-		currentDebuff.healthLossDelay -= Time.deltaTime;
-
 		if (currentDebuff.duration <= 0f)
 		{
+			currentDebuff.isActive = false;
 			RemoveDebuff(currentDebuff);
 			player.canRegen = true;
 			return;
 		}
 
 		player.canRegen = currentDebuff.canRegenerate;
+
+		// Update the UI.
 		debuffPanel.Find(currentDebuff.name).Find("Duration").GetComponent<TextMeshProUGUI>().text = Mathf.Round(currentDebuff.duration).ToString();
 
 		// If the player moves, she'll lose health.
-		if (playerAnim.GetFloat("Speed") > 0.01f && player.currentHP > 0 && currentDebuff.healthLossDelay < 0f)
+		if (playerAnim.GetFloat("Speed") > 0.01f && player.currentHP > 0)
 		{
-			Debug.Log(healthLossDelayOrigin);
 			player.currentHP -= currentDebuff.healthLossRate;
 			player.currentHP = Mathf.Clamp(player.currentHP, 0, player.maxHP);
 			player.hpBar.SetCurrentHealth(player.currentHP);
 			DamageText.Generate(player.dmgTextPrefab, player.dmgTextLoc.position, currentDebuff.healthLossRate.ToString());
+		}
 
-			currentDebuff.healthLossDelay = healthLossDelayOrigin;
+		currentDebuff.isActive = false;
+	}
+
+	private void Slowness()
+	{
+		if (!currentDebuff.isSpeedReduced)
+		{
+			controller.m_MoveSpeed *= currentDebuff.speedReduceFactor;
+			currentDebuff.isSpeedReduced = true;
+		}
+
+		if (currentDebuff.duration <= 0f)
+		{
+			currentDebuff.isActive = false;
+			RemoveDebuff(currentDebuff);
+			controller.m_MoveSpeed *= 1 / currentDebuff.speedReduceFactor;
+			return;
+		}
+
+		debuffPanel.Find(currentDebuff.name).Find("Duration").GetComponent<TextMeshProUGUI>().text = Mathf.Round(currentDebuff.duration).ToString();
+
+		currentDebuff.isActive = false;
+	}
+
+	private IEnumerator HandleDebuffs()
+	{
+		while (true)
+		{
+			yield return new WaitForSeconds(1f);
+
+			if (debuffList.Count == 0)
+				yield return new WaitUntil(() => debuffList.Count != 0);
+
+			navIndex++;
+
+			if (navIndex >= debuffList.Count)
+				navIndex = 0;
+
+			currentDebuff = debuffList[navIndex];
+
+			// Only start the coroutine once.
+			if (!currentDebuff.isActive)
+			{
+				currentDebuff.isActive = true;
+				Invoke(currentDebuff.name, 0f);
+			}
+
+			yield return new WaitUntil(() => currentDebuff.isActive == false);
+			Debug.Log(currentDebuff.name + " executed.");
 		}
 	}
 }

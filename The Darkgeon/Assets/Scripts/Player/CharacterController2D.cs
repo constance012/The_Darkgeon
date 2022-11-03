@@ -7,7 +7,7 @@ public class CharacterController2D : MonoBehaviour
 	// References.
 	[Header("Movement")]
 	[Space]
-	[SerializeField] private float m_MoveSpeed = 10f;
+	public float m_MoveSpeed = 10f;
 	[SerializeField] private float m_Acceleration = 7f;
 	[SerializeField] private float m_Deceleration = 7f;
 	[SerializeField] private float m_VelPower = .9f;

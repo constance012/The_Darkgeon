@@ -138,6 +138,7 @@ MonoBehaviour:
   stats: {fileID: 0}
   rb2d: {fileID: 0}
   bleeding: {fileID: 11400000, guid: 75078578676d2874a94ad00863c083c6, type: 2}
+  slowness: {fileID: 11400000, guid: 936afb31ce3c82e4f857da90a529df44, type: 2}
 --- !u!1101 &-2962997421987507957
 AnimatorStateTransition:
   m_ObjectHideFlags: 1
