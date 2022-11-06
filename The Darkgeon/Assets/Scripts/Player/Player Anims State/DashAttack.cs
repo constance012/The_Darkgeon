@@ -43,9 +43,10 @@ public class DashAttack : StateMachineBehaviour
 	override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
 	{
 		dmgDealt = false;
+		animator.SetBool("IsAttacking", false);
+		animator.SetBool("DashAtk", false);  // Disable the bool.
 		action.isComboDone = true;
 		action.lastComboTime = Time.time;
-		animator.SetBool("DashAtk", false);  // Disable the bool.
 		PlayerActions.ceasePlayerInput = false;  // The player can move again as soon as the animation is completed.
 	}
 

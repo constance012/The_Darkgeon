@@ -14,11 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   name: Slowness
   description: Your movement speed has reduced.
-  baseDuration: 7
   duration: 7
-  isActive: 0
   icon: {fileID: 0}
   healthLossRate: 0
-  healthLossDelay: 0
-  canRegenerate: 0
-  speedReduceFactor: 0.5
+  baseHpLossDelay: 0
+  hpLossDelay: 0
+  allowRegenerate: 0
+  speedReduceFactor: 0.4
+  isSpeedReduced: 0

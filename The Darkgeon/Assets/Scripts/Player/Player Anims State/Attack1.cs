@@ -50,6 +50,7 @@ public class Attack1 : StateMachineBehaviour
 		// If the 2nd attack is not get triggered.
 		if (!isAtk2Triggered)
 		{
+			animator.SetBool("IsAttacking", false);
 			action.isComboDone = true;
 			action.lastComboTime = Time.time;
 			PlayerActions.ceasePlayerInput = false;  // The player can move again as soon as the animation is completed.

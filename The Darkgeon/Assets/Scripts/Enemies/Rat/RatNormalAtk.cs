@@ -40,10 +40,12 @@ public class RatNormalAtk : StateMachineBehaviour
 				if (hitObj != null)
 				{
 					hitObj.GetComponent<PlayerStats>().TakeDamage(stats.atkDamage * dmgMultiplier, stats.knockBackVal, animator.transform, KillSources.Rat);
-					
-					//if (inflictChange == 1)
+
+					if (inflictChange == 1)
+					{
 						FindObjectOfType<DebuffManager>().ApplyDebuff(Instantiate(bleeding));
 						FindObjectOfType<DebuffManager>().ApplyDebuff(Instantiate(slowness));
+					}
 				}
 
 				dmgDealt = true;

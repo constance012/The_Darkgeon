@@ -83,13 +83,15 @@ public class GameManager : MonoBehaviour
 
 		transform.position = playerStats.respawnPos;
 		isPlayerDeath = false;
+		DebuffManager.deathByDebuff = false;
 	}
 
 	private void Die()
 	{
 		playerAnim.SetBool("IsDeath", true);
-		deathPanel.SetActive(true);
 
+		deathPanel.SetActive(true);
+		
 		moveScript.enabled = actionsScript.enabled = false;
 	}
 	#endregion

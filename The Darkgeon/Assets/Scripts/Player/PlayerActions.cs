@@ -38,6 +38,7 @@ public class PlayerActions : MonoBehaviour
 		{
 			// Make sure the player can not move.
 			ceasePlayerInput = true;
+			animator.SetBool("IsAttacking", true);
 			animator.SetBool("IsRunning", false);
 			animator.SetFloat("Speed", 0f);
 

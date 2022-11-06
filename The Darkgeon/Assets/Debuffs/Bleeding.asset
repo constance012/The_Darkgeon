@@ -16,8 +16,10 @@ MonoBehaviour:
   description: Lose health overtime when moving, can't regenerate out of combat.
   baseDuration: 10
   duration: 10
-  isActive: 0
   icon: {fileID: 21300000, guid: 11d2145e6966f584da33ca2e784eb37b, type: 3}
   healthLossRate: 1
-  healthLossDelay: 0.5
+  baseHpLossDelay: 0.5
+  hpLossDelay: 0.5
   canRegenerate: 0
+  speedReduceFactor: 0
+  isSpeedReduced: 0

@@ -41,6 +41,7 @@ public class Attack2 : StateMachineBehaviour
 	override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
 	{
 		dmgDealt = false;
+		animator.SetBool("IsAttacking", false);
 		action.isComboDone = true;
 		action.lastComboTime = Time.time;
 		PlayerActions.ceasePlayerInput = false;  // The player can move again as soon as the animation is completed.
