@@ -34,13 +34,14 @@ public class PlayerStats : MonoBehaviour
 	[HideInInspector] public float knockBackVal = 1.5f;
 	
 	[Space]	
-	public KillSources killSource = KillSources.Unknown;
-	public Vector3 respawnPos;
-	public bool canRegen;
+	[HideInInspector] public KillSources killSource = KillSources.Unknown;
+	[HideInInspector] public Vector3 respawnPos;
 	[HideInInspector] public Transform attacker = null;  // Position of the attacker.
 
-	int regenRate = 1;
-	float regenDelay = 2f;
+	// Regenerate health stats.
+	private int regenRate = 1;
+	private float regenDelay = 2f;
+	[HideInInspector] public bool canRegen = true;
 
 	//private LocalKeyword isOutlineOn;
 

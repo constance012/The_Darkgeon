@@ -17,7 +17,7 @@ public class PlayerActions : MonoBehaviour
 
 	[HideInInspector] public bool isComboDone = true;
 	[HideInInspector] public float lastComboTime;
-	public static bool ceasePlayerInput;
+	public static bool ceasePlayerInput { get; set; }
 	float comboDelay = 0.5f;  // The cooldown between each combo is 0.3 second.
 
 	private void Awake()

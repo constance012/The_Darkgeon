@@ -20,15 +20,13 @@ public class GameManager : MonoBehaviour
 	[SerializeField] private GameObject deathPanel;
 	[SerializeField] private GameObject pauseMenu;
 
-	[Header("Fields")]
-	[Space]
-	public static bool isPlayerDeath = false;
+	public static bool isPlayerDeath { get; private set; } = false;
+	public static bool isPause { get; private set; }
 
 	private string[] deathMessages = new string[] { "YOUR SOUL HAS BEEN CONSUMED", "YOUR HEAD WAS DETACHED", 
 													"YOUR FACE WAS RIPPED OFF", "YOUR BODY WAS EVISCERATED", 
 													"THEY SPLIT YOU IN TWO", "YOUR FATE WAS SHATTERED" };
 
-	public static bool isPause;
 
 	private void Awake()
 	{
@@ -81,7 +79,7 @@ public class GameManager : MonoBehaviour
 		playerAnim.SetTrigger("Respawn");
 		playerAnim.SetBool("IsDeath", false);
 
-		transform.position = playerStats.respawnPos;
+		playerStats.transform.position = playerStats.respawnPos;
 		isPlayerDeath = false;
 		DebuffManager.deathByDebuff = false;
 	}

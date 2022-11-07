@@ -52,7 +52,7 @@ public class CharacterController2D : MonoBehaviour
 	private bool m_FacingRight = true;  // For determining which way the player is currently facing.
 	private bool canWalkOnSlope;
 	public bool onSlope;
-	public static bool m_IsDashing;
+	public static bool m_IsDashing { get; private set; }
 
 	const float k_GroundedRadius = .2f; // Radius of the overlap circle to determine if grounded.
 	const float k_CeilingRadius = .2f; // Radius of the overlap circle to determine if the player can stand up.

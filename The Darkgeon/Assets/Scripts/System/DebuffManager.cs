@@ -19,7 +19,7 @@ public class DebuffManager : MonoBehaviour
 	public delegate void DebuffHandler();
 	DebuffHandler handler = null;
 
-	public static bool deathByDebuff;
+	public static bool deathByDebuff { get; set; }
 
 	private void Awake()
 	{

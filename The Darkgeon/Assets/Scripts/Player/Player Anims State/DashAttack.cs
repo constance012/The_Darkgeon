@@ -6,18 +6,21 @@ public class DashAttack : StateMachineBehaviour
 	[Space]
 	[SerializeField] private PlayerActions action;
 	[SerializeField] private PlayerStats stats;
+	[SerializeField] private ParticleSystem dustFx;
 
 	[Header("Fields.")]
 	[Space]
 
-	bool dmgDealt;
-	float dmgMultiplier = 1.1f;
+	private bool dmgDealt;
+
+	private float dmgMultiplier = 1.1f;
 
 	// OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
 	override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
 	{
 		action = animator.GetComponent<PlayerActions>();
 		stats = animator.GetComponent<PlayerStats>();
+		dustFx = animator.transform.Find("Sword Dust Effect").GetComponent<ParticleSystem>();
 		animator.GetComponent<Rigidbody2D>().velocity = Vector3.zero;
 		FindObjectOfType<AudioManager>().Play("Dash Attack " + Random.Range(1, 3));
 	}
@@ -37,6 +40,9 @@ public class DashAttack : StateMachineBehaviour
 
 			dmgDealt = true;
 		}
+
+		if (stateInfo.normalizedTime > .4f && !dustFx.isPlaying)
+			dustFx.Play();
 	}
 
 	// OnStateExit is called when a transition ends and the state machine finishes evaluating this state
