@@ -1,5 +1,8 @@
 using UnityEngine;
 
+/// <summary>
+/// Manages the player's vertical movement, like climbing a ladder.
+/// </summary>
 public class LadderClimbing : MonoBehaviour
 {
 	[Header("Reference")]

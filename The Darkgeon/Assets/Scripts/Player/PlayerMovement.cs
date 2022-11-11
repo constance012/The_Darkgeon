@@ -1,5 +1,8 @@
 using UnityEngine;
 
+/// <summary>
+/// Manages the player's movement inputs and events.
+/// </summary>
 public class PlayerMovement : MonoBehaviour
 {
 	[Header("References")]

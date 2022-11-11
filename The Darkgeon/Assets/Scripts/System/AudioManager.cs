@@ -1,6 +1,10 @@
 using System;
 using UnityEngine;
 
+/// <summary>
+/// A class that manages all the game's sounds and music.
+/// The instance of this class remains through different game sessions.
+/// </summary>
 public class AudioManager : MonoBehaviour
 {
 	// Make a Singleton.

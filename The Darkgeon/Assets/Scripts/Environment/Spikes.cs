@@ -1,5 +1,8 @@
 using UnityEngine;
 
+/// <summary>
+/// This class is responsible for spike collision affects.
+/// </summary>
 public class Spikes : MonoBehaviour
 {
 	// References.

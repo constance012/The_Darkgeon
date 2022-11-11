@@ -1165,7 +1165,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 9f51c2dc574d4a443833a21daeebb0b3, type: 2}
+  - {fileID: 2100000, guid: ce87aea4f37f2014d86ed3f82978adbe, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -1682,7 +1682,7 @@ MonoBehaviour:
     ModeOverride: 0
     LensShift: {x: 0, y: 0}
     GateFit: 2
-    m_SensorSize: {x: 1.2328548, y: 1}
+    m_SensorSize: {x: 1.2360446, y: 1}
   m_Transitions:
     m_BlendHint: 0
     m_InheritPosition: 0
@@ -6967,7 +6967,7 @@ MonoBehaviour:
     m_Bits: 1
   m_VolumeTrigger: {fileID: 0}
   m_VolumeFrameworkUpdateModeOption: 2
-  m_RenderPostProcessing: 0
+  m_RenderPostProcessing: 1
   m_Antialiasing: 0
   m_AntialiasingQuality: 2
   m_StopNaN: 0
@@ -25508,6 +25508,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 870357710861358078, guid: 0892b40476ec93e4292b47a06ba4f2b1, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: ce87aea4f37f2014d86ed3f82978adbe, type: 2}
     - target: {fileID: 902604610525632227, guid: 0892b40476ec93e4292b47a06ba4f2b1, type: 3}
       propertyPath: m_AnchorMax.x
       value: 0

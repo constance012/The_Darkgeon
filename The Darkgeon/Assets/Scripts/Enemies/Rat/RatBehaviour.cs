@@ -1,5 +1,8 @@
 using UnityEngine;
 
+/// <summary>
+/// Manages the Rat's behaviours and targeting AI.
+/// </summary>
 public class RatBehaviour : MonoBehaviour, IEnemyBehaviour
 {
 	[Header("Reference")]

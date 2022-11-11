@@ -65,7 +65,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
+  - {fileID: 2100000, guid: ce87aea4f37f2014d86ed3f82978adbe, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -86,7 +86,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 10
-  m_Sprite: {fileID: -3286189400204805870, guid: bacb39275657a5c41b462455d80cd045, type: 3}
+  m_Sprite: {fileID: -662263362012534553, guid: 644b5e0fc2845cd42961d91d1151e072, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -202,6 +202,7 @@ MonoBehaviour:
     m_Bits: 64
   animator: {fileID: 0}
   rb2d: {fileID: 0}
+  enemyMat: {fileID: 0}
   player: {fileID: 0}
   dmgTextPrefab: {fileID: 1002002582291494483, guid: 010fe3952a6d9ba4a81d8d56d99c52a3, type: 3}
   behaviour: {fileID: 0}
@@ -212,7 +213,7 @@ MonoBehaviour:
   atkDamage: 10
   knockBackVal: 1.5
   dmgRecFactor: 0.5
-  disposeTime: 5
+  timeToDissolve: 5
   knockBackRes: 0.1
   grounded: 0
 --- !u!114 &7209353689076910821

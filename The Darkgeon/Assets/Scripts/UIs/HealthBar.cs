@@ -2,6 +2,9 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
+/// <summary>
+/// Represents the player's health bar.
+/// </summary>
 public class HealthBar : MonoBehaviour
 {
 	// References.

@@ -1,6 +1,9 @@
 using UnityEngine;
 using System.Collections;
 
+/// <summary>
+/// Manages the Crab's behaviours and targeting AI.
+/// </summary>
 public class CrabBehaviour : MonoBehaviour, IEnemyBehaviour
 {
 	[Header("Reference")]

@@ -3,6 +3,9 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
+/// <summary>
+/// A manager for the debuff system.
+/// </summary>
 public class DebuffManager : MonoBehaviour
 {
 	[Header("References")]

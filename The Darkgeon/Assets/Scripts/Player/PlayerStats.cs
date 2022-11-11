@@ -1,6 +1,9 @@
 using System.Collections;
 using UnityEngine;
 
+/// <summary>
+/// Manages all the player's stats.
+/// </summary>
 public class PlayerStats : MonoBehaviour
 {
 	// References.
@@ -136,6 +139,9 @@ public class PlayerStats : MonoBehaviour
 	}
 }
 
+/// <summary>
+/// An enum represents the player's kill sources, displays as an message when the player died.
+/// </summary>
 public enum KillSources
 {
 	Unknown,

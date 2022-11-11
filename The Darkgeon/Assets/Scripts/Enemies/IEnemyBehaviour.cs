@@ -1,3 +1,6 @@
+/// <summary>
+/// An interface contains virtual enemy's behaviour.
+/// </summary>
 public interface IEnemyBehaviour
 {
     public void Patrol();

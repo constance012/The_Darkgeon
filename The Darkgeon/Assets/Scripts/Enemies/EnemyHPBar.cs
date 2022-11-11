@@ -2,6 +2,9 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
+/// <summary>
+/// Represents an health bar following the enemy around.
+/// </summary>
 public class EnemyHPBar : MonoBehaviour
 {
 	// References.

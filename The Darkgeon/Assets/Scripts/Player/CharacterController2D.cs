@@ -2,6 +2,9 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.Events;
 
+/// <summary>
+/// A character controller for 2D game's characters, originally written by Brackeys.
+/// </summary>
 public class CharacterController2D : MonoBehaviour
 {
 	// References.

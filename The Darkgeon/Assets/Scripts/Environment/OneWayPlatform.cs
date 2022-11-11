@@ -1,5 +1,8 @@
 using UnityEngine;
 
+/// <summary>
+/// This class is responsible for one-way-platform physics.
+/// </summary>
 public class OneWayPlatform : MonoBehaviour
 {
 	// Reference.

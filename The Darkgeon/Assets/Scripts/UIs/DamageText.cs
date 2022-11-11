@@ -1,6 +1,9 @@
 using UnityEngine;
 using TMPro;
 
+/// <summary>
+/// A class to generates an UI popup text.
+/// </summary>
 public class DamageText : MonoBehaviour
 {
 	// References.

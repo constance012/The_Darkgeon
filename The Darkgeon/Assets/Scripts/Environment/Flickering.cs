@@ -2,6 +2,9 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
 
+/// <summary>
+/// The torches' flickering effect.
+/// </summary>
 public class Flickering : MonoBehaviour
 {
 	// Reference.

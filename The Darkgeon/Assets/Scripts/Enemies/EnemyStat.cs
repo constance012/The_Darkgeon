@@ -1,6 +1,9 @@
 using System.Collections;
 using UnityEngine;
 
+/// <summary>
+/// Manages all the enemy's stats.
+/// </summary>
 public class EnemyStat : MonoBehaviour
 {
 	[Header("References")]
@@ -15,6 +18,7 @@ public class EnemyStat : MonoBehaviour
 
 	[SerializeField] private Animator animator;
 	[SerializeField] private Rigidbody2D rb2d;
+	[SerializeField] private Material enemyMat;
 
 	[SerializeField] private PlayerStats player;
 
@@ -30,12 +34,13 @@ public class EnemyStat : MonoBehaviour
 	public float atkDamage = 15f;
 	public float knockBackVal = 2f;
 	public float dmgRecFactor = .5f;
-	public float disposeTime = 5f;
+	public float timeToDissolve = 5f;
 	[Range(0f, 1f)] public float knockBackRes = .2f;
 
 	[HideInInspector] public bool grounded;
 
-	bool isDeath;
+	private bool isDeath, isDissolving;
+	private float fade = 1f;
 
 	private void Awake()
 	{
@@ -45,6 +50,7 @@ public class EnemyStat : MonoBehaviour
 		worldCanvas = GameObject.Find("World Canvas").transform;
 		animator = GetComponent<Animator>();
 		rb2d = GetComponent<Rigidbody2D>();
+		enemyMat = GetComponent<SpriteRenderer>().material;
 		centerPoint = transform.Find("Center Point");
 		groundCheck = transform.Find("Ground Check");
 		GetBehaviour();
@@ -65,7 +71,8 @@ public class EnemyStat : MonoBehaviour
 		if (currentHP <= 0 && !isDeath)
 		{
 			StopAllCoroutines();
-			StartCoroutine(Die());
+			Die();
+			//StartCoroutine(Dissolve());
 			isDeath = true;
 		}
 
@@ -87,7 +94,8 @@ public class EnemyStat : MonoBehaviour
 	public void TakeDamage(float dmg, float knockBackVal = 0f)
 	{
 		ResetSpottingTimer();
-
+		//enemyMat.SetFloat("_Thickness", .0013f);
+		enemyMat.SetFloat("_Fade", .5f);
 		if (currentHP > 0)
 		{
 			int finalDmg = Mathf.RoundToInt(dmg - armor * dmgRecFactor);
@@ -104,17 +112,33 @@ public class EnemyStat : MonoBehaviour
 		}
 	}
 
-	private IEnumerator Die()
+	private void Die()
 	{
 		animator.SetBool("IsDeath", true);
 
 		behaviour.enabled = false;
 		hpBar.gameObject.SetActive(false);
+		
+		isDissolving = true;
+		Debug.Log("Dissolve: " + isDissolving);
+	}
 
-		yield return new WaitForSeconds(disposeTime);
+	private IEnumerator Dissolve()
+	{
+		while (isDissolving)
+		{
+			yield return new WaitForSeconds(.5f);
+			fade -= .05f;
+			enemyMat.SetFloat("_Fade", fade);
 
-		Destroy(hpBar.gameObject);
-		Destroy(gameObject);
+			if (fade <= 0f)
+			{
+				fade = 0f;
+				isDissolving = false;
+				Destroy(hpBar.gameObject);
+				Destroy(gameObject);
+			}
+		}
 	}
 
 	private IEnumerator BeingKnockedBack(float knockBackValue)

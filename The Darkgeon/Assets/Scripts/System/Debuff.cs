@@ -1,5 +1,8 @@
 using UnityEngine;
 
+/// <summary>
+/// A scriptable object to create a debuff.
+/// </summary>
 [CreateAssetMenu(fileName = "New Debuff")]
 public class Debuff : ScriptableObject
 {

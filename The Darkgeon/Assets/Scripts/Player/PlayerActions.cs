@@ -1,5 +1,8 @@
 using UnityEngine;
 
+/// <summary>
+/// Manages the player's actions, like attacks or abilities.
+/// </summary>
 public class PlayerActions : MonoBehaviour
 {
 	// References.

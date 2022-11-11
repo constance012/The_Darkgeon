@@ -1,5 +1,9 @@
 using UnityEngine;
 
+/// <summary>
+/// A custom class contains informations about an Audio Clip.
+/// Used by the Audio Manager.
+/// </summary>
 [System.Serializable]
 public class Sound
 {

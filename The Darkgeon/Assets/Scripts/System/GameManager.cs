@@ -1,6 +1,9 @@
 using UnityEngine;
 using TMPro;
 
+/// <summary>
+/// A core manager for the current game's session.
+/// </summary>
 public class GameManager : MonoBehaviour
 {
 	[Header("Player References")]
@@ -89,7 +92,7 @@ public class GameManager : MonoBehaviour
 		playerAnim.SetBool("IsDeath", true);
 
 		deathPanel.SetActive(true);
-		
+
 		moveScript.enabled = actionsScript.enabled = false;
 	}
 	#endregion
