@@ -52,7 +52,7 @@ public class DashAttack : StateMachineBehaviour
 		animator.SetBool("IsAttacking", false);
 		animator.SetBool("DashAtk", false);  // Disable the bool.
 		action.isComboDone = true;
-		action.lastComboTime = Time.time;
+		action.comboDelay += Time.time;
 		PlayerActions.ceasePlayerInput = false;  // The player can move again as soon as the animation is completed.
 	}
 

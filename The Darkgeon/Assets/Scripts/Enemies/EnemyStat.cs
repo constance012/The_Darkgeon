@@ -19,6 +19,7 @@ public class EnemyStat : MonoBehaviour
 	[SerializeField] private Animator animator;
 	[SerializeField] private Rigidbody2D rb2d;
 	[SerializeField] private Material enemyMat;
+	[SerializeField] private ParticleSystem deathFx;
 
 	[SerializeField] private PlayerStats player;
 
@@ -51,6 +52,7 @@ public class EnemyStat : MonoBehaviour
 		animator = GetComponent<Animator>();
 		rb2d = GetComponent<Rigidbody2D>();
 		enemyMat = GetComponent<SpriteRenderer>().material;
+		deathFx = transform.Find("Soul Release Effect").GetComponent<ParticleSystem>();
 		centerPoint = transform.Find("Center Point");
 		groundCheck = transform.Find("Ground Check");
 		GetBehaviour();
@@ -72,8 +74,15 @@ public class EnemyStat : MonoBehaviour
 		{
 			StopAllCoroutines();
 			Die();
-			//StartCoroutine(Dissolve());
+			Dissolve();
 			isDeath = true;
+		}
+
+		if (isDissolving && Time.time > timeToDissolve)
+		{
+			if (fade < .7f && !deathFx.isPlaying)
+				deathFx.Play();
+			Dissolve();
 		}
 
 		if (isDeath && grounded)
@@ -94,8 +103,7 @@ public class EnemyStat : MonoBehaviour
 	public void TakeDamage(float dmg, float knockBackVal = 0f)
 	{
 		ResetSpottingTimer();
-		//enemyMat.SetFloat("_Thickness", .0013f);
-		enemyMat.SetFloat("_Fade", .5f);
+
 		if (currentHP > 0)
 		{
 			int finalDmg = Mathf.RoundToInt(dmg - armor * dmgRecFactor);
@@ -120,24 +128,20 @@ public class EnemyStat : MonoBehaviour
 		hpBar.gameObject.SetActive(false);
 		
 		isDissolving = true;
-		Debug.Log("Dissolve: " + isDissolving);
+		timeToDissolve += Time.time;
 	}
 
-	private IEnumerator Dissolve()
+	private void Dissolve()
 	{
-		while (isDissolving)
-		{
-			yield return new WaitForSeconds(.5f);
-			fade -= .05f;
-			enemyMat.SetFloat("_Fade", fade);
+		fade -= Time.deltaTime;
+		enemyMat.SetFloat("_Fade", fade);
 
-			if (fade <= 0f)
-			{
-				fade = 0f;
-				isDissolving = false;
-				Destroy(hpBar.gameObject);
-				Destroy(gameObject);
-			}
+		if (fade <= 0f)
+		{
+			fade = 0f;
+			isDissolving = false;
+			Destroy(hpBar.gameObject);
+			Destroy(gameObject);
 		}
 	}
 

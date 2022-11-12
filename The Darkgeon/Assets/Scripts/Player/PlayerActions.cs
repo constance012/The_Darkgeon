@@ -17,11 +17,12 @@ public class PlayerActions : MonoBehaviour
 	public Transform atkPoint;
 	public LayerMask enemyLayers;
 	public float atkRange = .5f;
+	public float m_ComboDelay = 0.5f;  // The cooldown between each combo is 0.3 second.
 
 	[HideInInspector] public bool isComboDone = true;
-	[HideInInspector] public float lastComboTime;
+	[HideInInspector] public float comboDelay;
+
 	public static bool ceasePlayerInput { get; set; }
-	float comboDelay = 0.5f;  // The cooldown between each combo is 0.3 second.
 
 	private void Awake()
 	{
@@ -37,8 +38,10 @@ public class PlayerActions : MonoBehaviour
 	
 	private void Attack()
 	{
-		if (Time.time - lastComboTime >= comboDelay && !GameManager.isPause)
+		if (Time.time > comboDelay && !GameManager.isPause)
 		{
+			comboDelay = m_ComboDelay;
+
 			// Make sure the player can not move.
 			ceasePlayerInput = true;
 			animator.SetBool("IsAttacking", true);

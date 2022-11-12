@@ -13,11 +13,7 @@
             "m_Id": "c9985d9c621140baa455ca76589f8a44"
         }
     ],
-    "m_Keywords": [
-        {
-            "m_Id": "d2795267b74d4012a1404a9274273b08"
-        }
-    ],
+    "m_Keywords": [],
     "m_Dropdowns": [],
     "m_CategoryData": [
         {
@@ -4635,30 +4631,6 @@
 }
 
 {
-    "m_SGVersion": 1,
-    "m_Type": "UnityEditor.ShaderGraph.ShaderKeyword",
-    "m_ObjectId": "d2795267b74d4012a1404a9274273b08",
-    "m_Guid": {
-        "m_GuidSerialized": "a5e52168-b314-49c1-a54e-7ebf3f7d32ff"
-    },
-    "m_Name": "IS_OUTLINE_ON",
-    "m_DefaultRefNameVersion": 1,
-    "m_RefNameGeneratedByDisplayName": "IS_OUTLINE_ON",
-    "m_DefaultReferenceName": "_IS_OUTLINE_ON",
-    "m_OverrideReferenceName": "",
-    "m_GeneratePropertyBlock": true,
-    "m_UseCustomSlotLabel": false,
-    "m_CustomSlotLabel": "",
-    "m_KeywordType": 0,
-    "m_KeywordDefinition": 0,
-    "m_KeywordScope": 0,
-    "m_KeywordStages": 2,
-    "m_Entries": [],
-    "m_Value": 0,
-    "m_IsEditable": true
-}
-
-{
     "m_SGVersion": 0,
     "m_Type": "UnityEditor.ShaderGraph.Vector1MaterialSlot",
     "m_ObjectId": "d577cf97a71646799621c18bf322c3b1",
@@ -5105,9 +5077,6 @@
         },
         {
             "m_Id": "c9985d9c621140baa455ca76589f8a44"
-        },
-        {
-            "m_Id": "d2795267b74d4012a1404a9274273b08"
         }
     ]
 }

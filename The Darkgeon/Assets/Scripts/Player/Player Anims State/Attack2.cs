@@ -43,7 +43,7 @@ public class Attack2 : StateMachineBehaviour
 		dmgDealt = false;
 		animator.SetBool("IsAttacking", false);
 		action.isComboDone = true;
-		action.lastComboTime = Time.time;
+		action.comboDelay += Time.time;
 		PlayerActions.ceasePlayerInput = false;  // The player can move again as soon as the animation is completed.
 	}
 
