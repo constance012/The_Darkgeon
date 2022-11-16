@@ -40,7 +40,7 @@ public class EnemyStat : MonoBehaviour
 
 	[HideInInspector] public bool grounded;
 
-	private bool isDeath, isDissolving;
+	private bool isDeath, canDissolve;
 	private float fade = 1f;
 
 	private void Awake()
@@ -53,6 +53,7 @@ public class EnemyStat : MonoBehaviour
 		rb2d = GetComponent<Rigidbody2D>();
 		enemyMat = GetComponent<SpriteRenderer>().material;
 		deathFx = transform.Find("Soul Release Effect").GetComponent<ParticleSystem>();
+		
 		centerPoint = transform.Find("Center Point");
 		groundCheck = transform.Find("Ground Check");
 		GetBehaviour();
@@ -78,12 +79,8 @@ public class EnemyStat : MonoBehaviour
 			isDeath = true;
 		}
 
-		if (isDissolving && Time.time > timeToDissolve)
-		{
-			if (fade < .7f && !deathFx.isPlaying)
-				deathFx.Play();
+		if (canDissolve && Time.time > timeToDissolve)
 			Dissolve();
-		}
 
 		if (isDeath && grounded)
 			rb2d.simulated = false;
@@ -127,7 +124,7 @@ public class EnemyStat : MonoBehaviour
 		behaviour.enabled = false;
 		hpBar.gameObject.SetActive(false);
 		
-		isDissolving = true;
+		canDissolve = true;
 		timeToDissolve += Time.time;
 	}
 
@@ -136,10 +133,13 @@ public class EnemyStat : MonoBehaviour
 		fade -= Time.deltaTime;
 		enemyMat.SetFloat("_Fade", fade);
 
-		if (fade <= 0f)
+		if (fade < .4f && fade > 0f && !deathFx.isPlaying)
+			deathFx.Play();
+
+		if (fade <= 0f && !deathFx.isPlaying)
 		{
 			fade = 0f;
-			isDissolving = false;
+			canDissolve = false;
 			Destroy(hpBar.gameObject);
 			Destroy(gameObject);
 		}
