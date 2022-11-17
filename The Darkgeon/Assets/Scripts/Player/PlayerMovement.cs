@@ -1,3 +1,4 @@
+using JetBrains.Annotations;
 using UnityEngine;
 
 /// <summary>
@@ -10,7 +11,6 @@ public class PlayerMovement : MonoBehaviour
 	[SerializeField] private CharacterController2D controller;
 	[SerializeField] private Animator animator;
 	[SerializeField] private Rigidbody2D rb2D;
-	[SerializeField] private RectTransform playerPos;
 
 	[Header("Fields")]
 	[Space]
@@ -27,7 +27,6 @@ public class PlayerMovement : MonoBehaviour
 		controller = GetComponent<CharacterController2D>();
 		animator = GetComponent<Animator>();
 		rb2D = GetComponent<Rigidbody2D>();
-		playerPos = GetComponent<RectTransform>();
 	}
 
 	// Update is called once per frame

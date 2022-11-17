@@ -136,7 +136,7 @@ public class EnemyStat : MonoBehaviour
 		if (fade < .4f && fade > 0f && !deathFx.isPlaying)
 			deathFx.Play();
 
-		if (fade <= 0f && !deathFx.isPlaying)
+		if (fade <= 0f && deathFx.isStopped)
 		{
 			fade = 0f;
 			canDissolve = false;

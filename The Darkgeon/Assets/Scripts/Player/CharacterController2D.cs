@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Net.Sockets;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -39,6 +40,7 @@ public class CharacterController2D : MonoBehaviour
 	[SerializeField] private TrailRenderer m_TrailRenderer;
 	[SerializeField] private PhysicsMaterial2D slippery;
 	[SerializeField] private PhysicsMaterial2D grippy;
+	[SerializeField] private ParticleSystem runningDust;
 
 	[Header("Events")]
 	[Space]
@@ -74,6 +76,7 @@ public class CharacterController2D : MonoBehaviour
 		m_Animator = GetComponent<Animator>();
 		m_TrailRenderer = GetComponent<TrailRenderer>();
 		m_CrouchDisableCollider = GetComponent<BoxCollider2D>();
+		runningDust = transform.Find("Running Dust").GetComponent<ParticleSystem>();
 
 		if (OnLandEvent == null)
 			OnLandEvent = new UnityEvent();
@@ -101,7 +104,6 @@ public class CharacterController2D : MonoBehaviour
 		//only control the player if grounded or airControl is turned on
 		if (m_Grounded || m_AirControl)
 		{
-
 			// If crouching
 			if (crouch)
 			{
@@ -133,16 +135,11 @@ public class CharacterController2D : MonoBehaviour
 
 			// If the input is moving the player right and the player is facing left...
 			if (moveInput > 0 && !m_FacingRight)
-			{
-				// ... flip the player.
 				Flip();
-			}
+
 			// Otherwise if the input is moving the player left and the player is facing right...
 			else if (moveInput < 0 && m_FacingRight)
-			{
-				// ... flip the player.
 				Flip();
-			}
 
 			// Calculate the speed at the direction we want to move.
 			float targetSpeed = moveInput * m_MoveSpeed;
@@ -151,19 +148,22 @@ public class CharacterController2D : MonoBehaviour
 			float speedDiff = targetSpeed - m_Rigidbody2D.velocity.x;
 
 			// Define the rate to be either accelerate or decelerate depending on moving or stopping situation.
-			float accelRate = (Mathf.Abs(targetSpeed) > 0.01f) ? m_Acceleration : m_Deceleration;
+			float accelRate = (Mathf.Abs(targetSpeed) > .01f) ? m_Acceleration : m_Deceleration;
 
 			// Applies the rate to speed difference, then raises to a set power so acceleration increases with higher speed.
 			// And multiplies by the sign to reaplly direction.
 			float moveForce = Mathf.Pow(Mathf.Abs(speedDiff) * accelRate, m_VelPower) * Mathf.Sign(speedDiff);
 
+			if (Mathf.Abs(moveInput) > 0f && m_Grounded && runningDust.isStopped)
+				runningDust.Play();
+			else if ((moveInput == 0f && runningDust.isPlaying) || !m_Grounded)
+				runningDust.Stop();
+
 			// Applies the force to the rigidbody, respectively when on slope or not.
 			if (onSlope && canWalkOnSlope)
-			{
 				// Negative because the direction of the perpendicular vector.
 				m_Rigidbody2D.AddForce(-moveForce * slopeNormalPerp);
-				//onSlope = false;
-			}
+
 			else if (!onSlope || !canWalkOnSlope)
 				m_Rigidbody2D.AddForce(moveForce * Vector2.right);
 		}
@@ -304,6 +304,9 @@ public class CharacterController2D : MonoBehaviour
 		// Switch the way the player is labelled as facing.
 		m_FacingRight = !m_FacingRight;
 		transform.Rotate(0f, 180f, 0f);
+
+		ParticleSystem.VelocityOverLifetimeModule vel = runningDust.velocityOverLifetime;
+		vel.xMultiplier *= -1f;
 	}
 
 	private IEnumerator Dash()
