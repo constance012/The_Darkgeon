@@ -1,5 +1,7 @@
 using System.Collections;
+using System.Reflection;
 using UnityEngine;
+using UnityEngine.UI;
 
 /// <summary>
 /// Manages all the enemy's stats.
@@ -26,17 +28,26 @@ public class EnemyStat : MonoBehaviour
 	public GameObject dmgTextPrefab;
 	public MonoBehaviour behaviour;
 
-	[Header("Stats")]
+	[Header("STATS")]
 	[Space]
 	[SerializeField] private new string name;
+
+	[Header("Offensive")]
+	[Space]
 	public int maxHealth = 50;
-	public int currentHP;
-	public int armor = 0;
 	public float atkDamage = 15f;
+	[HideInInspector] public int currentHP;
+
+	[Header("Defensive")]
+	[Space]
+	public int armor = 0;
 	public float knockBackVal = 2f;
-	public float dmgRecFactor = .5f;
-	public float timeToDissolve = 5f;
+	public float armorReduceFactor = .5f;
 	[Range(0f, 1f)] public float knockBackRes = .2f;
+
+	[Header("Others")]
+	[Space]
+	public float timeToDissolve = 5f;
 
 	[HideInInspector] public bool grounded;
 
@@ -97,13 +108,17 @@ public class EnemyStat : MonoBehaviour
 				grounded = true;
 	}
 
-	public void TakeDamage(float dmg, float knockBackVal = 0f)
+	public void TakeDamage(float dmg, float critDmgMul = 1f, float knockBackVal = 0f)
 	{
 		ResetSpottingTimer();
 
 		if (currentHP > 0)
 		{
-			int finalDmg = Mathf.RoundToInt(dmg - armor * dmgRecFactor);
+			// Reduce the damage by armor and then multiply with crit damage.
+			float armorReducedDmg = dmg - armor * armorReduceFactor;
+			int finalDmg = Mathf.RoundToInt(armorReducedDmg * critDmgMul);
+			bool isCrit = critDmgMul != 1f;
+			Color textColor;
 			
 			currentHP -= finalDmg;
 			currentHP = Mathf.Clamp(currentHP, 0, maxHealth);
@@ -111,7 +126,10 @@ public class EnemyStat : MonoBehaviour
 			hpBar.SetCurrentHealth(currentHP);
 
 			animator.SetTrigger("Hit");
-			DamageText.Generate(dmgTextPrefab, dmgTextPos.position, Color.yellow, finalDmg.ToString());
+
+			// If there's critical hit, then popup text will be different.
+			textColor = isCrit ? new Color(1f, .5f, 0f) : new Color(1f, .84f, .2f);
+			DamageText.Generate(dmgTextPrefab, dmgTextPos.position, textColor, isCrit, finalDmg.ToString());
 
 			StartCoroutine(BeingKnockedBack(knockBackVal));
 		}

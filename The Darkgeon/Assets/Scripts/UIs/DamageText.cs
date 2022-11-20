@@ -1,5 +1,6 @@
 using UnityEngine;
 using TMPro;
+using System.Runtime.CompilerServices;
 
 /// <summary>
 /// A class to generates an UI popup text.
@@ -19,11 +20,13 @@ public class DamageText : MonoBehaviour
 	public float disappearTime = 0f;
 	public float disappearSpeed = 3f;
 	public float yVelocity = .5f;
-	public float desiredFontSize = .15f;
+	public float normalFontSize = .15f;
+	public float critFontSize = .2f;
 	public const float aliveTime = 1f;
-	public Color currentTextColor;
-
-	float smoothVel;
+	
+	private Color currentTextColor;
+	private float smoothVel;
+	private bool isCrit;
 
 	private void Awake()
 	{
@@ -32,8 +35,20 @@ public class DamageText : MonoBehaviour
 
 	private void Update()
 	{
-		transform.position += new Vector3(0f, yVelocity * Time.deltaTime);
-		textMesh.fontSize = Mathf.SmoothDamp(textMesh.fontSize, desiredFontSize, ref smoothVel, .05f);
+		float selectedFontSize = normalFontSize;
+		float yVel = yVelocity;
+
+		// Gradually increase font size.
+		if (isCrit)
+		{
+			selectedFontSize = critFontSize;
+			yVel = .8f;
+		}
+
+		// Gradually move up.
+		transform.position += yVel * Time.deltaTime * Vector3.up;
+			
+		textMesh.fontSize = Mathf.SmoothDamp(textMesh.fontSize, selectedFontSize, ref smoothVel, .05f);
 
 		if (Time.time > disappearTime)
 		{
@@ -43,14 +58,13 @@ public class DamageText : MonoBehaviour
 			if (currentTextColor.a < 0f)
 				Destroy(gameObject);
 		}
-
 	}
 
 	#region Generate Method Overloads
+	// Default color is red, and parent is world canvas.
 	public static DamageText Generate(GameObject prefab, Vector3 pos, string textContent)
 	{
 		Transform canvas = GameObject.Find("World Canvas").transform;
-
 		GameObject dmgTextObj = Instantiate(prefab, pos, Quaternion.identity);
 		dmgTextObj.transform.SetParent(canvas, true);
 
@@ -60,7 +74,8 @@ public class DamageText : MonoBehaviour
 		return dmgText;
 	}
 
-	public static DamageText Generate(GameObject prefab, Vector3 pos, Color txtColor, string textContent)
+	// Default parent is world canvas.
+	public static DamageText Generate(GameObject prefab, Vector3 pos, Color txtColor, bool isCrit, string textContent)
 	{
 		Transform canvas = GameObject.Find("World Canvas").transform;
 
@@ -69,28 +84,30 @@ public class DamageText : MonoBehaviour
 
 		DamageText dmgText = dmgTextObj.GetComponent<DamageText>();
 
-		dmgText.Setup(txtColor, textContent);
+		dmgText.Setup(txtColor, textContent, isCrit);
 		return dmgText;
 	}
 
-	public static DamageText Generate(GameObject prefab, Transform canvas, Vector3 pos, Color txtColor, string textContent)
+	public static DamageText Generate(GameObject prefab, Transform canvas, Vector3 pos, Color txtColor, bool isCrit, string textContent)
 	{
 		GameObject dmgTextObj = Instantiate(prefab, pos, Quaternion.identity);
 		dmgTextObj.transform.SetParent(canvas, true);
 
 		DamageText dmgText = dmgTextObj.GetComponent<DamageText>();
 		
-		dmgText.Setup(txtColor, textContent);
+		dmgText.Setup(txtColor, textContent, isCrit);
 		return dmgText;
 	}
 	#endregion
 
-	private void Setup(Color txtColor, string textContent)
+	private void Setup(Color txtColor, string textContent, bool isCritHit = false)
 	{
-		textMesh.text = "" + textContent;
+		textMesh.text = textContent;
 		currentTextColor = txtColor;
 		textMesh.color = currentTextColor;
 		textMesh.fontSize = 0f;
+
+		isCrit = isCritHit;
 
 		if (disappearTime == 0f)
 			disappearTime = Time.time + aliveTime;

@@ -210,13 +210,13 @@ MonoBehaviour:
   behaviour: {fileID: 0}
   name: Rat
   maxHealth: 75
+  atkDamage: 10
   currentHP: 0
   armor: 3
-  atkDamage: 10
   knockBackVal: 1.5
-  dmgRecFactor: 0.5
-  timeToDissolve: 5
+  armorReduceFactor: 0.5
   knockBackRes: 0.1
+  timeToDissolve: 5
   grounded: 0
 --- !u!114 &7209353689076910821
 MonoBehaviour:

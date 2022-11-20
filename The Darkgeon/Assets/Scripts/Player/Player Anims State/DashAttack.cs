@@ -11,8 +11,7 @@ public class DashAttack : StateMachineBehaviour
 	[Header("Fields.")]
 	[Space]
 
-	private bool dmgDealt;
-
+	private bool dmgDealt, canCrit;
 	private float dmgMultiplier = 1.1f;
 
 	// OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
@@ -23,6 +22,8 @@ public class DashAttack : StateMachineBehaviour
 		dustFx = animator.transform.Find("Sword Dust Effect").GetComponent<ParticleSystem>();
 		animator.GetComponent<Rigidbody2D>().velocity = Vector3.zero;
 		FindObjectOfType<AudioManager>().Play("Dash Attack " + Random.Range(1, 3));
+
+		canCrit = stats.IsCriticalStrike();
 	}
 
 	// OnStateUpdate is called on each Update frame between OnStateEnter and OnStateExit callbacks
@@ -32,10 +33,12 @@ public class DashAttack : StateMachineBehaviour
 		{
 			// Dash attack has a larger range than regular attacks.
 			Collider2D[] hitList = Physics2D.OverlapCircleAll(action.atkPoint.position, action.atkRange + .2f, action.enemyLayers);
+			float baseDmg = stats.atkDamage * dmgMultiplier;
+			float critDmg = canCrit ? 1f + stats.criticalDamage / 100f : 1f;
 
 			foreach (Collider2D enemy in hitList)
 			{
-				enemy.GetComponent<EnemyStat>().TakeDamage(stats.atkDamage * dmgMultiplier, stats.knockBackVal);
+				enemy.GetComponent<EnemyStat>().TakeDamage(baseDmg, critDmg, stats.knockBackVal);
 			}
 
 			dmgDealt = true;

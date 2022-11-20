@@ -10171,9 +10171,11 @@ MonoBehaviour:
   rb2d: {fileID: 0}
   hpBar: {fileID: 0}
   maxHP: 100
-  currentHP: 0
-  armor: 5
   atkDamage: 20
+  currentHP: 0
+  criticalChance: 20
+  criticalDamage: 50
+  armor: 5
   damageRecFactor: 0.5
   knockBackRes: 0.2
   invincibilityTime: 0.5

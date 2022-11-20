@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Diagnostics.CodeAnalysis;
 using UnityEngine;
 
 /// <summary>
@@ -21,22 +22,34 @@ public class PlayerStats : MonoBehaviour
 	public HealthBar hpBar;
 
 	// Fields.
-	[Header("Stats")]
+	[Header("STATS")]
+	[Space]
+	[Header("Offensive")]
 	[Space]
 	public int maxHP = 100;
-	public int currentHP;
+	public float atkDamage = 10f;
+	[HideInInspector] public int currentHP;
+
+	[Space]
+	[Range(0f, 100f)] public float criticalChance;
+	/// <summary>
+	/// The bonus damage for crtical hit, in percentage.
+	/// </summary>
+	public float criticalDamage;
+
+	[Header("Defensive")]
+	[Space]
 	public int armor = 5;
-	public float atkDamage = 20f;
 	public float damageRecFactor = .5f;
 	[Range(0f, 1f)] public float knockBackRes = .2f;
-	
+
+	[Header("Timers")]
 	[Space]
 	public float invincibilityTime = .5f;
 	public float outOfCombatTime = 5f;
+	
 	[HideInInspector] public float lastDamagedTime = 0f;
 	[HideInInspector] public float knockBackVal = 1.5f;
-	
-	[Space]	
 	[HideInInspector] public KillSources killSource = KillSources.Unknown;
 	[HideInInspector] public Vector3 respawnPos;
 	[HideInInspector] public Transform attacker = null;  // Position of the attacker.
@@ -118,6 +131,17 @@ public class PlayerStats : MonoBehaviour
 
 			regenDelay = 2f;
 		}
+	}
+
+	public bool IsCriticalStrike()
+	{
+		float chance = Mathf.Round(criticalChance);
+		float rand = Random.Range(0, 101);
+		
+		if (rand <= chance)
+			return true;
+		else
+			return false;
 	}
 
 	private IEnumerator BeingKnockedBack(float knockBackValue)

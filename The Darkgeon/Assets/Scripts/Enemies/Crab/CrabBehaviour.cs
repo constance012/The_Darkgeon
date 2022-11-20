@@ -215,7 +215,8 @@ public class CrabBehaviour : MonoBehaviour, IEnemyBehaviour
 		float baseKBRes = stats.knockBackRes;
 
 		animator.SetTrigger("Ability");
-		DamageText.Generate(stats.dmgTextPrefab, stats.dmgTextPos.position, new Color(.84f, .45f, .15f), "Hard Shell");
+		Color popupTextColor = new Color(.84f, .45f, .15f);
+		DamageText.Generate(stats.dmgTextPrefab, stats.dmgTextPos.position, popupTextColor, false, "Hard Shell");
 
 		walkSpeed /= 2;
 		timeBetweenAtk *= 2;

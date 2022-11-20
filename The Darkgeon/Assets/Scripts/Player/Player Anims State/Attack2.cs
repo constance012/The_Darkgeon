@@ -10,8 +10,8 @@ public class Attack2 : StateMachineBehaviour
 	[Header("Fields.")]
 	[Space]
 
-	bool dmgDealt;
-	float dmgMultiplier = .65f;
+	private bool dmgDealt, canCrit;
+	private float dmgMultiplier = .65f;
 
 	// OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
 	override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
@@ -19,6 +19,8 @@ public class Attack2 : StateMachineBehaviour
 		action = animator.GetComponent<PlayerActions>();
 		stats = animator.GetComponent<PlayerStats>();
 		FindObjectOfType<AudioManager>().Play("Normal Attack 2");
+
+		canCrit = stats.IsCriticalStrike();
 	}
 
 	// OnStateUpdate is called on each Update frame between OnStateEnter and OnStateExit callbacks
@@ -27,10 +29,12 @@ public class Attack2 : StateMachineBehaviour
 		if (!dmgDealt && stateInfo.normalizedTime > .5f)
 		{
 			Collider2D[] hitList = Physics2D.OverlapCircleAll(action.atkPoint.position, action.atkRange, action.enemyLayers);
+			float baseDmg = stats.atkDamage * dmgMultiplier;
+			float critDmg = canCrit ? 1f + stats.criticalDamage / 100f : 1f;
 
 			foreach (Collider2D enemy in hitList)
 			{
-				enemy.GetComponent<EnemyStat>().TakeDamage(stats.atkDamage * dmgMultiplier, stats.knockBackVal);
+				enemy.GetComponent<EnemyStat>().TakeDamage(baseDmg, critDmg, stats.knockBackVal);
 			}
 
 			dmgDealt = true;

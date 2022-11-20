@@ -216,4 +216,5 @@ MonoBehaviour:
   disappearTime: 0
   disappearSpeed: 3
   yVelocity: 0.5
-  currentTextColor: {r: 0, g: 0, b: 0, a: 0}
+  normalFontSize: 0.15
+  critFontSize: 0.2
