@@ -36,7 +36,8 @@ public class RatBehaviour : MonoBehaviour, IEnemyBehaviour
 	[SerializeField] private float timeBetweenAtk = 1.5f;
 
 	// Private fields.
-	public bool facingRight = true;
+	[HideInInspector] public bool facingRight = true;
+	[HideInInspector] public bool atkAnimDone = true;
 	bool alreadyAttacked;
 	bool isPatrol = true;
 	bool mustFlip, isTouchingWall;
@@ -74,26 +75,29 @@ public class RatBehaviour : MonoBehaviour, IEnemyBehaviour
 			playerInAggro = distToPlayer <= inSightRange;
 			
 			// Bigger range for hopping towards player when attacks.
-			canAttackPlayer = Physics2D.OverlapCircle(centerPoint.position, attackRange + .3f, whatIsPlayer);
+			canAttackPlayer = Physics2D.OverlapCircle(centerPoint.position, attackRange + .5f, whatIsPlayer);
 		}
+
+		// If the player's death, simply return.
 		else
 		{
 			playerInAggro = canAttackPlayer = false;
 			isPatrol = true;
 			spottingTimer = m_SpottingTimer;
 			abandonTimer = 0f;
-			return;  // If the player's death, simply return.
+			return;
 		}
 
 		#region Behaviours against the player if she's alive.
-		// If the abandon timer runs, then just patrol around.
+		
+		// If the abandon timer runs out, then just patrol around.
 		if (abandonTimer <= 0f)
 		{
 			isPatrol = true;
 			spottingTimer = m_SpottingTimer;
 		}
 
-		// If the player is out of the aggro range.
+		// If the player is out of the aggro range, continue chasing the player until abandons.
 		if (!playerInAggro)
 		{
 			if (spottingTimer <= 0f)
@@ -114,9 +118,11 @@ public class RatBehaviour : MonoBehaviour, IEnemyBehaviour
 			if (spottingTimer <= 0f)
 				ChasePlayer();
 
+			// Instantly spotting the player if currently facing towards her.
 			if ((!isPlayerBehind && facingRight) || (isPlayerBehind && !facingRight))
 				spottingTimer = 0f;
 
+			// Else, decrease the timer over time.
 			else
 				spottingTimer -= Time.deltaTime;
 		}
@@ -162,7 +168,8 @@ public class RatBehaviour : MonoBehaviour, IEnemyBehaviour
 		// Chase is faster than patrol.
 		float direction = Mathf.Sign(player.transform.position.x - centerPoint.position.x) * 1.5f;
 
-		rb2d.velocity = new Vector2(walkSpeed * direction * Time.fixedDeltaTime, rb2d.velocity.y);
+		if (atkAnimDone)
+			rb2d.velocity = new Vector2(walkSpeed * direction * Time.fixedDeltaTime, rb2d.velocity.y);
 
 		// Jump if there's an obstacle ahead.
 		if (isTouchingWall && stats.grounded && timeBetweenJump <= 0f)
@@ -188,6 +195,7 @@ public class RatBehaviour : MonoBehaviour, IEnemyBehaviour
 
 			animator.SetTrigger("Atk");
 
+			atkAnimDone = false;
 			alreadyAttacked = true;
 			Invoke(nameof(ResetAttack), timeBetweenAtk);  // Can attack every 2 seconds.
 		}

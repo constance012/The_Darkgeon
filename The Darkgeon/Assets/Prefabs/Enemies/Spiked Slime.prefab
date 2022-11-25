@@ -15,9 +15,9 @@ GameObject:
   - component: {fileID: 4766418364067015443}
   - component: {fileID: 870357710861358018}
   - component: {fileID: 8463974544176908619}
-  - component: {fileID: 7209353689076910821}
+  - component: {fileID: 6436354577461718669}
   m_Layer: 8
-  m_Name: Rat
+  m_Name: Spiked Slime
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -87,7 +87,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 10
-  m_Sprite: {fileID: 6676898260982075175, guid: 7be043c3b72768345bd8bda8237aa21d, type: 3}
+  m_Sprite: {fileID: 6652092429531671927, guid: 0ba61f9dd40068e4999bb58f3c876283, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -171,7 +171,7 @@ Animator:
   m_GameObject: {fileID: 870357710861358019}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: b2af98cfbf96ce841963b37ec392cf64, type: 2}
+  m_Controller: {fileID: 9100000, guid: 31193055c1a5c4d46acf0cf8d3686ea8, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -208,17 +208,17 @@ MonoBehaviour:
   player: {fileID: 0}
   dmgTextPrefab: {fileID: 1002002582291494483, guid: 010fe3952a6d9ba4a81d8d56d99c52a3, type: 3}
   behaviour: {fileID: 0}
-  name: Rat
-  maxHealth: 75
-  atkDamage: 10
+  name: Spiked Slime
+  maxHealth: 100
+  atkDamage: 12
   currentHP: 0
-  armor: 3
-  knockBackVal: 1.5
+  armor: 4
+  knockBackVal: 2
   armorReduceFactor: 0.5
-  knockBackRes: 0.1
+  knockBackRes: 0.25
   timeToDissolve: 5
   grounded: 0
---- !u!114 &7209353689076910821
+--- !u!114 &6436354577461718669
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -227,7 +227,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 870357710861358019}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bf755acabe4639441ab90efe4e73820f, type: 3}
+  m_Script: {fileID: 11500000, guid: a36cf04ead1480e4fbb0442b2609546a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   rb2d: {fileID: 0}
@@ -244,15 +244,16 @@ MonoBehaviour:
     m_Bits: 64
   player: {fileID: 0}
   stats: {fileID: 0}
-  walkSpeed: 80
+  walkSpeed: 50
   checkRadius: 0.1
   attackRange: 0.5
   inSightRange: 2.5
   abilityDuration: 10
-  m_SpottingTimer: 0.5
+  m_SpottingTimer: 1
   m_AbandonTimer: 10
-  timeBetweenAtk: 1
+  timeBetweenAtk: 1.7
   facingRight: 1
+  atkAnimDone: 1
   spottingTimer: 0
 --- !u!1 &1906861128848420086
 GameObject:
@@ -309,7 +310,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2515867154409149941}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.033, y: -0.223, z: 0}
+  m_LocalPosition: {x: 0, y: -0.223, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -340,7 +341,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3162074475146735210}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.003, y: -0.131, z: 0}
+  m_LocalPosition: {x: 0, y: -0.1, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -373,7 +374,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4148140111201421026}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.003, y: -0.143, z: 0}
+  m_LocalPosition: {x: 0, y: -0.143, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -5242,7 +5243,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4302293597239561557}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.205, y: -0.092, z: 0}
+  m_LocalPosition: {x: 0.16, y: -0.092, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -5304,7 +5305,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8950487505517261924}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.046, z: 0}
+  m_LocalPosition: {x: 0, y: 0.082, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

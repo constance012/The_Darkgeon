@@ -1,24 +1,20 @@
 using UnityEngine;
-using System.Collections;
 
-/// <summary>
-/// Manages the Crab's behaviours and targeting AI.
-/// </summary>
-public class CrabBehaviour : MonoBehaviour, IEnemyBehaviour
+public class SpikedSlimeBehaviour : MonoBehaviour, IEnemyBehaviour
 {
 	[Header("Reference")]
 	[Space]
 	[SerializeField] private Rigidbody2D rb2d;
 	[SerializeField] private Animator animator;
 	[SerializeField] private PhysicsMaterial2D physicMat;
-	
+
 	[Space]
 	[SerializeField] private Transform edgeCheck;
 	[SerializeField] private Transform centerPoint;
 	public Transform attackPoint;
 	public LayerMask whatIsPlayer;
 	[SerializeField] private LayerMask whatIsGround;
-	
+
 	[Space]
 	[SerializeField] private PlayerStats player;
 	[SerializeField] private EnemyStat stats;
@@ -35,10 +31,11 @@ public class CrabBehaviour : MonoBehaviour, IEnemyBehaviour
 	public float m_SpottingTimer = 3f;
 	[SerializeField] private float m_AbandonTimer = 8f;
 	[SerializeField] private float timeBetweenAtk = 1.5f;
-	
+
 	// Private fields.
 	[HideInInspector] public bool facingRight = true;
-	bool alreadyAttacked, abilityUsed;
+	[HideInInspector] public bool atkAnimDone = true;
+	bool alreadyAttacked;
 	bool isPatrol = true;
 	bool mustFlip, isTouchingWall;
 	bool playerInAggro, canAttackPlayer;
@@ -68,38 +65,36 @@ public class CrabBehaviour : MonoBehaviour, IEnemyBehaviour
 		if (isPatrol)
 			Patrol();
 
-		if(!abilityUsed && ((double)stats.currentHP/stats.maxHealth) <= .5)
-		{
-			StartCoroutine(UseAbility());
-			abilityUsed = true;
-		}
-			
-
 		if (!GameManager.isPlayerDeath)
 		{
 			// Check if the player is in what range of the enemy.
 			float distToPlayer = Vector2.Distance(centerPoint.position, player.transform.position);
 			playerInAggro = distToPlayer <= inSightRange;
-			canAttackPlayer = Physics2D.OverlapCircle(centerPoint.position, attackRange, whatIsPlayer);
+
+			// Bigger range for hopping towards player when attacks.
+			canAttackPlayer = Physics2D.OverlapCircle(centerPoint.position, attackRange + .7f, whatIsPlayer);
 		}
+
+		// If the player's death, simply return.
 		else
 		{
 			playerInAggro = canAttackPlayer = false;
 			isPatrol = true;
 			spottingTimer = m_SpottingTimer;
 			abandonTimer = 0f;
-			return;  // If the player's death, simply return.
+			return;
 		}
 
 		#region Behaviours against the player if she's alive.
-		// If the abandon timer runs, then just patrol around.
+		
+		// If the abandon timer runs out, then just patrol around.
 		if (abandonTimer <= 0f)
 		{
 			isPatrol = true;
 			spottingTimer = m_SpottingTimer;
 		}
 
-		// If the player is out of the aggro range.
+		// If the player is out of the aggro range, continue chasing the player until abandons.
 		if (!playerInAggro)
 		{
 			if (spottingTimer <= 0f)
@@ -117,12 +112,15 @@ public class CrabBehaviour : MonoBehaviour, IEnemyBehaviour
 			abandonTimer = m_AbandonTimer;
 			bool isPlayerBehind = player.transform.position.x < centerPoint.position.x;
 
+			// Start chasing the player when the timer runs out.
 			if (spottingTimer <= 0f)
 				ChasePlayer();
 
+			// Instantly spotting the player if currently facing towards her.
 			if ((!isPlayerBehind && facingRight) || (isPlayerBehind && !facingRight))
 				spottingTimer = 0f;
 
+			// Else, decrease the timer over time.
 			else
 				spottingTimer -= Time.deltaTime;
 		}
@@ -147,7 +145,7 @@ public class CrabBehaviour : MonoBehaviour, IEnemyBehaviour
 			isTouchingWall = true;
 	}
 
-	#region Crab's behaviours
+	#region Slime's Behaviours
 	public void Patrol()
 	{
 		if (mustFlip || isTouchingWall)
@@ -156,7 +154,7 @@ public class CrabBehaviour : MonoBehaviour, IEnemyBehaviour
 			isTouchingWall = false;
 		}
 
-		rb2d.velocity = facingRight ? new Vector2(walkSpeed * Time.fixedDeltaTime, rb2d.velocity.y) 
+		rb2d.velocity = facingRight ? new Vector2(walkSpeed * Time.fixedDeltaTime, rb2d.velocity.y)
 									: new Vector2(-walkSpeed * Time.fixedDeltaTime, rb2d.velocity.y);
 	}
 
@@ -166,9 +164,10 @@ public class CrabBehaviour : MonoBehaviour, IEnemyBehaviour
 		timeBetweenJump -= Time.deltaTime;
 
 		// Chase is faster than patrol.
-		float direction = Mathf.Sign(player.transform.position.x - centerPoint.position.x) * 1.5f;  
-
-		rb2d.velocity = new Vector2(walkSpeed * direction * Time.fixedDeltaTime, rb2d.velocity.y);
+		float direction = Mathf.Sign(player.transform.position.x - centerPoint.position.x) * 1.5f;
+		
+		if (atkAnimDone)
+			rb2d.velocity = new Vector2(walkSpeed * direction * Time.fixedDeltaTime, rb2d.velocity.y);
 
 		// Jump if there's an obstacle ahead.
 		if (isTouchingWall && stats.grounded && timeBetweenJump <= 0f)
@@ -187,15 +186,16 @@ public class CrabBehaviour : MonoBehaviour, IEnemyBehaviour
 
 	public void Attack()
 	{
-		// Make sure the enemy doesn't move.
-		rb2d.velocity = Vector3.zero;
-
 		if (!alreadyAttacked)
 		{
-			int randomNum = Random.Range(1, 4);
-			animator.SetTrigger("Atk" + randomNum);
+			// Make sure the enemy doesn't move.
+			rb2d.velocity = Vector3.zero;
 
+			animator.SetTrigger("Atk");
+
+			atkAnimDone = false;
 			alreadyAttacked = true;
+
 			Invoke(nameof(ResetAttack), timeBetweenAtk);  // Can attack every 2 seconds.
 		}
 	}
@@ -203,34 +203,6 @@ public class CrabBehaviour : MonoBehaviour, IEnemyBehaviour
 	public void ResetAttack()
 	{
 		alreadyAttacked = false;
-	}
-
-	// Crab's Ability: Hard Shell.
-	private IEnumerator UseAbility()
-	{
-		float baseSpeed = walkSpeed;
-		float baseAtkSpeed = timeBetweenAtk;
-		int baseArmor = stats.armor;
-		float baseAtkDamage = stats.atkDamage;
-		float baseKBRes = stats.knockBackRes;
-
-		animator.SetTrigger("Ability");
-		Color popupTextColor = new Color(.84f, .45f, .15f);
-		DamageText.Generate(stats.dmgTextPrefab, stats.dmgTextPos.position, popupTextColor, false, "Hard Shell");
-
-		walkSpeed /= 2;
-		timeBetweenAtk *= 2;
-		stats.armor *= 2;
-		stats.atkDamage *= 2;
-		stats.knockBackRes *= 2;
-
-		yield return new WaitForSeconds(abilityDuration);
-
-		walkSpeed = baseSpeed;
-		timeBetweenAtk = baseAtkSpeed;
-		stats.armor = baseArmor;
-		stats.atkDamage = baseAtkDamage;
-		stats.knockBackRes = baseKBRes;
 	}
 	#endregion
 

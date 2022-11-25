@@ -1,22 +1,22 @@
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
-public class RatNormalAtk : StateMachineBehaviour
+public class SpikedSlimeNormalAtk : StateMachineBehaviour
 {
-	[Header("Reference")]
+    [Header("Reference")]
 	[Space]
-	[SerializeField] private RatBehaviour behaviour;
+	[SerializeField] private SpikedSlimeBehaviour behaviour;
 	[SerializeField] private EnemyStat stats;
 	[SerializeField] private Rigidbody2D rb2d;
-	[SerializeField] private Debuff bleeding;
-	[SerializeField] private Debuff slowness;
 
 	bool dmgDealt, hopped;
-	float dmgMultiplier = .9f;
+	float dmgMultiplier = 1.1f;
 
 	// OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
 	override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
 	{
-		behaviour = animator.GetComponent<RatBehaviour>();
+		behaviour = animator.GetComponent<SpikedSlimeBehaviour>();
 		stats = animator.GetComponent<EnemyStat>();
 		rb2d = animator.GetComponent<Rigidbody2D>();
 	}
@@ -26,25 +26,17 @@ public class RatNormalAtk : StateMachineBehaviour
 	{
 		if (!hopped && stateInfo.normalizedTime > .27f)
 		{
-			float hopForce = behaviour.facingRight ? 3.5f : -3.5f;
+			float hopForce = behaviour.facingRight ? 5f : -5f;
 			rb2d.AddForce(hopForce * Vector2.right, ForceMode2D.Impulse);
 			hopped = true;
 		}
 
 		if (!dmgDealt && stateInfo.normalizedTime > .6f) {
 			Collider2D hitObj = Physics2D.OverlapCircle(behaviour.attackPoint.position, behaviour.attackRange, behaviour.whatIsPlayer);
-			int inflictChange = Random.Range(1, 6);
+			//int inflictChange = Random.Range(1, 6);
 
 			if (hitObj != null)
-			{
-				hitObj.GetComponent<PlayerStats>().TakeDamage(stats.atkDamage * dmgMultiplier, stats.knockBackVal, animator.transform, KillSources.Rat);
-
-				if (inflictChange == 1)
-				{
-					FindObjectOfType<DebuffManager>().ApplyDebuff(Instantiate(bleeding));
-					FindObjectOfType<DebuffManager>().ApplyDebuff(Instantiate(slowness));
-				}
-			}
+				hitObj.GetComponent<PlayerStats>().TakeDamage(stats.atkDamage * dmgMultiplier, stats.knockBackVal, animator.transform, KillSources.SpikedSlime);
 
 			dmgDealt = true;
 		}

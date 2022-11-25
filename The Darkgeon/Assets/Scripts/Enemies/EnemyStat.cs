@@ -14,15 +14,18 @@ public class EnemyStat : MonoBehaviour
 	public Transform dmgTextPos;
 	public Transform worldCanvas;
 
+	[Space]
 	[SerializeField] private Transform centerPoint;
 	[SerializeField] private Transform groundCheck;
 	[SerializeField] private LayerMask whatIsGround;
 
+	[Space]
 	[SerializeField] private Animator animator;
 	[SerializeField] private Rigidbody2D rb2d;
 	[SerializeField] private Material enemyMat;
 	[SerializeField] private ParticleSystem deathFx;
 
+	[Space]
 	[SerializeField] private PlayerStats player;
 
 	public GameObject dmgTextPrefab;
@@ -188,6 +191,10 @@ public class EnemyStat : MonoBehaviour
 			case "Rat":
 				behaviour = GetComponent<RatBehaviour>();
 				break;
+			case "Spiked Slime":
+				behaviour = GetComponent<SpikedSlimeBehaviour>();
+				break;
+			
 			default:
 				behaviour = null;
 				Debug.LogWarning("Behaviour script for enemy " + name + " not found!!");
@@ -205,6 +212,10 @@ public class EnemyStat : MonoBehaviour
 			case "Rat":
 				GetComponent<RatBehaviour>().spottingTimer = 0f;
 				break;
+			case "Spiked Slime":
+				behaviour = GetComponent<SpikedSlimeBehaviour>();
+				break;
+			
 			default:
 				behaviour = null;
 				Debug.LogWarning("Behaviour script for enemy " + name + " not found!!");
