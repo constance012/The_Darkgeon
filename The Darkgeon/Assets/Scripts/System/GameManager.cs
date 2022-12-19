@@ -56,6 +56,9 @@ public class GameManager : MonoBehaviour
 	{
 		if (Input.GetKeyDown(KeyCode.Escape) && !isPlayerDeath)
 			Invoke(!isPause ? nameof(Pause) : nameof(Unpause), 0f);
+
+		if (Input.GetKeyDown(KeyCode.R))
+			LevelsManager.instance.RestartLevel();
 		
 		if (playerStats.currentHP <= 0 && !isPlayerDeath)
 		{

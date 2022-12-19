@@ -13,9 +13,9 @@ MonoBehaviour:
   m_Name: Slowness
   m_EditorClassIdentifier: 
   name: Slowness
-  description: Your movement speed has reduced.
+  description: Your movement speed has been reduced.
   duration: 7
-  icon: {fileID: 0}
+  icon: {fileID: 21300000, guid: 28e5f783e2bb63840bfa91abc243d307, type: 3}
   healthLossRate: 0
   baseHpLossDelay: 0
   hpLossDelay: 0

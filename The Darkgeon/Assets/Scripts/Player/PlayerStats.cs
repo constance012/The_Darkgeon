@@ -81,7 +81,6 @@ public class PlayerStats : MonoBehaviour
 		//isOutlineOn = new LocalKeyword(shader, "_IS_OUTLINE_ON");
 	}
 
-	// Update is called once per frame
 	private void Update()
 	{
 		if (Input.GetKeyDown(KeyCode.E) && Time.time - lastDamagedTime > invincibilityTime)
