@@ -9,7 +9,7 @@ public class CrabDoubleAtk : StateMachineBehaviour
 
 	bool firstHitLanded;
 	bool secondHitLanded;
-	float dmgMultiplier = .85f;
+	float dmgScale = .85f;
 
 	// OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
 	override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
@@ -31,14 +31,14 @@ public class CrabDoubleAtk : StateMachineBehaviour
 			// First hit is weaker than second hit and doesn't knock the player back.
 			if (stateInfo.normalizedTime > .3f && !firstHitLanded)
 			{
-				hitObj.GetComponent<PlayerStats>().TakeDamage(stats.atkDamage * (dmgMultiplier - .25f), 0, null, KillSources.Crab);
+				hitObj.GetComponent<PlayerStats>().TakeDamage(stats.atkDamage * (dmgScale - .25f), 0, null, KillSources.Crab);
 				firstHitLanded = true;
 			}
 
 			// Second hit is stronger than first hit and knocks the player back.
 			if (stateInfo.normalizedTime > .7f)
 			{
-				hitObj.GetComponent<PlayerStats>().TakeDamage(stats.atkDamage * dmgMultiplier, stats.knockBackVal , animator.transform, KillSources.Crab);
+				hitObj.GetComponent<PlayerStats>().TakeDamage(stats.atkDamage * dmgScale, stats.knockBackVal , animator.transform, KillSources.Crab);
 				secondHitLanded = true;
 			}
 

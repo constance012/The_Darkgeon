@@ -11,7 +11,7 @@ public class SpikedSlimeNormalAtk : StateMachineBehaviour
 	[SerializeField] private Rigidbody2D rb2d;
 
 	bool dmgDealt, hopped;
-	float dmgMultiplier = 1.1f;
+	float dmgScale = 1.1f;
 
 	// OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
 	override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
@@ -36,7 +36,7 @@ public class SpikedSlimeNormalAtk : StateMachineBehaviour
 			//int inflictChange = Random.Range(1, 6);
 
 			if (hitObj != null)
-				hitObj.GetComponent<PlayerStats>().TakeDamage(stats.atkDamage * dmgMultiplier, stats.knockBackVal, animator.transform, KillSources.SpikedSlime);
+				hitObj.GetComponent<PlayerStats>().TakeDamage(stats.atkDamage * dmgScale, stats.knockBackVal, animator.transform, KillSources.SpikedSlime);
 
 			dmgDealt = true;
 		}

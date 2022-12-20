@@ -11,7 +11,7 @@ public class RatNormalAtk : StateMachineBehaviour
 	[SerializeField] private Debuff slowness;
 
 	bool dmgDealt, hopped;
-	float dmgMultiplier = .9f;
+	float dmgScale = .9f;
 
 	// OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
 	override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
@@ -37,7 +37,7 @@ public class RatNormalAtk : StateMachineBehaviour
 
 			if (hitObj != null)
 			{
-				hitObj.GetComponent<PlayerStats>().TakeDamage(stats.atkDamage * dmgMultiplier, stats.knockBackVal, animator.transform, KillSources.Rat);
+				hitObj.GetComponent<PlayerStats>().TakeDamage(stats.atkDamage * dmgScale, stats.knockBackVal, animator.transform, KillSources.Rat);
 
 				if (inflictChange == 1)
 				{

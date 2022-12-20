@@ -11,7 +11,7 @@ public class Attack2 : StateMachineBehaviour
 	[Space]
 
 	private bool dmgDealt, canCrit;
-	private float dmgMultiplier = .65f;
+	private float dmgScale = .65f;
 
 	// OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
 	override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
@@ -29,7 +29,7 @@ public class Attack2 : StateMachineBehaviour
 		if (!dmgDealt && stateInfo.normalizedTime > .5f)
 		{
 			Collider2D[] hitList = Physics2D.OverlapCircleAll(action.atkPoint.position, action.atkRange, action.enemyLayers);
-			float baseDmg = stats.atkDamage * dmgMultiplier;
+			float baseDmg = stats.atkDamage * dmgScale;
 			float critDmg = canCrit ? 1f + stats.criticalDamage / 100f : 1f;
 
 			foreach (Collider2D enemy in hitList)
@@ -46,9 +46,8 @@ public class Attack2 : StateMachineBehaviour
 	{
 		dmgDealt = false;
 		animator.SetBool("IsAttacking", false);
-		action.isComboDone = true;
 		action.comboDelay += Time.time;
-		PlayerActions.ceasePlayerInput = false;  // The player can move again as soon as the animation is completed.
+		PlayerActions.isComboDone = true;
 	}
 
 	// OnStateMove is called right after Animator.OnAnimatorMove()

@@ -9,6 +9,7 @@ public class PlayerActions : MonoBehaviour
 	[Header("References")]
 	[Space]
 	[SerializeField] private Animator animator;
+	[SerializeField] private CharacterController2D controller;
 
 	// Fields.
 	[Header("Player Attack")]
@@ -19,14 +20,15 @@ public class PlayerActions : MonoBehaviour
 	public float atkRange = .5f;
 	public float m_ComboDelay = 0.5f;  // The cooldown between each combo is 0.3 second.
 
-	[HideInInspector] public bool isComboDone = true;
 	[HideInInspector] public float comboDelay;
 
 	public static bool ceasePlayerInput { get; set; }
+	public static bool isComboDone { get; set; } = true;
 
 	private void Awake()
 	{
 		animator = GetComponent<Animator>();
+		controller = GetComponent<CharacterController2D>();
 	}
 
 	private void Update()
@@ -34,6 +36,19 @@ public class PlayerActions : MonoBehaviour
 		// Check if there is enough time for the next combo to begin.
 		if (Input.GetMouseButtonDown(0) && animator.GetBool("Grounded") && isComboDone)
 			Attack();
+
+		// Facing the player in the direction of the mouse when she is not moving.
+		if (!animator.GetBool("IsRunning"))
+		{
+			Vector2 aimingDir = Input.mousePosition - Camera.main.WorldToScreenPoint(transform.position);
+			float angle = Mathf.Abs(Mathf.Atan2(aimingDir.y, aimingDir.x) * Mathf.Rad2Deg);
+			Debug.Log("Angle:" + angle);
+
+			if (angle <= 90 && !controller.m_FacingRight)
+				controller.Flip();
+			else if (angle > 90 && controller.m_FacingRight)
+				controller.Flip();
+		}
 	}
 	
 	private void Attack()
@@ -42,11 +57,8 @@ public class PlayerActions : MonoBehaviour
 		{
 			comboDelay = m_ComboDelay;
 
-			// Make sure the player can not move.
-			ceasePlayerInput = true;
 			animator.SetBool("IsAttacking", true);
 			animator.SetBool("IsRunning", false);
-			animator.SetFloat("Speed", 0f);
 
 			// Only attack during dashing.
 			if (animator.GetCurrentAnimatorStateInfo(0).IsName("Dash"))

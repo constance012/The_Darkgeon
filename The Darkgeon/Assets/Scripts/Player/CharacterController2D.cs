@@ -1,5 +1,5 @@
 using System.Collections;
-using System.Net.Sockets;
+using System;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -46,15 +46,15 @@ public class CharacterController2D : MonoBehaviour
 	[Space]
 	public UnityEvent OnLandEvent;
 
-	[System.Serializable]
+	[Serializable]
 	public class BoolEvent : UnityEvent<bool> { }
 
 	public BoolEvent OnCrouchEvent;
 
 	// Fields.
+	[HideInInspector] public bool m_FacingRight = true;  // For determining which way the player is currently facing.
 	private bool m_wasCrouching;
 	private bool m_Grounded;            // Whether or not the player is grounded.
-	private bool m_FacingRight = true;  // For determining which way the player is currently facing.
 	private bool canWalkOnSlope;
 	public bool onSlope;
 	public static bool m_IsDashing { get; private set; }
@@ -299,21 +299,26 @@ public class CharacterController2D : MonoBehaviour
 	}
 	#endregion
 
-	private void Flip()
+	public void Flip()
 	{
-		// Switch the way the player is labelled as facing.
-		m_FacingRight = !m_FacingRight;
-		transform.Rotate(0f, 180f, 0f);
+		// Switch the way the player is labelled as facing when she is not attacking.
+		// Also switch the direction of the running dust particles.
+		if (PlayerActions.isComboDone)
+		{
+			m_FacingRight = !m_FacingRight;
+			transform.Rotate(0f, 180f, 0f);
 
-		ParticleSystem.VelocityOverLifetimeModule vel = runningDust.velocityOverLifetime;
-		vel.xMultiplier *= -1f;
+			ParticleSystem.VelocityOverLifetimeModule vel = runningDust.velocityOverLifetime;
+			vel.xMultiplier *= -1f;
+		}
 	}
 
 	private IEnumerator Dash()
 	{
 		m_IsDashing = true;
 		m_Animator.SetTrigger("IsDashing");
-		
+		Physics2D.IgnoreLayerCollision(3, 8, true);
+
 		float originalGravity = m_Rigidbody2D.gravityScale;
 		m_Rigidbody2D.gravityScale = 0f;
 
@@ -327,8 +332,6 @@ public class CharacterController2D : MonoBehaviour
 		m_Rigidbody2D.gravityScale = originalGravity;
 		m_IsDashing = false;
 
-		yield return new WaitForSeconds(.2f);
-
-		m_Rigidbody2D.velocity = Vector3.zero;
+		Physics2D.IgnoreLayerCollision(3, 8, false);
 	}
 }
