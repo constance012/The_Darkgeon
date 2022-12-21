@@ -210,13 +210,14 @@ MonoBehaviour:
   behaviour: {fileID: 0}
   name: Crab
   maxHealth: 150
+  atkDamage: 15
+  contactDamage: 0
   currentHP: 0
   armor: 10
-  atkDamage: 15
   knockBackVal: 1.5
-  dmgRecFactor: 0.5
-  timeToDissolve: 5
+  armorReduceFactor: 0.5
   knockBackRes: 0.4
+  timeToDissolve: 5
   grounded: 0
 --- !u!114 &5818629754301121029
 MonoBehaviour:
@@ -251,6 +252,8 @@ MonoBehaviour:
   abilityDuration: 10
   m_SpottingTimer: 3
   m_AbandonTimer: 8
+  timeBetweenAtk: 1.5
+  facingRight: 1
   spottingTimer: 0
 --- !u!1 &1906861128848420086
 GameObject:

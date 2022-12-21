@@ -59,6 +59,7 @@ public class DashAttack : StateMachineBehaviour
 		action.comboDelay += Time.time;
 		PlayerActions.isComboDone = true;
 		PlayerActions.ceasePlayerInput = false;  // The player can move again as soon as the animation is completed.
+		PlayerActions.canFaceTowardsCursor = false;
 	}
 
 	// OnStateMove is called right after Animator.OnAnimatorMove()

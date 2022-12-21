@@ -211,6 +211,7 @@ MonoBehaviour:
   name: Rat
   maxHealth: 75
   atkDamage: 10
+  contactDamage: 0
   currentHP: 0
   armor: 3
   knockBackVal: 1.2

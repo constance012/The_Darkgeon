@@ -211,6 +211,7 @@ MonoBehaviour:
   name: Spiked Slime
   maxHealth: 100
   atkDamage: 12
+  contactDamage: 8
   currentHP: 0
   armor: 4
   knockBackVal: 2

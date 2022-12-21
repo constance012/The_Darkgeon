@@ -40,7 +40,7 @@ public class PlayerMovement : MonoBehaviour
 
 		horizontalMove = Input.GetAxisRaw("Horizontal");
 
-		animator.SetBool("IsRunning", Mathf.Abs(horizontalMove) == 1 ? true : false);
+		animator.SetBool("IsRunning", Mathf.Abs(horizontalMove) == 1);
 		animator.SetFloat("Speed", Mathf.Abs(horizontalMove));
 		animator.SetFloat("yVelocity", rb2D.velocity.y);
 

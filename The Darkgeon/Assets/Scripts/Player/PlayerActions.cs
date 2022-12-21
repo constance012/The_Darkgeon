@@ -10,6 +10,7 @@ public class PlayerActions : MonoBehaviour
 	[Space]
 	[SerializeField] private Animator animator;
 	[SerializeField] private CharacterController2D controller;
+	[SerializeField] private Rigidbody2D rb2d;
 
 	// Fields.
 	[Header("Player Attack")]
@@ -24,11 +25,13 @@ public class PlayerActions : MonoBehaviour
 
 	public static bool ceasePlayerInput { get; set; }
 	public static bool isComboDone { get; set; } = true;
+	public static bool canFaceTowardsCursor { get; set; }
 
 	private void Awake()
 	{
 		animator = GetComponent<Animator>();
 		controller = GetComponent<CharacterController2D>();
+		rb2d = GetComponent<Rigidbody2D>();
 	}
 
 	private void Update()
@@ -38,11 +41,10 @@ public class PlayerActions : MonoBehaviour
 			Attack();
 
 		// Facing the player in the direction of the mouse when she is not moving.
-		if (!animator.GetBool("IsRunning"))
+		if (rb2d.velocity == Vector2.zero || canFaceTowardsCursor)
 		{
 			Vector2 aimingDir = Input.mousePosition - Camera.main.WorldToScreenPoint(transform.position);
 			float angle = Mathf.Abs(Mathf.Atan2(aimingDir.y, aimingDir.x) * Mathf.Rad2Deg);
-			Debug.Log("Angle:" + angle);
 
 			if (angle <= 90 && !controller.m_FacingRight)
 				controller.Flip();
@@ -60,14 +62,10 @@ public class PlayerActions : MonoBehaviour
 			animator.SetBool("IsAttacking", true);
 			animator.SetBool("IsRunning", false);
 
-			// Only attack during dashing.
-			if (animator.GetCurrentAnimatorStateInfo(0).IsName("Dash"))
-				animator.SetBool("DashAtk", true);
-
-			// Only attacking if grounded and not dashing.
-			else
+			// Perform normal attack if is not dashing.
+			if (!animator.GetCurrentAnimatorStateInfo(0).IsName("Dash"))
 				animator.SetTrigger("Atk1");
-
+			
 			isComboDone = false;
 		}
 	}

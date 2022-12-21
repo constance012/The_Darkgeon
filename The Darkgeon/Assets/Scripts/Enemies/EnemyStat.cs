@@ -39,6 +39,7 @@ public class EnemyStat : MonoBehaviour
 	[Space]
 	public int maxHealth = 50;
 	public float atkDamage = 15f;
+	public float contactDamage = 5f;
 	[HideInInspector] public int currentHP;
 
 	[Header("Defensive")]
@@ -54,6 +55,7 @@ public class EnemyStat : MonoBehaviour
 
 	[HideInInspector] public bool grounded;
 
+	private KillSources source;
 	private bool isDeath, canDissolve;
 	private float fade = 1f;
 
@@ -109,6 +111,13 @@ public class EnemyStat : MonoBehaviour
 		foreach (Collider2D collider in colliders)
 			if (collider.CompareTag("Ground"))
 				grounded = true;
+	}
+
+	private void OnCollisionEnter2D(Collision2D collision)
+	{
+		Debug.Log("Contacted with the player.");
+		if (contactDamage > 0f && collision.collider.CompareTag("Player") && Time.time - player.lastDamagedTime > player.invincibilityTime)
+			player.TakeDamage(contactDamage, knockBackVal, this.transform, source);
 	}
 
 	public void TakeDamage(float dmg, float critDmgMul = 1f, float knockBackVal = 0f)
@@ -183,20 +192,26 @@ public class EnemyStat : MonoBehaviour
 
 	private void GetBehaviour()
 	{
+		name = name.ToLower().Trim();
+
 		switch (name)
 		{
-			case "Crab":
+			case "crab":
 				behaviour = GetComponent<CrabBehaviour>();
+				source = KillSources.Crab;
 				break;
-			case "Rat":
+			case "rat":
 				behaviour = GetComponent<RatBehaviour>();
+				source = KillSources.Rat;
 				break;
-			case "Spiked Slime":
+			case "spiked slime":
 				behaviour = GetComponent<SpikedSlimeBehaviour>();
+				source = KillSources.SpikedSlime;
 				break;
 			
 			default:
 				behaviour = null;
+				source = KillSources.Unknown;
 				Debug.LogWarning("Behaviour script for enemy " + name + " not found!!");
 				break;
 		}
@@ -204,20 +219,23 @@ public class EnemyStat : MonoBehaviour
 
 	private void ResetSpottingTimer()
 	{
+		name = name.ToLower().Trim();
+
 		switch (name)
 		{
-			case "Crab":
+			case "crab":
 				GetComponent<CrabBehaviour>().spottingTimer = 0f;
 				break;
-			case "Rat":
+			case "rat":
 				GetComponent<RatBehaviour>().spottingTimer = 0f;
 				break;
-			case "Spiked Slime":
+			case "spiked slime":
 				behaviour = GetComponent<SpikedSlimeBehaviour>();
 				break;
 			
 			default:
 				behaviour = null;
+				source = KillSources.Unknown;
 				Debug.LogWarning("Behaviour script for enemy " + name + " not found!!");
 				break;
 		}
