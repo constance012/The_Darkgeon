@@ -35,16 +35,18 @@ public class RatBehaviour : MonoBehaviour, IEnemyBehaviour
 	[SerializeField] private float m_AbandonTimer = 8f;
 	[SerializeField] private float timeBetweenAtk = 1.5f;
 
-	// Private fields.
 	[HideInInspector] public bool facingRight = true;
 	[HideInInspector] public bool atkAnimDone = true;
-	bool alreadyAttacked;
-	bool isPatrol = true;
-	bool mustFlip, isTouchingWall;
-	bool playerInAggro, canAttackPlayer;
+	
+	// Private fields.
+	private bool alreadyAttacked;
+	private bool isPatrol = true;
+	private bool mustFlip, isTouchingWall;
+	private bool playerInAggro, canAttackPlayer;
 
-	float timeBetweenJump = 2f;
-	float abandonTimer;
+	private float timeBetweenJump = 0f;  // Default is 2f.
+	private float timeToFlip = 0f;  // Default is 1f.
+	private float abandonTimer;
 	[HideInInspector] public float spottingTimer;
 
 	private void Awake()
@@ -128,7 +130,7 @@ public class RatBehaviour : MonoBehaviour, IEnemyBehaviour
 		}
 
 		// If the player is within the atk range.
-		else if (canAttackPlayer)
+		else if (canAttackPlayer && spottingTimer <= 0f)
 			Attack();
 		#endregion
 	}
@@ -164,6 +166,7 @@ public class RatBehaviour : MonoBehaviour, IEnemyBehaviour
 	{
 		isPatrol = false;
 		timeBetweenJump -= Time.deltaTime;
+		timeToFlip -= Time.deltaTime;
 
 		// Chase is faster than patrol.
 		float direction = Mathf.Sign(player.transform.position.x - centerPoint.position.x) * 1.5f;
@@ -174,16 +177,22 @@ public class RatBehaviour : MonoBehaviour, IEnemyBehaviour
 		// Jump if there's an obstacle ahead.
 		if (isTouchingWall && stats.grounded && timeBetweenJump <= 0f)
 		{
-			rb2d.velocity = new Vector2(0f, 7f);
+			rb2d.velocity = new Vector2(rb2d.velocity.x, 7f);
 			isTouchingWall = false;
 			timeBetweenJump = 2f;
 		}
 
-		if (!facingRight && direction > 0f)
+		if (!facingRight && direction > 0f && timeToFlip <= 0f)
+		{
 			Flip();
+			timeToFlip = 1f;
+		}
 
-		else if (facingRight && direction < 0f)
+		else if (facingRight && direction < 0f && timeToFlip <= 0f)
+		{
 			Flip();
+			timeToFlip = 1f;
+		}
 	}
 
 	public void Attack()

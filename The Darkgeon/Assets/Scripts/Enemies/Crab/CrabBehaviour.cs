@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using UnityEditorInternal;
 
 /// <summary>
 /// Manages the Crab's behaviours and targeting AI.
@@ -36,15 +37,17 @@ public class CrabBehaviour : MonoBehaviour, IEnemyBehaviour
 	[SerializeField] private float m_AbandonTimer = 8f;
 	[SerializeField] private float timeBetweenAtk = 1.5f;
 	
-	// Private fields.
 	[HideInInspector] public bool facingRight = true;
-	bool alreadyAttacked, abilityUsed;
-	bool isPatrol = true;
-	bool mustFlip, isTouchingWall;
-	bool playerInAggro, canAttackPlayer;
+	
+	// Private fields.
+	private bool alreadyAttacked, abilityUsed;
+	private bool isPatrol = true;
+	private bool mustFlip, isTouchingWall;
+	private bool playerInAggro, canAttackPlayer;
 
-	float timeBetweenJump = 2f;
-	float abandonTimer;
+	private float timeBetweenJump = 0f;  // Default is 2f.
+	private float timeToFlip = 0f;  // Default is 1f.
+	private float abandonTimer;
 	[HideInInspector] public float spottingTimer;
 
 	private void Awake()
@@ -120,6 +123,7 @@ public class CrabBehaviour : MonoBehaviour, IEnemyBehaviour
 			if (spottingTimer <= 0f)
 				ChasePlayer();
 
+			// Begin chasing the player if she's right in front of the enemy.
 			if ((!isPlayerBehind && facingRight) || (isPlayerBehind && !facingRight))
 				spottingTimer = 0f;
 
@@ -127,8 +131,8 @@ public class CrabBehaviour : MonoBehaviour, IEnemyBehaviour
 				spottingTimer -= Time.deltaTime;
 		}
 
-		// If the player is within the atk range.
-		else if (canAttackPlayer)
+		// If the player is within the atk range and already spotted her.
+		else if (canAttackPlayer && spottingTimer <= 0f)
 			Attack();
 		#endregion
 	}
@@ -164,6 +168,7 @@ public class CrabBehaviour : MonoBehaviour, IEnemyBehaviour
 	{
 		isPatrol = false;
 		timeBetweenJump -= Time.deltaTime;
+		timeToFlip -= Time.deltaTime;
 
 		// Chase is faster than patrol.
 		float direction = Mathf.Sign(player.transform.position.x - centerPoint.position.x) * 1.5f;  
@@ -173,16 +178,22 @@ public class CrabBehaviour : MonoBehaviour, IEnemyBehaviour
 		// Jump if there's an obstacle ahead.
 		if (isTouchingWall && stats.grounded && timeBetweenJump <= 0f)
 		{
-			rb2d.velocity = new Vector2(0f, 7f);
+			rb2d.velocity = new Vector2(rb2d.velocity.x, 7f);
 			isTouchingWall = false;
 			timeBetweenJump = 2f;
 		}
 
-		if (!facingRight && direction > 0f)
+		if (!facingRight && direction > 0f && timeToFlip <= 0f)
+		{
 			Flip();
+			timeToFlip = 1f;
+		}
 
-		else if (facingRight && direction < 0f)
+		else if (facingRight && direction < 0f && timeToFlip <= 0f)
+		{
 			Flip();
+			timeToFlip = 1f;
+		}
 	}
 
 	public void Attack()

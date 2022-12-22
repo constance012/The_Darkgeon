@@ -14,7 +14,7 @@ public class DebuffManager : MonoBehaviour
 	[SerializeField] private CharacterController2D controller;
 	[SerializeField] private Animator playerAnim;
 	[SerializeField] private Transform debuffPanel;
-	[SerializeField] private GameObject debuffPrefab;
+	[SerializeField] private GameObject debuffUIPrefab;
 
 	private Debuff currentDebuff;
 	private List<Debuff> debuffList = new List<Debuff>();
@@ -53,9 +53,9 @@ public class DebuffManager : MonoBehaviour
 		if (debuffPanel.Find(debuff.name) == null)
 		{
 			debuffList.Add(debuff);
-			ManageHandler(debuff.name);
+			ManageHandler(debuff.name, DelegateAction.Add);
 
-			GameObject debuffUIObj = Instantiate(debuffPrefab, debuffPanel);
+			GameObject debuffUIObj = Instantiate(debuffUIPrefab, debuffPanel);
 
 			debuffUIObj.name = debuff.name;
 			debuffUIObj.GetComponent<Image>().sprite = debuff.icon;
@@ -83,7 +83,7 @@ public class DebuffManager : MonoBehaviour
 			Destroy(debuff.gameObject);
 	}
 
-	private void ManageHandler(string methodName, DelegateAction action = DelegateAction.Add)
+	private void ManageHandler(string methodName, DelegateAction action)
 	{
 		if (action == DelegateAction.Add)
 			switch (methodName)

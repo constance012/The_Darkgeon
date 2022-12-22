@@ -22,6 +22,7 @@ public class GameManager : MonoBehaviour
 
 	[SerializeField] private GameObject deathPanel;
 	[SerializeField] private GameObject pauseMenu;
+	[SerializeField] private GameObject playerUI;
 
 	public static bool isPlayerDeath { get; private set; } = false;
 	public static bool isPause { get; private set; }
@@ -44,12 +45,14 @@ public class GameManager : MonoBehaviour
 		killSourceText = deathPanel.transform.Find("Kill Source").GetComponent<TextMeshProUGUI>();
 
 		pauseMenu = GameObject.Find("Pause Menu");
+		playerUI = GameObject.Find("Player UI");
 	}
 
 	private void Start()
 	{
 		deathPanel.SetActive(false);
 		pauseMenu.SetActive(false);
+		playerUI.SetActive(true);
 	}
 
 	private void Update()
@@ -141,6 +144,7 @@ public class GameManager : MonoBehaviour
 	private void Pause()
 	{
 		pauseMenu.SetActive(true);
+		playerUI.SetActive(false);
 		Time.timeScale = 0f;
 		isPause = true;
 	}
@@ -148,6 +152,7 @@ public class GameManager : MonoBehaviour
 	public void Unpause()
 	{
 		pauseMenu.SetActive(false);
+		playerUI.SetActive(true);
 		Time.timeScale = 1f;
 		isPause = false;
 	}

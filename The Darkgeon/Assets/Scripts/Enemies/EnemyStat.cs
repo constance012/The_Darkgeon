@@ -115,14 +115,22 @@ public class EnemyStat : MonoBehaviour
 
 	private void OnCollisionEnter2D(Collision2D collision)
 	{
-		Debug.Log("Contacted with the player.");
-		if (contactDamage > 0f && collision.collider.CompareTag("Player") && Time.time - player.lastDamagedTime > player.invincibilityTime)
-			player.TakeDamage(contactDamage, knockBackVal, this.transform, source);
+		//Debug.Log("Contacted with the something.");
+
+		if (collision.collider.CompareTag("Player"))
+		{
+			// Engage immediately if contacted with the player.
+			EngageThePlayer();
+
+			// Deal contact damage if needed.
+			if (contactDamage > 0f && Time.time - player.lastDamagedTime > player.invincibilityTime)
+				player.TakeDamage(contactDamage, knockBackVal, this.transform, source);
+		}
 	}
 
 	public void TakeDamage(float dmg, float critDmgMul = 1f, float knockBackVal = 0f)
 	{
-		ResetSpottingTimer();
+		EngageThePlayer();
 
 		if (currentHP > 0)
 		{
@@ -192,9 +200,9 @@ public class EnemyStat : MonoBehaviour
 
 	private void GetBehaviour()
 	{
-		name = name.ToLower().Trim();
+		string enemyName = name.ToLower().Trim();
 
-		switch (name)
+		switch (enemyName)
 		{
 			case "crab":
 				behaviour = GetComponent<CrabBehaviour>();
@@ -217,25 +225,25 @@ public class EnemyStat : MonoBehaviour
 		}
 	}
 
-	private void ResetSpottingTimer()
+	private void EngageThePlayer()
 	{
-		name = name.ToLower().Trim();
+		string enemyName = name.ToLower().Trim();
 
-		switch (name)
+		switch (enemyName)
 		{
 			case "crab":
 				GetComponent<CrabBehaviour>().spottingTimer = 0f;
 				break;
+			
 			case "rat":
 				GetComponent<RatBehaviour>().spottingTimer = 0f;
 				break;
+			
 			case "spiked slime":
-				behaviour = GetComponent<SpikedSlimeBehaviour>();
+				GetComponent<SpikedSlimeBehaviour>().spottingTimer = 0f;
 				break;
 			
 			default:
-				behaviour = null;
-				source = KillSources.Unknown;
 				Debug.LogWarning("Behaviour script for enemy " + name + " not found!!");
 				break;
 		}

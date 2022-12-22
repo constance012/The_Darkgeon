@@ -147,7 +147,7 @@ GameObject:
   - component: {fileID: 2474297046706981568}
   - component: {fileID: 2474297046706981569}
   m_Layer: 5
-  m_Name: Debuff
+  m_Name: Debuff UI
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -172,7 +172,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 23.949, y: 23.949}
+  m_SizeDelta: {x: 23, y: 23}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &2474297046706981568
 CanvasRenderer:

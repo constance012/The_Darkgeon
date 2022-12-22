@@ -1,4 +1,3 @@
-using Newtonsoft.Json.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -26,6 +25,8 @@ public class LevelsManager : MonoBehaviour
 			AsyncOperation loadSceneOp = SceneManager.LoadSceneAsync(currentLevel, LoadSceneMode.Additive);
 			loadSceneOp.completed += LoadSceneOp_completed;
 		}
+		else
+			SceneManager.SetActiveScene(SceneManager.GetSceneByBuildIndex(currentLevel));
 	}
 
 	public void RestartLevel()
