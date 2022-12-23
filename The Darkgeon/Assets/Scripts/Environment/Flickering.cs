@@ -9,26 +9,43 @@ public class Flickering : MonoBehaviour
 {
 	// Reference.
 	[SerializeField] private Light2D light2D;
-	public float flickerTime = 1f;
+	public float delayTime;
+
+	private bool isFlickering = false;
+	private float targetIntensity;
+	private float smoothTime;
+	private float smoothVel = 0f;
 
 	private void Awake()
 	{
 		light2D = GetComponent<Light2D>();
 	}
 
-	private void Start()
+	private void Update()
 	{
-		StartCoroutine(Flicker());
+		if (!isFlickering)
+			StartCoroutine(Flicker());
+
+		light2D.intensity = Mathf.SmoothDamp(light2D.intensity, targetIntensity, ref smoothVel, smoothTime);
 	}
 
 	private IEnumerator Flicker()
 	{
-		while (true)
-		{
-			light2D.intensity = Random.Range(.9f, 1.3f);
+		isFlickering = true;
+		
+		targetIntensity = Random.Range(.6f, 1.3f);
+		delayTime = Random.Range(.3f, 1f);
+		smoothTime = Random.Range(.1f, delayTime);
+		
+		yield return new WaitForSeconds(delayTime);
 
-			yield return new WaitForSeconds(flickerTime);
-		}
+		targetIntensity = Random.Range(.6f, 1.3f);
+		delayTime = Random.Range(.3f, 1f);
+		smoothTime = Random.Range(.1f, delayTime);
+
+		yield return new WaitForSeconds(delayTime);
+
+		isFlickering = false;
 	}
 
 	// A custom random method that ultilizes the original System.Random class of C#.

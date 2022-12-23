@@ -124,6 +124,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   light2D: {fileID: 0}
+  delayTime: 1
 --- !u!1 &8183457029666175632
 GameObject:
   m_ObjectHideFlags: 0

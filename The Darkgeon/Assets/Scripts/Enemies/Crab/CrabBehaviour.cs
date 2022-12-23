@@ -46,7 +46,8 @@ public class CrabBehaviour : MonoBehaviour, IEnemyBehaviour
 	private bool playerInAggro, canAttackPlayer;
 
 	private float timeBetweenJump = 0f;  // Default is 2f.
-	private float timeToFlip = 0f;  // Default is 1f.
+	private float switchDirDelay = 0f;  // Default is 1f.
+	private float chaseDirection = 1.5f;
 	private float abandonTimer;
 	[HideInInspector] public float spottingTimer;
 
@@ -168,12 +169,22 @@ public class CrabBehaviour : MonoBehaviour, IEnemyBehaviour
 	{
 		isPatrol = false;
 		timeBetweenJump -= Time.deltaTime;
-		timeToFlip -= Time.deltaTime;
+		switchDirDelay -= Time.deltaTime;
+
+		float yDistance = Mathf.Abs(player.transform.position.y - centerPoint.position.y);
+		//Debug.Log("Y Distance: " + yDistance);
 
 		// Chase is faster than patrol.
-		float direction = Mathf.Sign(player.transform.position.x - centerPoint.position.x) * 1.5f;  
+		if (yDistance >= 2f && switchDirDelay <= 0f)
+		{
+			chaseDirection = Mathf.Sign(player.transform.position.x - centerPoint.position.x) * 1.5f;
+			switchDirDelay = 1f;
+		}
 
-		rb2d.velocity = new Vector2(walkSpeed * direction * Time.fixedDeltaTime, rb2d.velocity.y);
+		else if (yDistance < 2f)
+			chaseDirection = Mathf.Sign(player.transform.position.x - centerPoint.position.x) * 1.5f;
+
+		rb2d.velocity = new Vector2(walkSpeed * chaseDirection * Time.fixedDeltaTime, rb2d.velocity.y);
 
 		// Jump if there's an obstacle ahead.
 		if (isTouchingWall && stats.grounded && timeBetweenJump <= 0f)
@@ -183,17 +194,11 @@ public class CrabBehaviour : MonoBehaviour, IEnemyBehaviour
 			timeBetweenJump = 2f;
 		}
 
-		if (!facingRight && direction > 0f && timeToFlip <= 0f)
-		{
+		if (!facingRight && chaseDirection > 0f)
 			Flip();
-			timeToFlip = 1f;
-		}
 
-		else if (facingRight && direction < 0f && timeToFlip <= 0f)
-		{
+		else if (facingRight && chaseDirection < 0f)
 			Flip();
-			timeToFlip = 1f;
-		}
 	}
 
 	public void Attack()
