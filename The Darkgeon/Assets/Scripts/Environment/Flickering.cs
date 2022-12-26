@@ -10,6 +10,7 @@ public class Flickering : MonoBehaviour
 	// Reference.
 	[SerializeField] private Light2D light2D;
 	public float delayTime;
+	public float maximumIntensity;
 
 	private bool isFlickering = false;
 	private float targetIntensity;
@@ -33,13 +34,13 @@ public class Flickering : MonoBehaviour
 	{
 		isFlickering = true;
 		
-		targetIntensity = Random.Range(.6f, 1.3f);
+		targetIntensity = Random.Range(.6f, maximumIntensity);
 		delayTime = Random.Range(.3f, 1f);
 		smoothTime = Random.Range(.1f, delayTime);
 		
 		yield return new WaitForSeconds(delayTime);
 
-		targetIntensity = Random.Range(.6f, 1.3f);
+		targetIntensity = Random.Range(.6f, maximumIntensity);
 		delayTime = Random.Range(.3f, 1f);
 		smoothTime = Random.Range(.1f, delayTime);
 
