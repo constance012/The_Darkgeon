@@ -22,6 +22,11 @@ public class Flickering : MonoBehaviour
 		light2D = GetComponent<Light2D>();
 	}
 
+	private void Start()
+	{
+		light2D.intensity = 0f;
+	}
+
 	private void Update()
 	{
 		if (!isFlickering)
