@@ -196,6 +196,7 @@ MonoBehaviour:
   rb2d: {fileID: 0}
   enemyMat: {fileID: 0}
   deathFx: {fileID: 0}
+  swordCursor: {fileID: 2800000, guid: 2d18e23e3ce249b4489b8bcdd02d3f48, type: 3}
   timeToDissolve: 3
   walkSpeed: 70
   checkRadius: 0.1

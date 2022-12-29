@@ -15,6 +15,10 @@ public class MenuRatBehavior : MonoBehaviour
 	[SerializeField] private Material enemyMat;
 	[SerializeField] private ParticleSystem deathFx;
 
+	[Header("Cursors")]
+	[Space]
+	[SerializeField] private Texture2D swordCursor;
+
 	[Header("Others")]
 	[Space]
 	public float timeToDissolve = 5f;
@@ -57,6 +61,22 @@ public class MenuRatBehavior : MonoBehaviour
 	{
 		if (collision.CompareTag("Ground"))
 			isTouchingWall = true;
+	}
+
+	private void OnMouseDown()
+	{
+		Die();
+		MainMenu.isRatAlive = false;
+	}
+
+	private void OnMouseEnter()
+	{
+		Cursor.SetCursor(swordCursor, new Vector2(5, 2), CursorMode.Auto);
+	}
+
+	private void OnMouseExit()
+	{
+		Cursor.SetCursor(null, new Vector2(10, 5), CursorMode.Auto);
 	}
 
 	private void Patrol()

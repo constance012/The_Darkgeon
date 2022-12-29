@@ -1,9 +1,8 @@
-using JetBrains.Annotations;
-using System.Collections;
-using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
+using System.Collections;
+using TMPro;
 
 public class MainMenu : MonoBehaviour
 {
@@ -12,70 +11,48 @@ public class MainMenu : MonoBehaviour
 	[SerializeField] private GameObject ratPrefab;
 	[SerializeField] private TextMeshProUGUI starterText;
 	[SerializeField] private GameObject menuPanel;
+	[SerializeField] private Animator fadeoutPanel;
 	[SerializeField] private Transform spawnerPos;
 
-	[Header("Cursors")]
-	[Space]
-	[SerializeField] private Texture2D defaultCursor;
-	[SerializeField] private Texture2D swordCursor;
-
-	private GameObject onScreenRat;
-	private bool isRatAlive;
+	public static bool isRatAlive { get; set; }
 
 	private void Awake()
 	{
 		spawnerPos = GameObject.Find("Rat Spawner").transform;
 		starterText = transform.Find("Starter Text").GetComponent<TextMeshProUGUI>();
 		menuPanel = transform.Find("Menu Panel").gameObject;
+		fadeoutPanel = transform.Find("Fade Out Panel").GetComponent<Animator>();
 	}
 
 	private void Start()
 	{
-		Cursor.SetCursor(defaultCursor, Vector2.zero, CursorMode.ForceSoftware);
 		menuPanel.SetActive(false);
+		starterText.gameObject.SetActive(false);
 	}
 
 	private void Update()
 	{
-		if (Input.GetMouseButtonDown(0) && !menuPanel.activeInHierarchy)
-		{
+		if (Time.timeSinceLevelLoad > 2f && !starterText.gameObject.activeInHierarchy)
+			starterText.gameObject.SetActive(true);
+
+		if (Input.GetMouseButtonDown(0) && starterText.gameObject.activeInHierarchy)
 			StartCoroutine(EnableUI());
-		}
-		
+
 		if (!isRatAlive)
 		{
 			SpawnRat();
 			isRatAlive = true;
 		}
-
-		if (IsTouchingMouse(onScreenRat))
-		{
-			Cursor.SetCursor(swordCursor, new Vector2(5, 2), CursorMode.Auto);
-			
-			if (Input.GetMouseButtonDown(0))
-			{
-				onScreenRat.GetComponent<MenuRatBehavior>().Die();
-				isRatAlive = false;
-			}
-		}
-		else
-			Cursor.SetCursor(defaultCursor, new Vector2(10, 5), CursorMode.Auto);
-	}
-
-	private bool IsTouchingMouse(GameObject rat)
-	{
-		Vector2 cursorPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-		return rat.GetComponent<CircleCollider2D>().OverlapPoint(cursorPos);
 	}
 
 	private void SpawnRat()
 	{
-		onScreenRat = Instantiate(ratPrefab, spawnerPos.position, Quaternion.identity);
+		Instantiate(ratPrefab, spawnerPos.position, Quaternion.identity);
 	}
 
 	public void NewGame()
 	{
-		StartCoroutine(DisableUI());
+		StartCoroutine(LoadGameScene(" Scenes/Base Scene  "));
 	}
 
 	public void Quit()
@@ -92,24 +69,26 @@ public class MainMenu : MonoBehaviour
 		yield return new WaitForSeconds(2f);
 
 		menuPanel.SetActive(true);
-
-		if (starterText.alpha == 0)
-			starterText.gameObject.SetActive(false);
 	}
 
-	private IEnumerator DisableUI()
+	private IEnumerator LoadGameScene(string sceneName)
 	{
-		AsyncOperation loadSceneOp = SceneManager.LoadSceneAsync("Scenes/Base Scene");
+		AsyncOperation loadSceneOp = SceneManager.LoadSceneAsync(sceneName.Trim());
 		loadSceneOp.allowSceneActivation = false;
 
 		menuPanel.GetComponent<Animator>().SetTrigger("Fade Out");
 
-		yield return new WaitForSeconds(1f);
+		yield return new WaitUntil(() => menuPanel.GetComponent<CanvasGroup>().alpha == 0f);
 
 		FindObjectOfType<MenuTorch>().Extinguish();
 
 		yield return new WaitForSeconds(1f);
 
+		fadeoutPanel.SetTrigger("Fading Out");
+
+		// Activate the scene when the fading process is completed.
+		yield return new WaitUntil(() => fadeoutPanel.GetComponent<Image>().color.a == 1f);
+		
 		loadSceneOp.allowSceneActivation = true;
 	}
 }
