@@ -9,7 +9,7 @@ AnimatorStateTransition:
   m_Name: 
   m_Conditions:
   - m_ConditionMode: 1
-    m_ConditionEvent: Fading Out
+    m_ConditionEvent: Fade Out
     m_EventTreshold: 0
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: 4778358476066678018}
@@ -59,7 +59,7 @@ AnimatorController:
   m_Name: Fade Out Panel
   serializedVersion: 5
   m_AnimatorParameters:
-  - m_Name: Fading Out
+  - m_Name: Fade Out
     m_Type: 9
     m_DefaultFloat: 0
     m_DefaultInt: 0

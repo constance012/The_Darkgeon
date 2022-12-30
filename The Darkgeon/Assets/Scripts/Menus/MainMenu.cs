@@ -8,20 +8,33 @@ public class MainMenu : MonoBehaviour
 {
 	[Header("References")]
 	[Space]
+
+	[Header("Game Objects")]
+	[Space]
 	[SerializeField] private GameObject ratPrefab;
-	[SerializeField] private TextMeshProUGUI starterText;
 	[SerializeField] private GameObject menuPanel;
-	[SerializeField] private Animator fadeoutPanel;
 	[SerializeField] private Transform spawnerPos;
+
+	[Header("Animators")]
+	[Space]
+	[SerializeField] private Animator fadeoutPanel;
+	[SerializeField] private Animator mainCamera;
+
+	[Header("UI Elements")]
+	[Space]
+	[SerializeField] private TextMeshProUGUI starterText;
 
 	public static bool isRatAlive { get; set; }
 
 	private void Awake()
 	{
-		spawnerPos = GameObject.Find("Rat Spawner").transform;
-		starterText = transform.Find("Starter Text").GetComponent<TextMeshProUGUI>();
 		menuPanel = transform.Find("Menu Panel").gameObject;
+		spawnerPos = GameObject.Find("Rat Spawner").transform;
+		
 		fadeoutPanel = transform.Find("Fade Out Panel").GetComponent<Animator>();
+		mainCamera = GameObject.Find("Stationary Cam").GetComponent<Animator>();
+		
+		starterText = transform.Find("Starter Text").GetComponent<TextMeshProUGUI>();
 	}
 
 	private void Start()
@@ -52,7 +65,12 @@ public class MainMenu : MonoBehaviour
 
 	public void NewGame()
 	{
-		StartCoroutine(LoadGameScene(" Scenes/Base Scene  "));
+		StartCoroutine(LoadGameScene());
+	}
+
+	public void Options()
+	{
+		StartCoroutine(LoadOptionsMenu());
 	}
 
 	public void Quit()
@@ -71,9 +89,9 @@ public class MainMenu : MonoBehaviour
 		menuPanel.SetActive(true);
 	}
 
-	private IEnumerator LoadGameScene(string sceneName)
+	private IEnumerator LoadGameScene()
 	{
-		AsyncOperation loadSceneOp = SceneManager.LoadSceneAsync(sceneName.Trim());
+		AsyncOperation loadSceneOp = SceneManager.LoadSceneAsync("Scenes/Base Scene");
 		loadSceneOp.allowSceneActivation = false;
 
 		menuPanel.GetComponent<Animator>().SetTrigger("Fade Out");
@@ -89,6 +107,24 @@ public class MainMenu : MonoBehaviour
 		// Activate the scene when the fading process is completed.
 		yield return new WaitUntil(() => fadeoutPanel.GetComponent<Image>().color.a == 1f);
 		
+		loadSceneOp.allowSceneActivation = true;
+	}
+
+	private IEnumerator LoadOptionsMenu()
+	{
+		AsyncOperation loadSceneOp = SceneManager.LoadSceneAsync("Scenes/Options");
+		loadSceneOp.allowSceneActivation = false;
+
+		menuPanel.GetComponent<Animator>().SetTrigger("Fade Out");
+
+		yield return new WaitUntil(() => menuPanel.GetComponent<CanvasGroup>().alpha == 0f);
+
+		mainCamera.SetTrigger("Pan Down");
+		fadeoutPanel.SetTrigger("Fade Out");
+
+		// Activate the scene when the fading process is completed.
+		yield return new WaitUntil(() => fadeoutPanel.GetComponent<Image>().color.a == 1f);
+
 		loadSceneOp.allowSceneActivation = true;
 	}
 }
