@@ -200,589 +200,589 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: TX Chest Animation Wooden 0
+      name: TX Chest Animation_0
       rect:
         serializedVersion: 2
-        x: 31
-        y: 448
-        width: 34
-        height: 29
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 16
+        y: 431
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: f4e0e2f579704dde0800000000000000
-      internalID: -1309413244939661745
+      spriteID: be65bdd59d9e89845b1d5bca0168024f
+      internalID: 303186335
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: TX Chest Animation Wooden 1
+      name: TX Chest Animation_1
       rect:
         serializedVersion: 2
-        x: 95
-        y: 448
-        width: 34
-        height: 32
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 80
+        y: 431
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 9b1a0fc7b679b7420800000000000000
-      internalID: 2628861295414256057
+      spriteID: ae2e73b9e97bfdf428fca4365a8301f7
+      internalID: 761704403
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: TX Chest Animation Wooden 2
+      name: TX Chest Animation_2
       rect:
         serializedVersion: 2
-        x: 159
-        y: 448
-        width: 34
-        height: 35
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 144
+        y: 431
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 73dc86c12fd534b60800000000000000
-      internalID: 7729124679938002231
+      spriteID: b0234a55f1f12584886d674149c98081
+      internalID: 309413612
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: TX Chest Animation Wooden 3
+      name: TX Chest Animation_3
       rect:
         serializedVersion: 2
-        x: 223
-        y: 448
-        width: 34
-        height: 37
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 208
+        y: 431
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 41cd4f5975c7b7650800000000000000
-      internalID: 6231711225017064468
+      spriteID: a3e6c16e0b1c91646898a05cb4220204
+      internalID: -1795971993
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: TX Chest Animation Wooden 4
+      name: TX Chest Animation_4
       rect:
         serializedVersion: 2
-        x: 287
-        y: 448
-        width: 34
-        height: 40
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 272
+        y: 431
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: c39d1420fb7553c10800000000000000
-      internalID: 2032627284715886908
+      spriteID: e3193f24820fae1479db8b09332592e3
+      internalID: -1307424738
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: TX Chest Animation Wooden 5
+      name: TX Chest Animation_5
       rect:
         serializedVersion: 2
-        x: 351
-        y: 448
-        width: 34
-        height: 38
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 336
+        y: 431
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: c05c70bdfe4293c20800000000000000
-      internalID: 3186618823931839756
+      spriteID: 1cc9c12ab4831b544beedaa57e3f6258
+      internalID: 2013097557
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: TX Chest Animation Wooden 6
+      name: TX Chest Animation_6
       rect:
         serializedVersion: 2
-        x: 415
-        y: 448
-        width: 34
-        height: 36
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 400
+        y: 431
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 560b1a31057f10ce0800000000000000
-      internalID: -1440598482483040155
+      spriteID: b8d22ae84420b9643a7c78e8c2e4c5fc
+      internalID: -1046581168
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: TX Chest Animation Iron 0
+      name: TX Chest Animation_7
       rect:
         serializedVersion: 2
-        x: 31
-        y: 384
-        width: 34
-        height: 30
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 16
+        y: 367
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 09ea96bcab272a840800000000000000
-      internalID: 5233871863560122000
+      spriteID: d6fa5c49e1359eb4bb69264a2cec9f07
+      internalID: 1961473554
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: TX Chest Animation Iron 1
+      name: TX Chest Animation_8
       rect:
         serializedVersion: 2
-        x: 95
-        y: 384
-        width: 34
-        height: 34
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 80
+        y: 367
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 4c8d7a51d072e7d20800000000000000
-      internalID: 3278100515923679428
+      spriteID: 23def333ffde0b04e9ed6cf44dfe7eb7
+      internalID: 462142327
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: TX Chest Animation Iron 2
+      name: TX Chest Animation_9
       rect:
         serializedVersion: 2
-        x: 159
-        y: 384
-        width: 34
-        height: 38
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 144
+        y: 367
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: efce3c6f1ca92e170800000000000000
-      internalID: 8206291628881865982
+      spriteID: 9a399d456e99921489e58bf63d909524
+      internalID: 100871504
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: TX Chest Animation Iron 3
+      name: TX Chest Animation_10
       rect:
         serializedVersion: 2
-        x: 223
-        y: 384
-        width: 34
-        height: 41
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 208
+        y: 367
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 81cc1bb1106474990800000000000000
-      internalID: -7401870491986572264
+      spriteID: 7c35a2547f1f8a949a3474889284e82a
+      internalID: -1805650824
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: TX Chest Animation Iron 4
+      name: TX Chest Animation_11
       rect:
         serializedVersion: 2
-        x: 287
-        y: 384
-        width: 34
-        height: 39
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 272
+        y: 367
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 7e3ae04d338fbcc90800000000000000
-      internalID: -7148347082035780633
+      spriteID: 8ce815dd4dfce0c4bb9d60a0c70e21f2
+      internalID: 677960951
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: TX Chest Animation Iron 5
+      name: TX Chest Animation_12
       rect:
         serializedVersion: 2
-        x: 351
-        y: 384
-        width: 34
-        height: 35
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 336
+        y: 367
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 0827cdfc69c8437a0800000000000000
-      internalID: -6398334591226318208
+      spriteID: 7ce9f6fc71ae82f4ea00cf86aeb98978
+      internalID: 733442784
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: TX Chest Animation Iron 6
+      name: TX Chest Animation_13
       rect:
         serializedVersion: 2
-        x: 415
-        y: 384
-        width: 34
-        height: 32
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 400
+        y: 367
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 861f4155e7a84cd50800000000000000
-      internalID: 6756677616160534888
+      spriteID: 1d5087e4c04a5cf469ec0d62bb2b2af8
+      internalID: -387277452
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: TX Chest Animation Silver 0
+      name: TX Chest Animation_14
       rect:
         serializedVersion: 2
-        x: 31
-        y: 320
-        width: 34
-        height: 30
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 16
+        y: 303
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 481f838b9892d6530800000000000000
-      internalID: 3849778927949640068
+      spriteID: ea9319b042086cb43a0fc5c5fe1e7074
+      internalID: -977893446
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: TX Chest Animation Silver 1
+      name: TX Chest Animation_15
       rect:
         serializedVersion: 2
-        x: 96
-        y: 320
-        width: 34
-        height: 34
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 80
+        y: 303
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 8c87850b00e878b70800000000000000
-      internalID: 8901239322130806984
+      spriteID: 377deede0cc54dc4bb226b55a4aa43f2
+      internalID: -86353382
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: TX Chest Animation Silver 2
+      name: TX Chest Animation_16
       rect:
         serializedVersion: 2
-        x: 159
-        y: 320
-        width: 34
-        height: 36
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 144
+        y: 303
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 4d11e67a7cdab9e00800000000000000
-      internalID: 1052626010940248532
+      spriteID: 9370daa36966c0e4086c9c647544b36a
+      internalID: -776401476
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: TX Chest Animation Silver 3
+      name: TX Chest Animation_17
       rect:
         serializedVersion: 2
-        x: 223
-        y: 320
-        width: 34
-        height: 37
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 208
+        y: 303
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: c3080c5c3097a4b20800000000000000
-      internalID: 3119438749017079868
+      spriteID: e2b28eab9c8fc1e4c91ccef962752d03
+      internalID: -2072807579
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: TX Chest Animation Silver 4
+      name: TX Chest Animation_18
       rect:
         serializedVersion: 2
-        x: 287
-        y: 320
-        width: 34
-        height: 39
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 272
+        y: 303
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 2118a5fb939834440800000000000000
-      internalID: 4918926099135234322
+      spriteID: ee6a0efc9bf6c8b4184eebbd9e415c18
+      internalID: -1212864109
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: TX Chest Animation Silver 5
+      name: TX Chest Animation_19
       rect:
         serializedVersion: 2
-        x: 351
-        y: 320
-        width: 34
-        height: 38
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 336
+        y: 303
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 1434b716ef823c3f0800000000000000
-      internalID: -881816029012212927
+      spriteID: 7fcd00c6128837142927a71d2c57c51c
+      internalID: 877770546
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: TX Chest Animation Silver 6
+      name: TX Chest Animation_20
       rect:
         serializedVersion: 2
-        x: 415
-        y: 320
-        width: 34
-        height: 37
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 400
+        y: 303
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: e9a85931c69c95c40800000000000000
-      internalID: 5501649885831989918
+      spriteID: 26e67654073f2e7428b37dd6b220c23f
+      internalID: 1550009259
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: TX Chest Animation Golden 0
+      name: TX Chest Animation_21
       rect:
         serializedVersion: 2
-        x: 31
-        y: 256
-        width: 34
-        height: 29
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 16
+        y: 239
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 76d1d7803a6f3df90800000000000000
-      internalID: -6929924221510541977
+      spriteID: 244fc8d273871d6498be70b569e5637e
+      internalID: -358129642
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: TX Chest Animation Golden 1
+      name: TX Chest Animation_22
       rect:
         serializedVersion: 2
-        x: 95
-        y: 256
-        width: 34
-        height: 33
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 80
+        y: 239
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 04f02559f8d02ab80800000000000000
-      internalID: -8385124645873774784
+      spriteID: 310a652fef8822145a14398b79dc95f8
+      internalID: -811664633
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: TX Chest Animation Golden 2
+      name: TX Chest Animation_23
       rect:
         serializedVersion: 2
-        x: 159
-        y: 256
-        width: 34
-        height: 35
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 144
+        y: 239
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 4981345c9667258d0800000000000000
-      internalID: -2859092616773691244
+      spriteID: a4429b961201ea248ad8e8977a0177df
+      internalID: 1345337028
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: TX Chest Animation Golden 3
+      name: TX Chest Animation_24
       rect:
         serializedVersion: 2
-        x: 223
-        y: 256
-        width: 34
-        height: 37
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 208
+        y: 239
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 11a2911dd97421d10800000000000000
-      internalID: 2094815519824226833
+      spriteID: 5ea284874d5fe5443b20597400236975
+      internalID: -2040805030
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: TX Chest Animation Golden 4
+      name: TX Chest Animation_25
       rect:
         serializedVersion: 2
-        x: 287
-        y: 256
-        width: 34
-        height: 39
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 272
+        y: 239
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 3b8d0f8ac67c896d0800000000000000
-      internalID: -2983415483628201805
+      spriteID: 3ccd0a7e703cdc04db5040ce733ddfc7
+      internalID: 937455374
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: TX Chest Animation Golden 5
+      name: TX Chest Animation_26
       rect:
         serializedVersion: 2
-        x: 351
-        y: 256
-        width: 34
-        height: 38
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 336
+        y: 239
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 79dabd7f5ef271a10800000000000000
-      internalID: 1880024034202856855
+      spriteID: f322ca4606d31ab47b43ffc3a568f40e
+      internalID: -1294543398
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: TX Chest Animation Golden 6
+      name: TX Chest Animation_27
       rect:
         serializedVersion: 2
-        x: 415
-        y: 256
-        width: 34
-        height: 36
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 400
+        y: 239
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 9e7f9c9dd48090ac0800000000000000
-      internalID: -3888567672798316567
+      spriteID: a26c2e7791eb4be4caa50cb8c96ffced
+      internalID: 1315526571
       vertices: []
       indices: 
       edges: []
@@ -798,34 +798,34 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      TX Chest Animation Silver 1: 8901239322130806984
-      TX Chest Animation Iron 0: 5233871863560122000
-      TX Chest Animation Silver 6: 5501649885831989918
-      TX Chest Animation Iron 4: -7148347082035780633
-      TX Chest Animation Golden 2: -2859092616773691244
-      TX Chest Animation Silver 3: 3119438749017079868
-      TX Chest Animation Iron 5: -6398334591226318208
-      TX Chest Animation Golden 0: -6929924221510541977
-      TX Chest Animation Golden 3: 2094815519824226833
-      TX Chest Animation Iron 2: 8206291628881865982
-      TX Chest Animation Iron 6: 6756677616160534888
-      TX Chest Animation Wooden 5: 3186618823931839756
-      TX Chest Animation Wooden 2: 7729124679938002231
-      TX Chest Animation Wooden 4: 2032627284715886908
-      TX Chest Animation Golden 4: -2983415483628201805
-      TX Chest Animation Silver 4: 4918926099135234322
-      TX Chest Animation Iron 1: 3278100515923679428
-      TX Chest Animation Silver 2: 1052626010940248532
-      TX Chest Animation Wooden 3: 6231711225017064468
-      TX Chest Animation Wooden 1: 2628861295414256057
-      TX Chest Animation Golden 1: -8385124645873774784
-      TX Chest Animation Wooden 6: -1440598482483040155
-      TX Chest Animation Iron 3: -7401870491986572264
-      TX Chest Animation Silver 5: -881816029012212927
-      TX Chest Animation Golden 5: 1880024034202856855
-      TX Chest Animation Silver 0: 3849778927949640068
-      TX Chest Animation Wooden 0: -1309413244939661745
-      TX Chest Animation Golden 6: -3888567672798316567
+      TX Chest Animation_14: -977893446
+      TX Chest Animation_26: -1294543398
+      TX Chest Animation_15: -86353382
+      TX Chest Animation_27: 1315526571
+      TX Chest Animation_12: 733442784
+      TX Chest Animation_16: -776401476
+      TX Chest Animation_1: 761704403
+      TX Chest Animation_6: -1046581168
+      TX Chest Animation_24: -2040805030
+      TX Chest Animation_10: -1805650824
+      TX Chest Animation_21: -358129642
+      TX Chest Animation_11: 677960951
+      TX Chest Animation_17: -2072807579
+      TX Chest Animation_19: 877770546
+      TX Chest Animation_2: 309413612
+      TX Chest Animation_0: 303186335
+      TX Chest Animation_4: -1307424738
+      TX Chest Animation_13: -387277452
+      TX Chest Animation_8: 462142327
+      TX Chest Animation_7: 1961473554
+      TX Chest Animation_23: 1345337028
+      TX Chest Animation_9: 100871504
+      TX Chest Animation_20: 1550009259
+      TX Chest Animation_18: -1212864109
+      TX Chest Animation_3: -1795971993
+      TX Chest Animation_5: 2013097557
+      TX Chest Animation_25: 937455374
+      TX Chest Animation_22: -811664633
   spritePackingTag: 
   pSDRemoveMatte: 0
   pSDShowRemoveMatteOption: 0
