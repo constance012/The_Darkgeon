@@ -3,6 +3,9 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
+/// <summary>
+/// A class contains all the functions for the Options Menu.
+/// </summary>
 public class Options : MonoBehaviour
 {
 	[Header("References")]

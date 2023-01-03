@@ -351,24 +351,28 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   sounds:
   - clip: {fileID: 8300000, guid: 64dd6c50edc411143b2d34f46fceec4c, type: 3}
+    mixerGroup: {fileID: 5569475350765865776, guid: 9c4400b4841b812449e7ba363a2a5a5b, type: 2}
     source: {fileID: 0}
     name: Normal Attack 1
     volume: 1
     pitch: 0.95
     loop: 0
   - clip: {fileID: 8300000, guid: b45395ce2f3ee104fbe09d3ce54fc19b, type: 3}
+    mixerGroup: {fileID: 5569475350765865776, guid: 9c4400b4841b812449e7ba363a2a5a5b, type: 2}
     source: {fileID: 0}
     name: Normal Attack 2
     volume: 1
     pitch: 0.95
     loop: 0
   - clip: {fileID: 8300000, guid: bfa9b267e7966cc4ca3e8c898282a534, type: 3}
+    mixerGroup: {fileID: 5569475350765865776, guid: 9c4400b4841b812449e7ba363a2a5a5b, type: 2}
     source: {fileID: 0}
     name: Dash Attack 1
     volume: 1
     pitch: 0.9
     loop: 0
   - clip: {fileID: 8300000, guid: 3e587867bb039e2438ca923e72d6aef4, type: 3}
+    mixerGroup: {fileID: 5569475350765865776, guid: 9c4400b4841b812449e7ba363a2a5a5b, type: 2}
     source: {fileID: 0}
     name: Dash Attack 2
     volume: 1

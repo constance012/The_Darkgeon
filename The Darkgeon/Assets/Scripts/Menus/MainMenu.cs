@@ -4,6 +4,9 @@ using UnityEngine.UI;
 using System.Collections;
 using TMPro;
 
+/// <summary>
+/// A class contains all the functions for the Main Menu.
+/// </summary>
 public class MainMenu : MonoBehaviour
 {
 	[Header("References")]
@@ -25,6 +28,7 @@ public class MainMenu : MonoBehaviour
 	[SerializeField] private TextMeshProUGUI starterText;
 
 	public static bool isRatAlive { get; set; }
+	public static bool isIntroDone { get; private set; }
 
 	private void Awake()
 	{
@@ -39,17 +43,25 @@ public class MainMenu : MonoBehaviour
 
 	private void Start()
 	{
-		menuPanel.SetActive(false);
+		if (!isIntroDone)
+			menuPanel.SetActive(false);
+
 		starterText.gameObject.SetActive(false);
+
+		if (isRatAlive)
+			SpawnRat();
 	}
 
 	private void Update()
 	{
-		if (Time.timeSinceLevelLoad > 2f && !starterText.gameObject.activeInHierarchy)
-			starterText.gameObject.SetActive(true);
+		if (!isIntroDone)
+		{
+			if (Time.timeSinceLevelLoad > 2f && !starterText.gameObject.activeInHierarchy)
+				starterText.gameObject.SetActive(true);
 
-		if (Input.GetMouseButtonDown(0) && starterText.gameObject.activeInHierarchy)
-			StartCoroutine(EnableUI());
+			if (Input.GetMouseButtonDown(0) && starterText.gameObject.activeInHierarchy)
+				StartCoroutine(EnableUI());
+		}
 
 		if (!isRatAlive)
 		{
@@ -87,6 +99,8 @@ public class MainMenu : MonoBehaviour
 		yield return new WaitForSeconds(2f);
 
 		menuPanel.SetActive(true);
+
+		isIntroDone = true;
 	}
 
 	private IEnumerator LoadGameScene()
@@ -102,7 +116,7 @@ public class MainMenu : MonoBehaviour
 
 		yield return new WaitForSeconds(1f);
 
-		fadeoutPanel.SetTrigger("Fading Out");
+		fadeoutPanel.SetTrigger("Fade Out");
 
 		// Activate the scene when the fading process is completed.
 		yield return new WaitUntil(() => fadeoutPanel.GetComponent<Image>().color.a == 1f);

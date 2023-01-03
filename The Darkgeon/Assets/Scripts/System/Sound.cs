@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Audio;
 
 /// <summary>
 /// A custom class contains informations about an Audio Clip.
@@ -8,6 +9,7 @@ using UnityEngine;
 public class Sound
 {
 	public AudioClip clip;
+	public AudioMixerGroup mixerGroup;
 	[HideInInspector] public AudioSource source;
 
 	public string name;

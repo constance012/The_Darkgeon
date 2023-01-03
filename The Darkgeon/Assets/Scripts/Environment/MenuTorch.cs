@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Experimental.GlobalIllumination;
 
 public class MenuTorch : MonoBehaviour
 {
@@ -20,6 +21,9 @@ public class MenuTorch : MonoBehaviour
 	private void Start()
 	{
 		Extinguish();
+
+		if (MainMenu.isIntroDone)
+			LightUp();
 	}
 
 	private void Update()
