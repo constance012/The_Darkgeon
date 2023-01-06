@@ -2165,7 +2165,7 @@ MonoBehaviour:
     ModeOverride: 0
     LensShift: {x: 0, y: 0}
     GateFit: 2
-    m_SensorSize: {x: 1.200957, y: 1}
+    m_SensorSize: {x: 1.1116427, y: 1}
   m_Transitions:
     m_BlendHint: 0
     m_InheritPosition: 0
@@ -7846,6 +7846,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: de27b7df5e90cb141b492f38616e8220, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  mixer: {fileID: 24100000, guid: 9c4400b4841b812449e7ba363a2a5a5b, type: 2}
   ratPrefab: {fileID: 870357710861358019, guid: 1ce6376287612964db2ec482309235ee, type: 3}
   menuPanel: {fileID: 0}
   spawnerPos: {fileID: 0}

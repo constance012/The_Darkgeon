@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using UnityEngine.Audio;
 using System.Collections;
 using TMPro;
 
@@ -11,6 +12,8 @@ public class MainMenu : MonoBehaviour
 {
 	[Header("References")]
 	[Space]
+
+	[SerializeField] private AudioMixer mixer;
 
 	[Header("Game Objects")]
 	[Space]
@@ -29,6 +32,7 @@ public class MainMenu : MonoBehaviour
 
 	public static bool isRatAlive { get; set; }
 	public static bool isIntroDone { get; private set; }
+	public static bool isThingsSet { get; private set; }
 
 	private void Awake()
 	{
@@ -43,6 +47,9 @@ public class MainMenu : MonoBehaviour
 
 	private void Start()
 	{
+		if (!isThingsSet)
+			SettingThingsUp();
+		
 		if (!isIntroDone)
 			menuPanel.SetActive(false);
 
@@ -89,6 +96,24 @@ public class MainMenu : MonoBehaviour
 	{
 		Debug.Log("Quiting...");
 		Application.Quit();
+	}
+
+	/// <summary>
+	/// Setting up essential things once when the game first start.
+	/// </summary>
+	private void SettingThingsUp()
+	{
+		float masterVol = PlayerPrefs.GetFloat("MasterVolume", 0f);
+		float musicVol = PlayerPrefs.GetFloat("MusicVolume", 0f);
+		float soundsVol = PlayerPrefs.GetFloat("SoundsVolume", 0f);
+
+		mixer.SetFloat("masterVol", masterVol);
+		mixer.SetFloat("musicVol", musicVol);
+		mixer.SetFloat("soundsVol", soundsVol);
+
+		Debug.Log("All things successfully set up.");
+
+		isThingsSet = true;
 	}
 
 	private IEnumerator EnableUI()
