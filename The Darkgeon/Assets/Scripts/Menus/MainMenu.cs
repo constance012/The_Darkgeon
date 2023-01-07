@@ -1,8 +1,9 @@
+using System;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using UnityEngine.Audio;
-using System.Collections;
 using TMPro;
 
 /// <summary>
@@ -103,6 +104,8 @@ public class MainMenu : MonoBehaviour
 	/// </summary>
 	private void SettingThingsUp()
 	{
+		Time.timeScale = 1f;
+		// Audio.
 		float masterVol = PlayerPrefs.GetFloat("MasterVolume", 0f);
 		float musicVol = PlayerPrefs.GetFloat("MusicVolume", 0f);
 		float soundsVol = PlayerPrefs.GetFloat("SoundsVolume", 0f);
@@ -110,6 +113,12 @@ public class MainMenu : MonoBehaviour
 		mixer.SetFloat("masterVol", masterVol);
 		mixer.SetFloat("musicVol", musicVol);
 		mixer.SetFloat("soundsVol", soundsVol);
+
+		// Graphics.
+		GraphicsOptionPage.resoArr = Screen.resolutions;
+		QualitySettings.SetQualityLevel(PlayerPrefs.GetInt("QualityLevel", 3));
+		Application.targetFrameRate = Convert.ToInt32(PlayerPrefs.GetFloat("TargetFramerate", 60f));
+		QualitySettings.vSyncCount = PlayerPrefs.GetInt("UseVsync", 0);
 
 		Debug.Log("All things successfully set up.");
 

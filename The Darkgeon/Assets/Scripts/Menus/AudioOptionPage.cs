@@ -3,6 +3,9 @@ using UnityEngine;
 using UnityEngine.Audio;
 using UnityEngine.UI;
 
+/// <summary>
+/// A class manages all Audio settings in the Options Menu.
+/// </summary>
 public class AudioOptionPage : MonoBehaviour
 {
 	[Header("References")]
@@ -32,7 +35,7 @@ public class AudioOptionPage : MonoBehaviour
 
 	private void Start()
 	{
-		Load();
+		ReloadUI();
 	}
 
 	public void SetMasterVolume(float amount)
@@ -65,7 +68,7 @@ public class AudioOptionPage : MonoBehaviour
 		return ((1f - invertedPercent) * 100f).ToString("0");
 	}
 
-	private void Load()
+	private void ReloadUI()
 	{
 		float masterVol = PlayerPrefs.GetFloat("MasterVolume", 0f);
 		float musicVol = PlayerPrefs.GetFloat("MusicVolume", 0f);
