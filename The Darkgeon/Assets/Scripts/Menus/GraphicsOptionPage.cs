@@ -5,6 +5,7 @@ using TMPro;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
+using static UnityEngine.Rendering.DebugUI;
 
 /// <summary>
 /// A class manages all Graphics settings in the Options Menu.
@@ -81,8 +82,7 @@ public class GraphicsOptionPage : MonoBehaviour
 		}
 		else
 		{
-			framerateSlider.value = PlayerPrefs.GetFloat("TargetFramerate", 60f);
-			framerateNumber.text = PlayerPrefs.GetFloat("TargetFramerate", 60f).ToString();
+			framerateSlider.value = PlayerPrefs.GetFloat("TargetFramerate", 120f);
 			framerateSlider.interactable = true;
 			framerateNumber.color = Color.white;
 		}
@@ -95,6 +95,7 @@ public class GraphicsOptionPage : MonoBehaviour
 	{
 		if (isFullsreen)
 			resolutionDropdown.SetValueWithoutNotify(fullscreenIndex);
+
 		else if (!resolutionDropdown.interactable)
 			resolutionDropdown.value = PlayerPrefs.GetInt("ResolutionIndex", 7); ;  // Return to default resolution only once time.
 
@@ -111,6 +112,18 @@ public class GraphicsOptionPage : MonoBehaviour
 		Screen.SetResolution(selectedResolution.width, selectedResolution.height, Screen.fullScreen);
 
 		PlayerPrefs.SetInt("ResolutionIndex", index);
+	}
+
+	public void ResetToDefault()
+	{
+		// Perform reset.
+		PlayerPrefs.SetInt("QualityLevel", 3);
+		PlayerPrefs.SetInt("ResolutionIndex", 7);
+		PlayerPrefs.SetInt("IsFullscreen", 0);
+		PlayerPrefs.SetFloat("TargetFramerate", 120f);
+		PlayerPrefs.SetInt("UseVsync", 0);
+
+		ReloadUI();
 	}
 
 	private void SetUpResoDropdown()
@@ -136,11 +149,12 @@ public class GraphicsOptionPage : MonoBehaviour
 	{
 		qualityDropdown.value = PlayerPrefs.GetInt("QualityLevel", 3);
 
+		resolutionDropdown.value = PlayerPrefs.GetInt("ResolutionIndex", 7);
+
 		fullscreenToggle.isOn = PlayerPrefs.GetInt("IsFullscreen", 0) == 1;
-		resolutionDropdown.SetValueWithoutNotify(fullscreenToggle.isOn ? fullscreenIndex : PlayerPrefs.GetInt("ResolutionIndex", 7));
-		resolutionDropdown.interactable = !fullscreenToggle.isOn;
+
+		framerateSlider.value = PlayerPrefs.GetFloat("TargetFramerate", 120f);
 
 		vsyncToggle.isOn = PlayerPrefs.GetInt("UseVsync", 0) == 1;
-		SetVsync(vsyncToggle.isOn);
 	}
 }

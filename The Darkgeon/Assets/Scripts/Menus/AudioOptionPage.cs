@@ -62,6 +62,15 @@ public class AudioOptionPage : MonoBehaviour
 		PlayerPrefs.SetFloat("SoundsVolume", amount);
 	}
 
+	public void ResetToDefault()
+	{
+		PlayerPrefs.SetFloat("MasterVolume", 0f);
+		PlayerPrefs.SetFloat("MusicVolume", 0f);
+		PlayerPrefs.SetFloat("SoundsVolume", 0f);
+
+		ReloadUI();
+	}
+
 	private string GetVolumeAmount(float amount)
 	{
 		float invertedPercent = Mathf.Abs(amount) / 80f;
@@ -77,9 +86,5 @@ public class AudioOptionPage : MonoBehaviour
 		masterSlider.value = masterVol;
 		musicSlider.value = musicVol;
 		soundsSlider.value = soundsVol;
-
-		masterAmountUI.text = GetVolumeAmount(masterVol);
-		musicAmountUI.text = GetVolumeAmount(musicVol);
-		soundsAmountUI.text = GetVolumeAmount(soundsVol);
 	}
 }

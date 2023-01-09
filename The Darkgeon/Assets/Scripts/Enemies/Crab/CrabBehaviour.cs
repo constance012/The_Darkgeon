@@ -1,6 +1,5 @@
 using UnityEngine;
 using System.Collections;
-using UnityEditorInternal;
 
 /// <summary>
 /// Manages the Crab's behaviours and targeting AI.
