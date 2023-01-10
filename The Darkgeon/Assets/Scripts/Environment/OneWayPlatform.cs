@@ -17,9 +17,9 @@ public class OneWayPlatform : MonoBehaviour
 
 	private void OnCollisionStay2D(Collision2D collision)
 	{
-		verticalMove = Input.GetAxisRaw("UseLadder");
+		verticalMove = InputManager.instance.GetAxisRaw("vertical");
 
-		if (verticalMove == -1f && effector.surfaceArc != 0)
+		if (verticalMove < 0f && effector.surfaceArc != 0)
 			effector.surfaceArc = 0;
 	}
 

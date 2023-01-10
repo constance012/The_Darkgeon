@@ -1,0 +1,33 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bd2b9a4d259fdbb418dbe54c39e9222d, type: 3}
+  m_Name: Keyset 1
+  m_EditorClassIdentifier: 
+  keyList:
+  - action: 0
+    keyCode: 97
+  - action: 1
+    keyCode: 100
+  - action: 2
+    keyCode: 119
+  - action: 3
+    keyCode: 115
+  - action: 4
+    keyCode: 32
+  - action: 5
+    keyCode: 306
+  - action: 6
+    keyCode: 304
+  - action: 7
+    keyCode: 116
+  - action: 8
+    keyCode: 27

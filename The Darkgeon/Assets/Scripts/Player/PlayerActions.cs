@@ -40,8 +40,8 @@ public class PlayerActions : MonoBehaviour
 		if (Input.GetMouseButtonDown(0) && animator.GetBool("Grounded") && isComboDone)
 			Attack();
 
-		// Facing the player in the direction of the mouse when she is not moving.
-		if (rb2d.velocity == Vector2.zero || canFaceTowardsCursor)
+		// Facing the player in the direction of the mouse when certain conditions are matched.
+		if ((rb2d.velocity == Vector2.zero || canFaceTowardsCursor) && !GameManager.isPause)
 		{
 			Vector2 aimingDir = Input.mousePosition - Camera.main.WorldToScreenPoint(transform.position);
 			float angle = Mathf.Abs(Mathf.Atan2(aimingDir.y, aimingDir.x) * Mathf.Rad2Deg);

@@ -5,7 +5,7 @@ public class LevelsManager : MonoBehaviour
 {
 	public static LevelsManager instance { get; private set; }
 
-	private int currentLevel = 1;
+	private int currentLevel = 3;
 
 	private void Awake()
 	{

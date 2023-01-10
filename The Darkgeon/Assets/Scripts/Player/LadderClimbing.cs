@@ -28,7 +28,7 @@ public class LadderClimbing : MonoBehaviour
 
 	private void Update()
 	{
-		verticalMove = Input.GetAxisRaw("Vertical");
+		verticalMove = InputManager.instance.GetAxisRaw("vertical");
 
 		if (useLadder)
 		{

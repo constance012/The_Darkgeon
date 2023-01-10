@@ -38,27 +38,28 @@ public class PlayerMovement : MonoBehaviour
 			return;
 		}
 
-		horizontalMove = Input.GetAxisRaw("Horizontal");
+		horizontalMove = InputManager.instance.GetAxisRaw("Horizontal");
+		Debug.Log(horizontalMove);
 
 		animator.SetBool("IsRunning", Mathf.Abs(horizontalMove) == 1);
 		animator.SetFloat("Speed", Mathf.Abs(horizontalMove));
 		animator.SetFloat("yVelocity", rb2D.velocity.y);
 
-		if (Input.GetButtonDown("Jump"))
+		if (InputManager.instance.GetKeyDown(KeybindingActions.Jump))
 		{
 			jump = true;
 			animator.SetBool("IsJumping", true);
 		}
 
-		if (Input.GetButtonDown("Dash") && Time.time > dashAllowTime && !controller.onSlope)
+		if (InputManager.instance.GetKeyDown(KeybindingActions.Dash) && Time.time > dashAllowTime && !controller.onSlope)
 		{
 			dash = true;
 			dashAllowTime = Time.time + 1f;
 		}
 
-		if (Input.GetButtonDown("Crouch"))
+		if (InputManager.instance.GetKeyDown(KeybindingActions.Crouch))
 			crouch = true;
-		else if (Input.GetButtonUp("Crouch"))
+		else if (InputManager.instance.GetKeyUp(KeybindingActions.Crouch))
 			crouch = false;
 	}
 

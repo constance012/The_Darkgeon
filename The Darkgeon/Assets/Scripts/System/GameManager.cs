@@ -57,7 +57,7 @@ public class GameManager : MonoBehaviour
 
 	private void Update()
 	{
-		if (Input.GetKeyDown(KeyCode.Escape) && !isPlayerDeath)
+		if (InputManager.instance.GetKeyDown(KeybindingActions.Pause) && !isPlayerDeath)
 			Invoke(!isPause ? nameof(Pause) : nameof(Unpause), 0f);
 
 		if (Input.GetKeyDown(KeyCode.R))
