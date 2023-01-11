@@ -13,21 +13,21 @@ MonoBehaviour:
   m_Name: Keyset 1
   m_EditorClassIdentifier: 
   keyList:
-  - action: 0
-    keyCode: 97
   - action: 1
-    keyCode: 100
+    keyCode: 97
   - action: 2
-    keyCode: 119
+    keyCode: 100
   - action: 3
-    keyCode: 115
+    keyCode: 119
   - action: 4
-    keyCode: 32
+    keyCode: 115
   - action: 5
-    keyCode: 306
+    keyCode: 32
   - action: 6
-    keyCode: 304
+    keyCode: 306
   - action: 7
-    keyCode: 116
+    keyCode: 304
   - action: 8
+    keyCode: 116
+  - action: 9
     keyCode: 27

@@ -1,5 +1,6 @@
 public enum KeybindingActions
 {
+	None,
 	MoveLeft,
 	MoveRight,
 	ClimbUp,
