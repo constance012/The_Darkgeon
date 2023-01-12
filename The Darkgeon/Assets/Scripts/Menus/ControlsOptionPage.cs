@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine.Events;
 using TMPro;
-using Unity.VisualScripting;
 
 public class ControlsOptionPage : MonoBehaviour
 {
@@ -43,8 +42,10 @@ public class ControlsOptionPage : MonoBehaviour
 	public void OnEnable()
 	{
 		_keysDown = new List<KeyCode>();
+
 		ReloadUI();
 	}
+
 	public void OnDisable()
 	{
 		CancelBinding(originalButtonText);
@@ -109,16 +110,18 @@ public class ControlsOptionPage : MonoBehaviour
 		}
 	}
 
-	// Set the key of the corresponding action in the Keyset.
+	// Set the key of the corresponding action in the Keyset, ignore if the new key is the same as the old one.
+	// And save the new Keyset to a json file.
 	public void OnAnyKeyDown(KeyCode keyCode)
 	{
 		Debug.Log("Pressed key: " + keyCode);
-		Debug.Log("Current key action: " + currentAction);
+		//Debug.Log("Current key action: " + currentAction);
 
 		foreach (Keyset.Key key in keySet.keyList)
-			if (key.action == currentAction)
+			if (key.action == currentAction && key.keyCode != keyCode)
 			{
 				key.keyCode = keyCode;
+				keySet.SaveKeysetToJson("Keyset_1");
 				break;
 			}
 	}
@@ -134,6 +137,11 @@ public class ControlsOptionPage : MonoBehaviour
 	public void OnCancelBinding()
 	{
 		CancelBinding(originalButtonText);
+	}
+
+	public void OnInputFieldEnter(string enteredText)
+	{
+		Debug.Log("You entered: " + enteredText);
 	}
 
 	public void ResetToDefault()

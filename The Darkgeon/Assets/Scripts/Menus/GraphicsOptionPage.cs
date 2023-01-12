@@ -94,14 +94,14 @@ public class GraphicsOptionPage : MonoBehaviour
 	public void SetFullscreen(bool isFullsreen)
 	{
 		if (isFullsreen)
-			resolutionDropdown.SetValueWithoutNotify(fullscreenIndex);
+			resolutionDropdown.value = fullscreenIndex;
 
 		else if (!resolutionDropdown.interactable)
-			resolutionDropdown.value = PlayerPrefs.GetInt("ResolutionIndex", 7); ;  // Return to default resolution only once time.
-
-		resolutionDropdown.interactable = !isFullsreen;  // The user can't change to other resolutions if the game is fullscreen.
+			resolutionDropdown.value = PlayerPrefs.GetInt("ResolutionIndex", 7); ;  // Return to previous resolution only once time.
 
 		Screen.fullScreen = isFullsreen;
+		
+		resolutionDropdown.interactable = !isFullsreen;  // The user can't change to other resolutions if the game is fullscreen.
 
 		PlayerPrefs.SetInt("IsFullscreen", isFullsreen ? 1 : 0);  // If true then return 1, else 0.
 	}
@@ -111,7 +111,8 @@ public class GraphicsOptionPage : MonoBehaviour
 		Resolution selectedResolution = resoArr[index];
 		Screen.SetResolution(selectedResolution.width, selectedResolution.height, Screen.fullScreen);
 
-		PlayerPrefs.SetInt("ResolutionIndex", index);
+		if (index != fullscreenIndex)
+			PlayerPrefs.SetInt("ResolutionIndex", index);
 	}
 
 	public void ResetToDefault()

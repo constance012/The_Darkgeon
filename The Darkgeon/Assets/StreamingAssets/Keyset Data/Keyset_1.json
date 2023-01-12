@@ -1,0 +1,40 @@
+{
+    "keyList": [
+        {
+            "action": 1,
+            "keyCode": 97
+        },
+        {
+            "action": 2,
+            "keyCode": 100
+        },
+        {
+            "action": 3,
+            "keyCode": 119
+        },
+        {
+            "action": 4,
+            "keyCode": 115
+        },
+        {
+            "action": 5,
+            "keyCode": 32
+        },
+        {
+            "action": 6,
+            "keyCode": 306
+        },
+        {
+            "action": 7,
+            "keyCode": 304
+        },
+        {
+            "action": 8,
+            "keyCode": 116
+        },
+        {
+            "action": 9,
+            "keyCode": 27
+        }
+    ]
+}

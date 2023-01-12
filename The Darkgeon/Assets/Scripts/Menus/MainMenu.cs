@@ -14,7 +14,13 @@ public class MainMenu : MonoBehaviour
 	[Header("References")]
 	[Space]
 
+	[Header("Audio Mixer")]
+	[Space]
 	[SerializeField] private AudioMixer mixer;
+
+	[Header("Keyset")]
+	[Space]
+	[SerializeField] private Keyset keySet;
 
 	[Header("Game Objects")]
 	[Space]
@@ -119,6 +125,11 @@ public class MainMenu : MonoBehaviour
 		QualitySettings.SetQualityLevel(PlayerPrefs.GetInt("QualityLevel", 3));
 		Application.targetFrameRate = Convert.ToInt32(PlayerPrefs.GetFloat("TargetFramerate", 60f));
 		QualitySettings.vSyncCount = PlayerPrefs.GetInt("UseVsync", 0);
+
+		// Controls
+		string keysetFile = PlayerPrefs.GetString("SelectedKeyset", "Keyset_Default");
+		Debug.Log("Load keyset from file: " + keysetFile);
+		keySet.LoadKeysetFromJson(keysetFile);
 
 		Debug.Log("All things successfully set up.");
 
