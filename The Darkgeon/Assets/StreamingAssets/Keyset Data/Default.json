@@ -2,19 +2,19 @@
     "keyList": [
         {
             "action": 1,
-            "keyCode": 276
+            "keyCode": 97
         },
         {
             "action": 2,
-            "keyCode": 275
+            "keyCode": 100
         },
         {
             "action": 3,
-            "keyCode": 273
+            "keyCode": 119
         },
         {
             "action": 4,
-            "keyCode": 274
+            "keyCode": 115
         },
         {
             "action": 5,

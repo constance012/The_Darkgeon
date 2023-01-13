@@ -48,7 +48,6 @@ public class GraphicsOptionPage : MonoBehaviour
 	private void Start()
 	{
 		SetUpResoDropdown();
-		resolutionDropdown.RefreshShownValue();
 
 		ReloadUI();
 	}
@@ -144,6 +143,8 @@ public class GraphicsOptionPage : MonoBehaviour
 		// Update the dropdown each time the options scene is loaded.
 		resolutionDropdown.AddOptions(options);
 		fullscreenIndex = options.Count - 1;  // Last index.
+
+		resolutionDropdown.RefreshShownValue();
 	}
 
 	private void ReloadUI()

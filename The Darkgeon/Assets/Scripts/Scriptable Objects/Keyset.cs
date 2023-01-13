@@ -16,6 +16,10 @@ public class Keyset : ScriptableObject
 
 	public Key[] keyList;
 
+	/// <summary>
+	///  Save the Keyset's data into a json file. Create one if the file doesn't already exist.
+	/// </summary>
+	/// <param name="fileName"></param>
 	public void SaveKeysetToJson(string fileName)
 	{
 		string path = Application.streamingAssetsPath + "/Keyset Data/";
@@ -42,6 +46,10 @@ public class Keyset : ScriptableObject
 		PlayerPrefs.SetString("SelectedKeyset", fileName);
 	}
 
+	/// <summary>
+	/// Load data to the Keyset from a .json file. Use the default file if the previously selected file is missing.
+	/// </summary>
+	/// <param name="fileName"></param>
 	public void LoadKeysetFromJson(string fileName)
 	{
 		string path = Application.streamingAssetsPath + "/Keyset Data/" + fileName + ".json";
@@ -57,7 +65,7 @@ public class Keyset : ScriptableObject
 		// If not, use the default file.
 		else
 		{
-			fileName = "Keyset_Default";
+			fileName = "Default";
 
 			path = Application.streamingAssetsPath + "/Keyset Data/" + fileName + ".json";
 			persistentPath = Application.persistentDataPath + "/Keyset Data/" + fileName + ".json";

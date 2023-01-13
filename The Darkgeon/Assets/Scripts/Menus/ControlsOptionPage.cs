@@ -1,7 +1,9 @@
 using System;
-using UnityEngine;
-using System.Collections.Generic;
 using System.Linq;
+using System.IO;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.Events;
 using TMPro;
 
@@ -10,9 +12,17 @@ public class ControlsOptionPage : MonoBehaviour
 	[Serializable]
 	public class KeyCodeEvent : UnityEvent<KeyCode> { }
 
-	[Header("Keyset Reference")]
+	[Header("References")]
+	[Space]
+
+	[Header("Keyset")]
 	[Space]
 	[SerializeField] private Keyset keySet;
+
+	[Header("UIs")]
+	[Space]
+	[SerializeField] private TMP_Dropdown keySetDropdown;
+	[SerializeField] private TMP_InputField inputField;
 
 	[Header("Key Events")]
 	[Space]
@@ -31,6 +41,7 @@ public class ControlsOptionPage : MonoBehaviour
 
 	// A list of all pressed down keys.
 	private List<KeyCode> _keysDown;
+	private string[] jsonFiles;
 
 	private KeybindingActions currentAction = KeybindingActions.None;
 	private TextMeshProUGUI currentButtonTextUI = null;
@@ -39,20 +50,30 @@ public class ControlsOptionPage : MonoBehaviour
 	private string originalButtonText = "";
 
 
-	public void OnEnable()
+	private void Awake()
 	{
-		_keysDown = new List<KeyCode>();
+		keySetDropdown = transform.Find("Keyset Area/Keyset Dropdown").GetComponent<TMP_Dropdown>();
+		inputField = transform.Find("Keyset Area/Keyset Input Field").GetComponent<TMP_InputField>();
+	}
 
+	private void Start()
+	{
+		LoadJsonFiles();
 		ReloadUI();
 	}
 
-	public void OnDisable()
+	private void OnEnable()
+	{
+		_keysDown = new List<KeyCode>();
+	}
+
+	private void OnDisable()
 	{
 		CancelBinding(originalButtonText);
 		_keysDown = null;
 	}
 
-	public void Update()
+	private void Update()
 	{
 		if (!isRegistering)
 			return;
@@ -92,7 +113,7 @@ public class ControlsOptionPage : MonoBehaviour
 	{
 		isRegistering = !isRegistering;
 		
-		currentButtonTextUI = transform.Find("Scroll View/Viewport/Content/" + action + " Button").Find("Text").GetComponent<TextMeshProUGUI>();
+		currentButtonTextUI = transform.Find("Scroll View/Viewport/Content/" + action + " Button/Text").GetComponent<TextMeshProUGUI>();
 
 		if (isRegistering)
 		{
@@ -144,9 +165,49 @@ public class ControlsOptionPage : MonoBehaviour
 		Debug.Log("You entered: " + enteredText);
 	}
 
+	public void OnKeysetDropdownSelect(int index)
+	{
+		Debug.Log(index);
+
+		string[] splitPath = jsonFiles[index].Split('/', '.');
+		string fileName = splitPath[splitPath.Length - 2];
+		
+		keySet.LoadKeysetFromJson(fileName);
+
+		PlayerPrefs.SetString("SelectedKeyset", fileName);
+
+		ReloadUI();
+	}
+
 	public void ResetToDefault()
 	{
-		ReloadUI();
+		keySetDropdown.value = keySetDropdown.options.FindIndex(keySet => keySet.text.ToLower() == "default");
+		transform.Find("Keyset Area/Cancel Button").GetComponent<Button>().onClick.Invoke();
+	}
+
+	private void LoadJsonFiles()
+	{
+		string path = Application.streamingAssetsPath + "/Keyset Data/";
+		//string persistentPath = Application.persistentDataPath + "/Keyset Data/";
+
+		keySetDropdown.ClearOptions();
+		
+		jsonFiles = Directory.GetFiles(path, "*.json");
+		
+		for (int i = 0; i < jsonFiles.Length; i++)
+		{
+			string[] splitPath = jsonFiles[i].Split('/', '.');
+
+			TMP_Dropdown.OptionData optionData = new TMP_Dropdown.OptionData(splitPath[splitPath.Length - 2]);
+			keySetDropdown.options.Add(optionData);
+		}
+
+		keySetDropdown.RefreshShownValue();
+
+		string keySetName = PlayerPrefs.GetString("SelectedKeyset", "Keyset_Default");
+		int index = keySetDropdown.options.FindIndex(keySet => keySet.text == keySetName);
+
+		keySetDropdown.SetValueWithoutNotify(index);
 	}
 
 	private void ReloadUI()
@@ -155,7 +216,7 @@ public class ControlsOptionPage : MonoBehaviour
 		{
 			// Get each button and edit its text.
 			string buttonAction = AddWhitespaceBeforeCapital(key.action.ToString());
-			TextMeshProUGUI buttonTextUI = transform.Find("Scroll View/Viewport/Content/" + buttonAction + " Button").Find("Text").GetComponent<TextMeshProUGUI>();
+			TextMeshProUGUI buttonTextUI = transform.Find("Scroll View/Viewport/Content/" + buttonAction + " Button/Text").GetComponent<TextMeshProUGUI>();
 			
 			buttonTextUI.text = AddWhitespaceBeforeCapital(key.keyCode.ToString()).ToUpper();
 		}
