@@ -39,7 +39,7 @@ public class PlayerMovement : MonoBehaviour
 		}
 
 		horizontalMove = InputManager.instance.GetAxisRaw("Horizontal");
-		Debug.Log(horizontalMove);
+		//Debug.Log(horizontalMove);
 
 		animator.SetBool("IsRunning", Mathf.Abs(horizontalMove) == 1);
 		animator.SetFloat("Speed", Mathf.Abs(horizontalMove));

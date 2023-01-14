@@ -32,7 +32,7 @@ public class LevelsManager : MonoBehaviour
 	public void RestartLevel()
 	{
 		Debug.Log("Restarting level...");
-		SceneManager.UnloadSceneAsync(currentLevel);
+		SceneManager.UnloadSceneAsync(currentLevel, UnloadSceneOptions.UnloadAllEmbeddedSceneObjects);
 		AsyncOperation loadSceneOp = SceneManager.LoadSceneAsync(currentLevel, LoadSceneMode.Additive);
 		loadSceneOp.completed += LoadSceneOp_completed;
 	}

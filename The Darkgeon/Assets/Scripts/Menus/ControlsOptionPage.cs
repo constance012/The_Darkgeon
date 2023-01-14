@@ -23,6 +23,8 @@ public class ControlsOptionPage : MonoBehaviour
 	[Space]
 	[SerializeField] private TMP_Dropdown keySetDropdown;
 	[SerializeField] private TMP_InputField inputField;
+	[SerializeField] private Transform unbindButton;
+	[SerializeField] private Button cancelButton;
 
 	[Header("Key Events")]
 	[Space]
@@ -54,11 +56,14 @@ public class ControlsOptionPage : MonoBehaviour
 	{
 		keySetDropdown = transform.Find("Keyset Area/Keyset Dropdown").GetComponent<TMP_Dropdown>();
 		inputField = transform.Find("Keyset Area/Keyset Input Field").GetComponent<TMP_InputField>();
+
+		unbindButton = transform.Find("Scroll View/Viewport/Content/Unbind Button");
+		cancelButton = transform.Find("Keyset Area/Cancel Button").GetComponent<Button>();
 	}
 
 	private void Start()
 	{
-		LoadJsonFiles();
+		FetchJsonFiles();
 		ReloadUI();
 	}
 
@@ -75,6 +80,15 @@ public class ControlsOptionPage : MonoBehaviour
 
 	private void Update()
 	{
+		if (inputField.gameObject.activeInHierarchy)
+		{
+			if (Input.GetKeyDown(KeyCode.Escape))
+				cancelButton.onClick.Invoke();
+
+			if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.KeypadEnter))
+				CreateNewJson();
+		}
+		
 		if (!isRegistering)
 			return;
 
@@ -109,14 +123,30 @@ public class ControlsOptionPage : MonoBehaviour
 			}
 	}
 
+	/// <summary>
+	/// Set new key for the selected action.
+	/// </summary>
+	/// <param name="action"></param>
 	public void RegisterNewKey(string action)
 	{
-		isRegistering = !isRegistering;
+		TextMeshProUGUI clickedButtonTextUI = transform.Find("Scroll View/Viewport/Content/" + action + " Button/Text")
+														.GetComponent<TextMeshProUGUI>();
 		
-		currentButtonTextUI = transform.Find("Scroll View/Viewport/Content/" + action + " Button/Text").GetComponent<TextMeshProUGUI>();
+		// If click on another action while currently binding this action, cancel the binding process first.
+		if (currentButtonTextUI != null && currentButtonTextUI != clickedButtonTextUI)
+			CancelBinding(originalButtonText);
+
+		currentButtonTextUI = clickedButtonTextUI;
+
+		isRegistering = !isRegistering;
+
+		// Move the Unbind Button's position to this action button.
+		unbindButton.position = new Vector2(unbindButton.position.x, currentButtonTextUI.transform.position.y);
+		unbindButton.gameObject.SetActive(true);
 
 		if (isRegistering)
 		{
+			// Set the current action.
 			Enum.TryParse<KeybindingActions>(ClearWhitespaces(action), true, out currentAction);
 
 			originalButtonText = currentButtonTextUI.text;
@@ -124,11 +154,17 @@ public class ControlsOptionPage : MonoBehaviour
 			currentButtonTextUI.text = "...";
 		}
 		else
-		{
-			currentAction = KeybindingActions.None;
-			currentButtonTextUI.color = Color.white;
-			currentButtonTextUI.text = originalButtonText;
-		}
+			CancelBinding(originalButtonText);
+	}
+
+	/// <summary>
+	/// Unbind the key of the selected action.
+	/// </summary>
+	public void UnbindSelectedKey()
+	{
+		keyDownListener?.Invoke(KeyCode.None);
+		keyUpListener?.Invoke(KeyCode.None);
+		keyPressListener?.Invoke(KeyCode.None);
 	}
 
 	// Set the key of the corresponding action in the Keyset, ignore if the new key is the same as the old one.
@@ -142,7 +178,9 @@ public class ControlsOptionPage : MonoBehaviour
 			if (key.action == currentAction && key.keyCode != keyCode)
 			{
 				key.keyCode = keyCode;
-				keySet.SaveKeysetToJson("Keyset_1");
+
+				string selectedFile = keySetDropdown.options[keySetDropdown.value].text;
+				keySet.SaveKeysetToJson(selectedFile);
 				break;
 			}
 	}
@@ -151,18 +189,17 @@ public class ControlsOptionPage : MonoBehaviour
 	public void OnAnyKeyUp(KeyCode keyCode)
 	{
 		Debug.Log("Released key: " + keyCode);
-		CancelBinding(keyCode.ToString());
+		
+		// Add a whitespace character between each capital letter, and trim out the leading whitespace.
+		string buttonText = AddWhitespaceBeforeCapital(keyCode.ToString());
+		
+		CancelBinding(buttonText);
 	}
 
 	// When hits Back, Reset or OnDisable.
 	public void OnCancelBinding()
 	{
 		CancelBinding(originalButtonText);
-	}
-
-	public void OnInputFieldEnter(string enteredText)
-	{
-		Debug.Log("You entered: " + enteredText);
 	}
 
 	public void OnKeysetDropdownSelect(int index)
@@ -179,13 +216,59 @@ public class ControlsOptionPage : MonoBehaviour
 		ReloadUI();
 	}
 
+	public void OnDeleteButtonClick()
+	{
+		TextMeshProUGUI warningText = transform.Find("Delete Keyset Page/Delete Box/Warning Text").GetComponent<TextMeshProUGUI>();
+		
+		TMP_Dropdown.OptionData selectedOption = keySetDropdown.options[keySetDropdown.value];
+		
+		warningText.text = "DELETE KEYSET [" + selectedOption.text.ToUpper() + "]?";
+	}
+
+	public void OnDeleteKeysetConfirm()
+	{
+		string selectedFile = jsonFiles[keySetDropdown.value];
+		
+		// Delete the json file itself and its metadata file together.
+		File.Delete(selectedFile);
+		File.Delete(selectedFile + ".meta");
+
+		FetchJsonFiles();
+		OnKeysetDropdownSelect(keySetDropdown.value);
+	}
+	
 	public void ResetToDefault()
 	{
 		keySetDropdown.value = keySetDropdown.options.FindIndex(keySet => keySet.text.ToLower() == "default");
-		transform.Find("Keyset Area/Cancel Button").GetComponent<Button>().onClick.Invoke();
+		cancelButton.onClick.Invoke();
 	}
 
-	private void LoadJsonFiles()
+	private void CreateNewJson()
+	{
+		string newFile = inputField.text.Trim();
+
+		if (String.IsNullOrEmpty(newFile))
+		{
+			Debug.Log("File name must have at least 1 character.");
+			return;
+		}
+
+		else
+		{
+			// Load the default data to the keyset.
+			keySet.LoadKeysetFromJson("Default");
+
+			// Create and Save that data to the new file.
+			keySet.SaveKeysetToJson(newFile);
+
+			// Fetch the files to the dropdown.
+			FetchJsonFiles();
+
+			cancelButton.onClick.Invoke();
+		}
+	}
+
+	private void FetchJsonFiles()
 	{
 		string path = Application.streamingAssetsPath + "/Keyset Data/";
 		//string persistentPath = Application.persistentDataPath + "/Keyset Data/";
@@ -198,6 +281,7 @@ public class ControlsOptionPage : MonoBehaviour
 		{
 			string[] splitPath = jsonFiles[i].Split('/', '.');
 
+			// Get the file name, excluding the extension and add it to the dropdown.
 			TMP_Dropdown.OptionData optionData = new TMP_Dropdown.OptionData(splitPath[splitPath.Length - 2]);
 			keySetDropdown.options.Add(optionData);
 		}
@@ -226,9 +310,6 @@ public class ControlsOptionPage : MonoBehaviour
 	{
 		if (currentButtonTextUI != null)
 		{
-			// Add a whitespace character between each capital letter, and trim out the leading whitespace.
-			buttonText = AddWhitespaceBeforeCapital(buttonText);
-
 			currentButtonTextUI.color = Color.white;
 			currentButtonTextUI.text = buttonText.ToUpper();
 		}
@@ -237,15 +318,17 @@ public class ControlsOptionPage : MonoBehaviour
 		currentAction = KeybindingActions.None;
 		currentButtonTextUI = null;
 		originalButtonText = "";
+
+		unbindButton.gameObject.SetActive(false);
 	}
 
-	private string AddWhitespaceBeforeCapital(string str)
+	public static string AddWhitespaceBeforeCapital(string str)
 	{
 		return String.Concat(str.Select(x => Char.IsUpper(x) ? " " + x : x.ToString()))
 								.TrimStart(' ');
 	}
 
-	private string ClearWhitespaces(string str)
+	public static string ClearWhitespaces(string str)
 	{
 		return new string(str.ToCharArray()
 			.Where(c => !Char.IsWhiteSpace(c))

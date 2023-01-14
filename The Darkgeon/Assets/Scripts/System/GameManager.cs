@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using TMPro;
 
 /// <summary>
@@ -104,41 +105,17 @@ public class GameManager : MonoBehaviour
 	#endregion
 
 	#region UI Controls
+	public void ReturnToMenu()
+	{
+		SceneManager.LoadSceneAsync("Scenes/Menu");
+	}
+
 	private void SetDeathMessage(KillSources sources)
 	{
 		int randomIndex = Random.Range(0, deathMessages.Length);
 		deathMessageText.text = deathMessages[randomIndex];
 
-		switch (sources)
-		{
-			case KillSources.Environment:
-				killSourceText.text = "Kill By: Environment";
-				break;
-			case KillSources.Bat:
-				killSourceText.text = "Kill By: Bat";
-				break;
-			case KillSources.Crab:
-				killSourceText.text = "Kill By: Crab";
-				break;
-			case KillSources.Golem:
-				killSourceText.text = "Kill By: Golem";
-				break;
-			case KillSources.ReinforcedGolem:
-				killSourceText.text = "Kill By: Reinforced Golem";
-				break;
-			case KillSources.Rat:
-				killSourceText.text = "Kill By: Rat";
-				break;
-			case KillSources.Skull:
-				killSourceText.text = "Kill By: Floating Skull";
-				break;
-			case KillSources.SpikedSlime:
-				killSourceText.text = "Kill By: Spiked Slime";
-				break;
-			default:
-				killSourceText.text = "Kill By: Unknown";
-				break;
-		}
+		killSourceText.text = "KILL BY: " + ControlsOptionPage.AddWhitespaceBeforeCapital(sources.ToString()).ToUpper();
 	}
 
 	private void Pause()

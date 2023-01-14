@@ -35,7 +35,7 @@ public class Keyset : ScriptableObject
 		path += fileName + ".json";
 		persistentPath += fileName + ".json";
 
-		Debug.Log("Saving data at " + path);
+		Debug.Log("Saving data to " + path);
 		//Debug.Log("Saving persistent data at " + persistentPath);
 		string json = JsonUtility.ToJson(this, true);
 		//Debug.Log(json);
@@ -58,7 +58,9 @@ public class Keyset : ScriptableObject
 		// If the custom keyset file exists.
 		if (File.Exists(path) && File.Exists(persistentPath))
 		{
+			Debug.Log("Reading data at " + path);
 			string json = File.ReadAllText(path);
+			
 			JsonUtility.FromJsonOverwrite(json, this);
 		}
 
@@ -74,7 +76,9 @@ public class Keyset : ScriptableObject
 			if (!File.Exists(path) || !File.Exists(persistentPath))
 				SaveKeysetToJson(fileName);
 
+			Debug.Log("Reading data at " + path);
 			string json = File.ReadAllText(path);
+			
 			JsonUtility.FromJsonOverwrite(json, this);
 		}
 	}
