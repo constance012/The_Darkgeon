@@ -146,6 +146,7 @@ GameObject:
   - component: {fileID: 2474297046706981570}
   - component: {fileID: 2474297046706981568}
   - component: {fileID: 2474297046706981569}
+  - component: {fileID: 9062744291464704230}
   m_Layer: 5
   m_Name: Debuff UI
   m_TagString: Untagged
@@ -212,3 +213,17 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &9062744291464704230
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2474297046706981571}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0fb3b1e60864ebb438f4a3f987697dc4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  header: 
+  content: 

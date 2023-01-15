@@ -2,6 +2,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using System.Reflection;
+using System;
 
 /// <summary>
 /// A manager for the debuff system.
@@ -19,8 +21,10 @@ public class DebuffManager : MonoBehaviour
 	private Debuff currentDebuff;
 	private List<Debuff> debuffList = new List<Debuff>();
 
-	public delegate void DebuffHandler();
+	private delegate void DebuffHandler();
+
 	DebuffHandler handler = null;
+	//DebuffHandler debuffMethod;
 
 	public static bool deathByDebuff { get; set; }
 
@@ -47,30 +51,45 @@ public class DebuffManager : MonoBehaviour
 	}
 
 	#region Handling debuff.
-	public void ApplyDebuff(Debuff debuff)
+	public void ApplyDebuff(Debuff target)
 	{
 		// If the debuff hasn't been apllied yet.
-		if (debuffPanel.Find(debuff.name) == null)
+		if (debuffPanel.Find(target.name) == null)
 		{
-			debuffList.Add(debuff);
-			ManageHandler(debuff.name, DelegateAction.Add);
+			debuffList.Add(target);
+
+			// Get the corresponding private and non-static method using reflection.
+			MethodInfo methodName = this.GetType().GetMethod(target.name, BindingFlags.NonPublic | BindingFlags.Instance);
+			
+			// Create a delegate holding that private and non-static method.
+			DebuffHandler debuffMethod = (DebuffHandler) Delegate.CreateDelegate(typeof(DebuffHandler), this, methodName);
+
+			ManageHandler(debuffMethod, DelegateAction.Add);
 
 			GameObject debuffUIObj = Instantiate(debuffUIPrefab, debuffPanel);
 
-			debuffUIObj.name = debuff.name;
-			debuffUIObj.GetComponent<Image>().sprite = debuff.icon;
-			debuffUIObj.transform.Find("Duration").GetComponent<TextMeshProUGUI>().text = debuff.duration.ToString();
+			debuffUIObj.name = target.name;
+			debuffUIObj.GetComponent<Image>().sprite = target.icon;
+			debuffUIObj.transform.Find("Duration").GetComponent<TextMeshProUGUI>().text = target.duration.ToString();
+			
+			TooltipTrigger tooltip = debuffUIObj.GetComponent<TooltipTrigger>();
+			tooltip.header = target.name;
+			tooltip.content = target.description;
 		}
 
 		// Otherwise, just reset its duration.
 		else
-			debuffList.Find(target => target.name == debuff.name).duration = debuff.duration;
+			debuffList.Find(debuff => debuff.name == target.name).duration = target.duration;
 	}
 
 	public void RemoveDebuff(Debuff target)
 	{
 		debuffList.Remove(target);
-		ManageHandler(target.name, DelegateAction.Remove);
+
+		MethodInfo methodName = this.GetType().GetMethod(target.name, BindingFlags.NonPublic | BindingFlags.Instance);
+		DebuffHandler debuffMethod = (DebuffHandler)Delegate.CreateDelegate(typeof(DebuffHandler), this, methodName);
+
+		ManageHandler(debuffMethod, DelegateAction.Remove);
 
 		Destroy(debuffPanel.Find(target.name).gameObject);
 	}
@@ -83,44 +102,26 @@ public class DebuffManager : MonoBehaviour
 			Destroy(debuff.gameObject);
 	}
 
-	private void ManageHandler(string methodName, DelegateAction action)
+	private void ManageHandler(DebuffHandler method, DelegateAction action)
 	{
 		if (action == DelegateAction.Add)
-			switch (methodName)
-			{
-				case "Bleeding":
-					handler -= Bleeding;  // Remove first to ensure no duplication.
-					handler += Bleeding;
-					break;
-				case "Slowness":
-					handler -= Slowness;
-					handler += Slowness;
-					break;
-				default:
-					Debug.LogWarning("Method: " + methodName + " not found!!");
-					return;
-			}
+		{
+			handler -= method;  // Remove first to ensure no duplication.
+			handler += method;
+		}
 
 		else
-			switch (methodName)
-			{
-				case "Bleeding":
-					handler -= Bleeding;
-					break;
-				case "Slowness":
-					handler -= Slowness;
-					break;
-				default:
-					Debug.LogWarning("Method: " + methodName + " not found!!");
-					return;
-			}
+			handler -= method;
+
+		//debuffMethod = null;
 	}
 	#endregion
 
-	#region Debuff Types
+	#region Debuff Types Method
 	private void Bleeding()
 	{
 		currentDebuff = debuffList.Find(debuff => debuff.name == "Bleeding");
+		
 		currentDebuff.duration -= Time.deltaTime;
 		currentDebuff.hpLossDelay -= Time.deltaTime;
 
@@ -134,10 +135,10 @@ public class DebuffManager : MonoBehaviour
 		player.canRegen = currentDebuff.allowRegenerate;
 
 		// Update the UI.
-		debuffPanel.Find(currentDebuff.name).Find("Duration").GetComponent<TextMeshProUGUI>().text = Mathf.Round(currentDebuff.duration).ToString();
+		debuffPanel.Find(currentDebuff.name + "/Duration").GetComponent<TextMeshProUGUI>().text = Mathf.Round(currentDebuff.duration).ToString();
 
 		// If the player moves, she'll lose health.
-		if (playerAnim.GetFloat("Speed") > 0.01f && player.currentHP > 0 && currentDebuff.hpLossDelay <= 0f)
+		if (playerAnim.GetFloat("Speed") > .01f && player.currentHP > 0 && currentDebuff.hpLossDelay <= 0f)
 		{
 			player.currentHP -= currentDebuff.healthLossRate;
 			player.currentHP = Mathf.Clamp(player.currentHP, 0, player.maxHP);
@@ -151,6 +152,7 @@ public class DebuffManager : MonoBehaviour
 	private void Slowness()
 	{
 		currentDebuff = debuffList.Find(debuff => debuff.name == "Slowness");
+		
 		currentDebuff.duration -= Time.deltaTime;
 		
 		if (currentDebuff.duration <= 0f || player.currentHP <= 0)
@@ -166,7 +168,7 @@ public class DebuffManager : MonoBehaviour
 			currentDebuff.isSpeedReduced = true;
 		}
 
-		debuffPanel.Find(currentDebuff.name).Find("Duration").GetComponent<TextMeshProUGUI>().text = Mathf.Round(currentDebuff.duration).ToString();
+		debuffPanel.Find(currentDebuff.name + "/Duration").GetComponent<TextMeshProUGUI>().text = Mathf.Round(currentDebuff.duration).ToString();
 	}
 	#endregion
 }
