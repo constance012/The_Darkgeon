@@ -1,6 +1,8 @@
 public enum KeybindingActions
 {
 	None,
+	PrimaryAttack,
+	SecondaryAttack,
 	MoveLeft,
 	MoveRight,
 	ClimbUp,
@@ -9,5 +11,6 @@ public enum KeybindingActions
 	Crouch,
 	Dash,
 	Inventory,
+	Interact,
 	Pause
 }

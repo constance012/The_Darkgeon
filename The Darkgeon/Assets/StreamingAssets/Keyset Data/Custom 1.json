@@ -2,38 +2,50 @@
     "keyList": [
         {
             "action": 1,
-            "keyCode": 276
+            "keyCode": 323
         },
         {
             "action": 2,
-            "keyCode": 275
+            "keyCode": 324
         },
         {
             "action": 3,
-            "keyCode": 273
+            "keyCode": 276
         },
         {
             "action": 4,
-            "keyCode": 274
+            "keyCode": 275
         },
         {
             "action": 5,
-            "keyCode": 32
+            "keyCode": 273
         },
         {
             "action": 6,
-            "keyCode": 306
+            "keyCode": 274
         },
         {
             "action": 7,
-            "keyCode": 304
+            "keyCode": 32
         },
         {
             "action": 8,
-            "keyCode": 116
+            "keyCode": 306
         },
         {
             "action": 9,
+            "keyCode": 304
+        },
+        {
+            "action": 10,
+            "keyCode": 116
+        },
+        {
+            "action": 11,
+            "keyCode": 101
+        },
+        {
+            "action": 12,
             "keyCode": 27
         }
     ]

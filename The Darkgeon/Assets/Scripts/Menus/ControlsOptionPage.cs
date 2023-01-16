@@ -6,6 +6,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Events;
 using TMPro;
+using System.Runtime.CompilerServices;
 
 public class ControlsOptionPage : MonoBehaviour
 {
@@ -21,10 +22,16 @@ public class ControlsOptionPage : MonoBehaviour
 
 	[Header("UIs")]
 	[Space]
+
+	[Header("TMPs.")]
+	[Space]
 	[SerializeField] private TMP_Dropdown keySetDropdown;
 	[SerializeField] private TMP_InputField inputField;
-	[SerializeField] private Transform unbindButton;
+
+	[Header("Buttons.")]
+	[Space]
 	[SerializeField] private Button cancelButton;
+	[SerializeField] private Button addButton;
 
 	[Header("Key Events")]
 	[Space]
@@ -37,7 +44,7 @@ public class ControlsOptionPage : MonoBehaviour
 	// Get all the keycode of the keyboard's keys only.
 	private static readonly KeyCode[] keyCodes = Enum.GetValues(typeof(KeyCode))
 		.Cast<KeyCode>()
-		.Where(k => ((int)k < (int)KeyCode.Mouse0))
+		.Where(k => ((int)k < (int)KeyCode.JoystickButton0))
 		.ToArray();
 
 
@@ -57,14 +64,13 @@ public class ControlsOptionPage : MonoBehaviour
 		keySetDropdown = transform.Find("Keyset Area/Keyset Dropdown").GetComponent<TMP_Dropdown>();
 		inputField = transform.Find("Keyset Area/Keyset Input Field").GetComponent<TMP_InputField>();
 
-		unbindButton = transform.Find("Scroll View/Viewport/Content/Unbind Button");
 		cancelButton = transform.Find("Keyset Area/Cancel Button").GetComponent<Button>();
+		addButton = transform.Find("Keyset Area/Add Button").GetComponent<Button>();
 	}
 
 	private void Start()
 	{
 		FetchJsonFiles();
-		ReloadUI();
 	}
 
 	private void OnEnable()
@@ -133,28 +139,19 @@ public class ControlsOptionPage : MonoBehaviour
 														.GetComponent<TextMeshProUGUI>();
 		
 		// If click on another action while currently binding this action, cancel the binding process first.
-		if (currentButtonTextUI != null && currentButtonTextUI != clickedButtonTextUI)
-			CancelBinding(originalButtonText);
+		//if (currentButtonTextUI != null && currentButtonTextUI != clickedButtonTextUI)
+		//	CancelBinding(originalButtonText);
 
 		currentButtonTextUI = clickedButtonTextUI;
 
-		isRegistering = !isRegistering;
+		isRegistering = true;
 
-		// Move the Unbind Button's position to this action button.
-		unbindButton.position = new Vector2(unbindButton.position.x, currentButtonTextUI.transform.position.y);
-		unbindButton.gameObject.SetActive(true);
+		// Set the current action.
+		Enum.TryParse<KeybindingActions>(ClearWhitespaces(action), true, out currentAction);
 
-		if (isRegistering)
-		{
-			// Set the current action.
-			Enum.TryParse<KeybindingActions>(ClearWhitespaces(action), true, out currentAction);
-
-			originalButtonText = currentButtonTextUI.text;
-			currentButtonTextUI.color = new Color(1f, .76f, 0f);  // Change the text's color to pressed color.
-			currentButtonTextUI.text = "...";
-		}
-		else
-			CancelBinding(originalButtonText);
+		originalButtonText = currentButtonTextUI.text;
+		currentButtonTextUI.color = new Color(1f, .76f, 0f);  // Change the text's color to pressed color.
+		currentButtonTextUI.text = "...";
 	}
 
 	/// <summary>
@@ -192,6 +189,7 @@ public class ControlsOptionPage : MonoBehaviour
 		
 		// Add a whitespace character between each capital letter, and trim out the leading whitespace.
 		string buttonText = AddWhitespaceBeforeCapital(keyCode.ToString());
+		buttonText = AddHyphenBeforeNumber(buttonText);
 		
 		CancelBinding(buttonText);
 	}
@@ -288,10 +286,27 @@ public class ControlsOptionPage : MonoBehaviour
 
 		keySetDropdown.RefreshShownValue();
 
+		if (keySetDropdown.options.Count < 6)
+		{
+			addButton.interactable = true;
+			Destroy(addButton.GetComponent<TooltipTrigger>());
+		}
+		else
+		{
+			addButton.interactable = false;
+			
+			if (addButton.gameObject.GetComponent<TooltipTrigger>() == null)
+				addButton.gameObject.AddComponent<TooltipTrigger>().content =
+				"You've reached the maximum amount of 5 custom keysets, delete some of them or edit the existng ones.";
+		}
+
+		// Set the value of the dropdown to the previously chosen Keyset, without notify.
 		string keySetName = PlayerPrefs.GetString("SelectedKeyset", "Keyset_Default");
 		int index = keySetDropdown.options.FindIndex(keySet => keySet.text == keySetName);
 
 		keySetDropdown.SetValueWithoutNotify(index);
+
+		ReloadUI();
 	}
 
 	private void ReloadUI()
@@ -299,10 +314,13 @@ public class ControlsOptionPage : MonoBehaviour
 		foreach (Keyset.Key key in keySet.keyList)
 		{
 			// Get each button and edit its text.
-			string buttonAction = AddWhitespaceBeforeCapital(key.action.ToString());
-			TextMeshProUGUI buttonTextUI = transform.Find("Scroll View/Viewport/Content/" + buttonAction + " Button/Text").GetComponent<TextMeshProUGUI>();
+			string buttonName = AddWhitespaceBeforeCapital(key.action.ToString());
+
+			TextMeshProUGUI buttonTextUI = transform.Find("Scroll View/Viewport/Content/" + buttonName + " Button/Text").GetComponent<TextMeshProUGUI>();
 			
-			buttonTextUI.text = AddWhitespaceBeforeCapital(key.keyCode.ToString()).ToUpper();
+			string keyName = AddWhitespaceBeforeCapital(key.keyCode.ToString()).ToUpper();
+
+			buttonTextUI.text = AddHyphenBeforeNumber(keyName);
 		}
 	}
 
@@ -315,17 +333,25 @@ public class ControlsOptionPage : MonoBehaviour
 		}
 
 		isRegistering = false;
+		_keysDown.Clear();
+
 		currentAction = KeybindingActions.None;
 		currentButtonTextUI = null;
 		originalButtonText = "";
 
-		unbindButton.gameObject.SetActive(false);
+		transform.Find("Wait For Input Page").gameObject.SetActive(false);
 	}
 
 	public static string AddWhitespaceBeforeCapital(string str)
 	{
 		return String.Concat(str.Select(x => Char.IsUpper(x) ? " " + x : x.ToString()))
 								.TrimStart(' ');
+	}
+
+	public static string AddHyphenBeforeNumber(string str)
+	{
+		return String.Concat(str.Select(x => Char.IsDigit(x) ? "-" + x : x.ToString()))
+								.TrimStart('-');
 	}
 
 	public static string ClearWhitespaces(string str)

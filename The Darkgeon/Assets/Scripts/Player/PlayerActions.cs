@@ -37,7 +37,7 @@ public class PlayerActions : MonoBehaviour
 	private void Update()
 	{
 		// Check if there is enough time for the next combo to begin.
-		if (Input.GetMouseButtonDown(0) && animator.GetBool("Grounded") && isComboDone)
+		if (InputManager.instance.GetKeyDown(KeybindingActions.PrimaryAttack) && animator.GetBool("Grounded") && isComboDone)
 			Attack();
 
 		// Facing the player in the direction of the mouse when certain conditions are matched.

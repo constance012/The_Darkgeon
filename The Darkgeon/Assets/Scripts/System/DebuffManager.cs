@@ -21,10 +21,10 @@ public class DebuffManager : MonoBehaviour
 	private Debuff currentDebuff;
 	private List<Debuff> debuffList = new List<Debuff>();
 
-	private delegate void DebuffHandler();
+	private delegate void DebuffDelegate();
 
-	DebuffHandler handler = null;
-	//DebuffHandler debuffMethod;
+	DebuffDelegate handler = null;
+	//DebuffDelegate debuffMethod;
 
 	public static bool deathByDebuff { get; set; }
 
@@ -62,7 +62,7 @@ public class DebuffManager : MonoBehaviour
 			MethodInfo methodName = this.GetType().GetMethod(target.name, BindingFlags.NonPublic | BindingFlags.Instance);
 			
 			// Create a delegate holding that private and non-static method.
-			DebuffHandler debuffMethod = (DebuffHandler) Delegate.CreateDelegate(typeof(DebuffHandler), this, methodName);
+			DebuffDelegate debuffMethod = (DebuffDelegate) Delegate.CreateDelegate(typeof(DebuffDelegate), this, methodName);
 
 			ManageHandler(debuffMethod, DelegateAction.Add);
 
@@ -84,14 +84,20 @@ public class DebuffManager : MonoBehaviour
 
 	public void RemoveDebuff(Debuff target)
 	{
+		// Remove debuff from the list.
 		debuffList.Remove(target);
 
+		// Remove its method from the handler.
 		MethodInfo methodName = this.GetType().GetMethod(target.name, BindingFlags.NonPublic | BindingFlags.Instance);
-		DebuffHandler debuffMethod = (DebuffHandler)Delegate.CreateDelegate(typeof(DebuffHandler), this, methodName);
+		DebuffDelegate debuffMethod = (DebuffDelegate)Delegate.CreateDelegate(typeof(DebuffDelegate), this, methodName);
 
 		ManageHandler(debuffMethod, DelegateAction.Remove);
 
-		Destroy(debuffPanel.Find(target.name).gameObject);
+		// Hide the tooltip and destroy the UI Game Object.
+		Transform targetUI = debuffPanel.Find(target.name);
+		
+		targetUI.GetComponent<TooltipTrigger>().OnMouseExit();
+		Destroy(targetUI.gameObject);
 	}
 
 	public void ClearAllDebuff()
@@ -102,7 +108,7 @@ public class DebuffManager : MonoBehaviour
 			Destroy(debuff.gameObject);
 	}
 
-	private void ManageHandler(DebuffHandler method, DelegateAction action)
+	private void ManageHandler(DebuffDelegate method, DelegateAction action)
 	{
 		if (action == DelegateAction.Add)
 		{

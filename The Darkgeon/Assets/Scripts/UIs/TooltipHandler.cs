@@ -24,7 +24,7 @@ public class TooltipHandler : MonoBehaviour
 	{
 		instance.tooltip.SetText(contentText, headerText);
 
-		yield return new WaitForSeconds(2f);
+		yield return new WaitForSeconds(1.5f);
 
 		instance.tooltip.gameObject.SetActive(true);
 	}

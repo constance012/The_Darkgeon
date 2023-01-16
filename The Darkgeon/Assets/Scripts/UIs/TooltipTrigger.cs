@@ -4,7 +4,7 @@ using UnityEngine.EventSystems;
 public class TooltipTrigger : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
 	public string header;
-	[TextArea(3, 10)] public string content;
+	[TextArea(5, 10)] public string content;
 
 	public void OnPointerEnter(PointerEventData eventData)
 	{
@@ -23,12 +23,6 @@ public class TooltipTrigger : MonoBehaviour, IPointerEnterHandler, IPointerExitH
 	}
 
 	public void OnMouseExit()
-	{
-		StopAllCoroutines();
-		TooltipHandler.Hide();
-	}
-
-	public void OnDestroy()
 	{
 		StopAllCoroutines();
 		TooltipHandler.Hide();
