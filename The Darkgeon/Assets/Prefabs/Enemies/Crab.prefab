@@ -211,7 +211,7 @@ MonoBehaviour:
   name: Crab
   maxHealth: 150
   atkDamage: 15
-  contactDamage: 0
+  contactDamage: 9
   currentHP: 0
   armor: 10
   knockBackVal: 1.5
@@ -254,7 +254,6 @@ MonoBehaviour:
   m_AbandonTimer: 8
   timeBetweenAtk: 1.5
   facingRight: 1
-  spottingTimer: 0
 --- !u!1 &1906861128848420086
 GameObject:
   m_ObjectHideFlags: 0

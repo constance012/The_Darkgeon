@@ -48,7 +48,7 @@ public class CrabBehaviour : MonoBehaviour, IEnemyBehaviour
 	private float switchDirDelay = 0f;  // Default is 1f.
 	private float chaseDirection = 1.5f;
 	private float abandonTimer;
-	[HideInInspector] public float spottingTimer;
+	[HideInInspector] public float spottingTimer { get; set; }
 
 	private void Awake()
 	{
@@ -71,7 +71,7 @@ public class CrabBehaviour : MonoBehaviour, IEnemyBehaviour
 		if (isPatrol)
 			Patrol();
 
-		if(!abilityUsed && ((double)stats.currentHP/stats.maxHealth) <= .5)
+		if(!abilityUsed && ((float)stats.currentHP/stats.maxHealth) <= .5f && Random.Range(1, 6) == 1)
 		{
 			StartCoroutine(UseAbility());
 			abilityUsed = true;
@@ -149,6 +149,21 @@ public class CrabBehaviour : MonoBehaviour, IEnemyBehaviour
 	{
 		if (collision.CompareTag("Ground"))
 			isTouchingWall = true;
+	}
+
+	private void OnCollisionStay2D(Collision2D collision)
+	{
+		//Debug.Log("Contacted with the something.");
+
+		if (collision.collider.CompareTag("Player"))
+		{
+			// Engage immediately if contacted with the player.
+			spottingTimer = 0f;
+
+			// Deal contact damage if needed.
+			if (stats.contactDamage > 0f)
+				player.TakeDamage(stats.contactDamage, stats.knockBackVal, this.transform, KillSources.Rat);
+		}
 	}
 
 	#region Crab's behaviours
@@ -230,7 +245,8 @@ public class CrabBehaviour : MonoBehaviour, IEnemyBehaviour
 		float baseKBRes = stats.knockBackRes;
 
 		animator.SetTrigger("Ability");
-		Color popupTextColor = new Color(.84f, .45f, .15f);
+
+		Color popupTextColor = new Color(1f, .76f, 0f);
 		DamageText.Generate(stats.dmgTextPrefab, stats.dmgTextPos.position, popupTextColor, false, "Hard Shell");
 
 		walkSpeed /= 2;

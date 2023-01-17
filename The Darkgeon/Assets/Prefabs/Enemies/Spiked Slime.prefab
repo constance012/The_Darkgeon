@@ -211,7 +211,7 @@ MonoBehaviour:
   name: Spiked Slime
   maxHealth: 100
   atkDamage: 12
-  contactDamage: 0
+  contactDamage: 12
   currentHP: 0
   armor: 4
   knockBackVal: 2
@@ -255,7 +255,6 @@ MonoBehaviour:
   timeBetweenAtk: 1.7
   facingRight: 1
   atkAnimDone: 1
-  spottingTimer: 0
 --- !u!1 &1906861128848420086
 GameObject:
   m_ObjectHideFlags: 0

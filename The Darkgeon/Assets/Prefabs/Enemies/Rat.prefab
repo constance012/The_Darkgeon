@@ -41,7 +41,6 @@ Transform:
   - {fileID: 7650718340843937049}
   - {fileID: 376777055767411851}
   - {fileID: 5649026995876315913}
-  - {fileID: 4619837858754419681}
   - {fileID: 5407209876395017977}
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -211,7 +210,7 @@ MonoBehaviour:
   name: Rat
   maxHealth: 75
   atkDamage: 10
-  contactDamage: 0
+  contactDamage: 10
   currentHP: 0
   armor: 3
   knockBackVal: 1.2
@@ -236,7 +235,6 @@ MonoBehaviour:
   physicMat: {fileID: 0}
   edgeCheck: {fileID: 7650718340843937049}
   centerPoint: {fileID: 5649026995876315913}
-  attackPoint: {fileID: 4619837858754419681}
   whatIsPlayer:
     serializedVersion: 2
     m_Bits: 8
@@ -245,6 +243,8 @@ MonoBehaviour:
     m_Bits: 64
   player: {fileID: 0}
   stats: {fileID: 0}
+  bleeding: {fileID: 11400000, guid: 75078578676d2874a94ad00863c083c6, type: 2}
+  slowness: {fileID: 11400000, guid: 936afb31ce3c82e4f857da90a529df44, type: 2}
   walkSpeed: 80
   checkRadius: 0.1
   attackRange: 0.3
@@ -255,7 +255,6 @@ MonoBehaviour:
   timeBetweenAtk: 1
   facingRight: 1
   atkAnimDone: 1
-  spottingTimer: 0
 --- !u!1 &1906861128848420086
 GameObject:
   m_ObjectHideFlags: 0
@@ -380,7 +379,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 870357710861358073}
-  m_RootOrder: 7
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: -90, y: 0, z: 0}
 --- !u!198 &6095753603060476221
 ParticleSystem:
@@ -5220,37 +5219,6 @@ ParticleSystemRenderer:
   m_MeshWeighting2: 1
   m_MeshWeighting3: 1
   m_MaskInteraction: 0
---- !u!1 &4302293597239561557
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 4619837858754419681}
-  m_Layer: 8
-  m_Name: Attack Point
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &4619837858754419681
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4302293597239561557}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.15, y: -0.092, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 870357710861358073}
-  m_RootOrder: 6
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &4841751524032114424
 GameObject:
   m_ObjectHideFlags: 0

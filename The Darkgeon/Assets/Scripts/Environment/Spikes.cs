@@ -17,8 +17,7 @@ public class Spikes : MonoBehaviour
 
 	private void OnCollisionStay2D(Collision2D collision)
 	{
-		if (collision.collider.CompareTag("Player")
-			&& Time.time - playerStats.lastDamagedTime > playerStats.invincibilityTime)
+		if (collision.collider.CompareTag("Player"))
 			playerStats.TakeDamage(15, 0, null, KillSources.Environment);
 	}
 }

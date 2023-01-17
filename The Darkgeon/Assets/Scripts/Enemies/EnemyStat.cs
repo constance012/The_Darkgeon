@@ -1,5 +1,6 @@
+using System;
 using System.Collections;
-using System.Reflection;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -55,7 +56,6 @@ public class EnemyStat : MonoBehaviour
 
 	[HideInInspector] public bool grounded;
 
-	private KillSources source;
 	private bool isDeath, canDissolve;
 	private float fade = 1f;
 
@@ -111,21 +111,6 @@ public class EnemyStat : MonoBehaviour
 		foreach (Collider2D collider in colliders)
 			if (collider.CompareTag("Ground"))
 				grounded = true;
-	}
-
-	private void OnCollisionEnter2D(Collision2D collision)
-	{
-		//Debug.Log("Contacted with the something.");
-
-		if (collision.collider.CompareTag("Player"))
-		{
-			// Engage immediately if contacted with the player.
-			EngageThePlayer();
-
-			// Deal contact damage if needed.
-			if (contactDamage > 0f && Time.time - player.lastDamagedTime > player.invincibilityTime)
-				player.TakeDamage(contactDamage, knockBackVal, this.transform, source);
-		}
 	}
 
 	public void TakeDamage(float dmg, float critDmgMul = 1f, float knockBackVal = 0f)
@@ -206,20 +191,16 @@ public class EnemyStat : MonoBehaviour
 		{
 			case "crab":
 				behaviour = GetComponent<CrabBehaviour>();
-				source = KillSources.Crab;
 				break;
 			case "rat":
 				behaviour = GetComponent<RatBehaviour>();
-				source = KillSources.Rat;
 				break;
 			case "spiked slime":
 				behaviour = GetComponent<SpikedSlimeBehaviour>();
-				source = KillSources.SpikedSlime;
 				break;
 			
 			default:
 				behaviour = null;
-				source = KillSources.Unknown;
 				Debug.LogWarning("Behaviour script for enemy " + name + " not found!!");
 				break;
 		}
@@ -228,7 +209,7 @@ public class EnemyStat : MonoBehaviour
 	private void EngageThePlayer()
 	{
 		string enemyName = name.ToLower().Trim();
-
+		
 		switch (enemyName)
 		{
 			case "crab":

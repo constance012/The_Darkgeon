@@ -1,4 +1,5 @@
 using UnityEngine;
+using static Unity.VisualScripting.Member;
 
 /// <summary>
 /// Manages the Rat's behaviours and targeting AI.
@@ -14,13 +15,17 @@ public class RatBehaviour : MonoBehaviour, IEnemyBehaviour
 	[Space]
 	[SerializeField] private Transform edgeCheck;
 	[SerializeField] private Transform centerPoint;
-	public Transform attackPoint;
 	public LayerMask whatIsPlayer;
 	[SerializeField] private LayerMask whatIsGround;
 
 	[Space]
 	[SerializeField] private PlayerStats player;
 	[SerializeField] private EnemyStat stats;
+
+	[Header("Debuffs")]
+	[Space]
+	[SerializeField] private Debuff bleeding;
+	[SerializeField] private Debuff slowness;
 
 	[Header("Fields")]
 	[Space]
@@ -48,7 +53,7 @@ public class RatBehaviour : MonoBehaviour, IEnemyBehaviour
 	private float switchDirDelay = 0f;  // Default is 1f.
 	private float chaseDirection = 1.5f;
 	private float abandonTimer;
-	[HideInInspector] public float spottingTimer;
+	[HideInInspector] public float spottingTimer { get; set; }
 
 	private void Awake()
 	{
@@ -150,6 +155,30 @@ public class RatBehaviour : MonoBehaviour, IEnemyBehaviour
 			isTouchingWall = true;
 	}
 
+	private void OnCollisionStay2D(Collision2D collision)
+	{
+		//Debug.Log("Contacted with the something.");
+
+		if (collision.collider.CompareTag("Player"))
+		{
+			// Engage immediately if contacted with the player.
+			spottingTimer = 0f;
+
+			// Deal contact damage if needed.
+			if (stats.contactDamage > 0f)
+			{
+				int inflictChance = Random.Range(1, 6);
+				player.TakeDamage(stats.contactDamage * .9f, stats.knockBackVal, this.transform, KillSources.Rat);
+
+				if (inflictChance == 1)
+				{
+					FindObjectOfType<DebuffManager>().ApplyDebuff(Instantiate(bleeding));
+					FindObjectOfType<DebuffManager>().ApplyDebuff(Instantiate(slowness));
+				}
+			}
+		}
+	}
+
 	#region Rat's behaviours
 	public void Patrol()
 	{
@@ -235,11 +264,10 @@ public class RatBehaviour : MonoBehaviour, IEnemyBehaviour
 
 	private void OnDrawGizmosSelected()
 	{
-		if (edgeCheck == null || centerPoint == null || attackPoint == null)
+		if (edgeCheck == null || centerPoint == null)
 			return;
 
 		Gizmos.DrawWireSphere(edgeCheck.position, checkRadius);
-		Gizmos.DrawWireSphere(attackPoint.position, attackRange);
 		Gizmos.DrawWireSphere(centerPoint.position, inSightRange);
 	}
 }

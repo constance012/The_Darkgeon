@@ -308,8 +308,9 @@ public class CharacterController2D : MonoBehaviour
 			m_FacingRight = !m_FacingRight;
 			transform.Rotate(0f, 180f, 0f);
 
-			ParticleSystem.VelocityOverLifetimeModule vel = runningDust.velocityOverLifetime;
-			vel.xMultiplier *= -1f;
+			Vector2 scale = runningDust.transform.localScale;
+			scale.x *= -1f;
+			runningDust.transform.localScale = scale;
 		}
 	}
 

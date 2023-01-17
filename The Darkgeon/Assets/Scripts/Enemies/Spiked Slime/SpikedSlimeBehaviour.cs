@@ -45,7 +45,7 @@ public class SpikedSlimeBehaviour : MonoBehaviour, IEnemyBehaviour
 	private float switchDirDelay = 0f;  // Default is 1f.
 	private float chaseDirection = 1.5f;
 	private float abandonTimer;
-	[HideInInspector] public float spottingTimer;
+	[HideInInspector] public float spottingTimer { get; set; }
 
 	private void Awake()
 	{
@@ -146,6 +146,21 @@ public class SpikedSlimeBehaviour : MonoBehaviour, IEnemyBehaviour
 	{
 		if (collision.CompareTag("Ground"))
 			isTouchingWall = true;
+	}
+
+	private void OnCollisionStay2D(Collision2D collision)
+	{
+		//Debug.Log("Contacted with the something.");
+
+		if (collision.collider.CompareTag("Player"))
+		{
+			// Engage immediately if contacted with the player.
+			spottingTimer = 0f;
+
+			// Deal contact damage if needed.
+			if (stats.contactDamage > 0f)
+				player.TakeDamage(stats.contactDamage * 1.1f, stats.knockBackVal, this.transform, KillSources.Rat);
+		}
 	}
 
 	#region Spiked Slime's Behaviours

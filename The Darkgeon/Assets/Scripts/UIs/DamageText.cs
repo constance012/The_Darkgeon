@@ -17,12 +17,13 @@ public class DamageText : MonoBehaviour
 	[Header("Fields.")]
 	[Space]
 
-	public float disappearTime = 0f;
-	public float disappearSpeed = 3f;
 	public float yVelocity = .5f;
+
 	public float normalFontSize = .15f;
 	public float critFontSize = .2f;
-	public const float aliveTime = 1f;
+	
+	public float disappearSpeed = 3f;
+	public float aliveTime = 1f;
 	
 	private Color currentTextColor;
 	private float smoothVel;
@@ -35,6 +36,8 @@ public class DamageText : MonoBehaviour
 
 	private void Update()
 	{
+		aliveTime -= Time.deltaTime;
+		
 		float selectedFontSize = normalFontSize;
 		float yVel = yVelocity;
 
@@ -50,7 +53,7 @@ public class DamageText : MonoBehaviour
 			
 		textMesh.fontSize = Mathf.SmoothDamp(textMesh.fontSize, selectedFontSize, ref smoothVel, .05f);
 
-		if (Time.time > disappearTime)
+		if (aliveTime <= 0f)
 		{
 			currentTextColor.a -= disappearSpeed * Time.deltaTime;
 			textMesh.color = currentTextColor;
@@ -102,14 +105,11 @@ public class DamageText : MonoBehaviour
 
 	private void Setup(Color txtColor, string textContent, bool isCritHit = false)
 	{
-		textMesh.text = textContent;
+		textMesh.text = textContent.ToUpper();
 		currentTextColor = txtColor;
 		textMesh.color = currentTextColor;
 		textMesh.fontSize = 0f;
 
 		isCrit = isCritHit;
-
-		if (disappearTime == 0f)
-			disappearTime = Time.time + aliveTime;
 	}
 }
