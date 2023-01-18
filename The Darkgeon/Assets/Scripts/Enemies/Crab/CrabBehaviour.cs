@@ -162,7 +162,7 @@ public class CrabBehaviour : MonoBehaviour, IEnemyBehaviour
 
 			// Deal contact damage if needed.
 			if (stats.contactDamage > 0f)
-				player.TakeDamage(stats.contactDamage, stats.knockBackVal, this.transform, KillSources.Rat);
+				player.TakeDamage(stats.contactDamage, stats.knockBackVal, this.transform, KillSources.Crab);
 		}
 	}
 

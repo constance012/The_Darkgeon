@@ -159,7 +159,7 @@ public class SpikedSlimeBehaviour : MonoBehaviour, IEnemyBehaviour
 
 			// Deal contact damage if needed.
 			if (stats.contactDamage > 0f)
-				player.TakeDamage(stats.contactDamage * 1.1f, stats.knockBackVal, this.transform, KillSources.Rat);
+				player.TakeDamage(stats.contactDamage * 1.1f, stats.knockBackVal, this.transform, KillSources.SpikedSlime);
 		}
 	}
 
