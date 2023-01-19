@@ -141,14 +141,16 @@ public class DebuffManager : MonoBehaviour
 		player.canRegen = currentDebuff.allowRegenerate;
 
 		// Update the UI.
-		debuffPanel.Find(currentDebuff.name + "/Duration").GetComponent<TextMeshProUGUI>().text = Mathf.Round(currentDebuff.duration).ToString();
+		debuffPanel.Find(currentDebuff.name + "/Duration").GetComponent<TextMeshProUGUI>().text = currentDebuff.duration.ToString("0");
 
 		// If the player moves, she'll lose health.
 		if (playerAnim.GetFloat("Speed") > .01f && player.currentHP > 0 && currentDebuff.hpLossDelay <= 0f)
 		{
 			player.currentHP -= currentDebuff.healthLossRate;
 			player.currentHP = Mathf.Clamp(player.currentHP, 0, player.maxHP);
+
 			player.hpBar.SetCurrentHealth(player.currentHP);
+
 			DamageText.Generate(player.dmgTextPrefab, player.dmgTextLoc.position, currentDebuff.healthLossRate.ToString());
 
 			currentDebuff.hpLossDelay = currentDebuff.baseHpLossDelay;
@@ -174,7 +176,7 @@ public class DebuffManager : MonoBehaviour
 			currentDebuff.isSpeedReduced = true;
 		}
 
-		debuffPanel.Find(currentDebuff.name + "/Duration").GetComponent<TextMeshProUGUI>().text = Mathf.Round(currentDebuff.duration).ToString();
+		debuffPanel.Find(currentDebuff.name + "/Duration").GetComponent<TextMeshProUGUI>().text = currentDebuff.duration.ToString("0");
 	}
 	#endregion
 }

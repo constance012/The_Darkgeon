@@ -156,10 +156,10 @@ public class PlayerStats : MonoBehaviour
 			transform.GetComponent<PlayerMovement>().enabled = false;
 
 			float knockbackDir = Mathf.Sign(transform.position.x - attacker.position.x);  // The direction of the knock back.
-			knockBackValue = knockBackValue * (1f - knockBackRes) * knockbackDir;  // Calculate the actual knock back value.
-			rb2d.velocity = new Vector2(knockBackValue, 0f);
+			Vector2 knockbackForce = new Vector2(knockBackValue * (1f - knockBackRes) * knockbackDir, 1f);  // Calculate the actual knock back value.
+			rb2d.AddForce(knockbackForce, ForceMode2D.Impulse);
 
-			yield return new WaitForSeconds(.15f);
+			yield return new WaitForSeconds(.3f);
 
 			transform.GetComponent<PlayerMovement>().enabled = true;
 		}

@@ -11,7 +11,6 @@ public class SpikedSlimeBehaviour : MonoBehaviour, IEnemyBehaviour
 	[Space]
 	[SerializeField] private Transform edgeCheck;
 	[SerializeField] private Transform centerPoint;
-	public Transform attackPoint;
 	public LayerMask whatIsPlayer;
 	[SerializeField] private LayerMask whatIsGround;
 
@@ -75,7 +74,7 @@ public class SpikedSlimeBehaviour : MonoBehaviour, IEnemyBehaviour
 			playerInAggro = distToPlayer <= inSightRange;
 
 			// Bigger range for hopping towards player when attacks.
-			canAttackPlayer = Physics2D.OverlapCircle(centerPoint.position, attackRange + .7f, whatIsPlayer);
+			canAttackPlayer = Physics2D.OverlapCircle(centerPoint.position, attackRange, whatIsPlayer);
 		}
 
 		// If the player's death, simply return.
@@ -159,7 +158,7 @@ public class SpikedSlimeBehaviour : MonoBehaviour, IEnemyBehaviour
 
 			// Deal contact damage if needed.
 			if (stats.contactDamage > 0f)
-				player.TakeDamage(stats.contactDamage * 1.1f, stats.knockBackVal, this.transform, KillSources.SpikedSlime);
+				player.TakeDamage(stats.contactDamage, stats.knockBackVal, this.transform, KillSources.SpikedSlime);
 		}
 	}
 
@@ -249,11 +248,11 @@ public class SpikedSlimeBehaviour : MonoBehaviour, IEnemyBehaviour
 
 	private void OnDrawGizmosSelected()
 	{
-		if (edgeCheck == null || centerPoint == null || attackPoint == null)
+		if (edgeCheck == null || centerPoint == null)
 			return;
 
 		Gizmos.DrawWireSphere(edgeCheck.position, checkRadius);
-		Gizmos.DrawWireSphere(attackPoint.position, attackRange);
+		Gizmos.DrawWireSphere(centerPoint.position, attackRange);
 		Gizmos.DrawWireSphere(centerPoint.position, inSightRange);
 	}
 }

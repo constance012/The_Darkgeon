@@ -36,9 +36,11 @@ public class LadderClimbing : MonoBehaviour
 				isClimbing = true;
 
 			if (verticalMove == 0f || !animator.GetBool("Grounded"))
+			{
 				if (animator.GetCurrentAnimatorStateInfo(0).IsName("LadderUp") ||
-				animator.GetCurrentAnimatorStateInfo(0).IsName("LadderDown"))
+					animator.GetCurrentAnimatorStateInfo(0).IsName("LadderDown"))
 					animator.speed = 0f;
+			}
 
 			if (verticalMove > 0f)
 			{

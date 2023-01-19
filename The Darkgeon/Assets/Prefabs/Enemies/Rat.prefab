@@ -213,7 +213,7 @@ MonoBehaviour:
   contactDamage: 10
   currentHP: 0
   armor: 3
-  knockBackVal: 1.2
+  knockBackVal: 2
   armorReduceFactor: 0.5
   knockBackRes: 0.1
   timeToDissolve: 5
@@ -247,9 +247,8 @@ MonoBehaviour:
   slowness: {fileID: 11400000, guid: 936afb31ce3c82e4f857da90a529df44, type: 2}
   walkSpeed: 80
   checkRadius: 0.1
-  attackRange: 0.3
+  attackRange: 0.8
   inSightRange: 2.5
-  abilityDuration: 10
   m_SpottingTimer: 0.5
   m_AbandonTimer: 10
   timeBetweenAtk: 1

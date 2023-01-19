@@ -236,7 +236,6 @@ MonoBehaviour:
   physicMat: {fileID: 0}
   edgeCheck: {fileID: 7650718340843937049}
   centerPoint: {fileID: 5649026995876315913}
-  attackPoint: {fileID: 4619837858754419681}
   whatIsPlayer:
     serializedVersion: 2
     m_Bits: 8
@@ -247,7 +246,7 @@ MonoBehaviour:
   stats: {fileID: 0}
   walkSpeed: 50
   checkRadius: 0.1
-  attackRange: 0.5
+  attackRange: 1.2
   inSightRange: 2.5
   abilityDuration: 10
   m_SpottingTimer: 1

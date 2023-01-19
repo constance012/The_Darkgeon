@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using static Unity.VisualScripting.Member;
 
@@ -33,7 +34,6 @@ public class RatBehaviour : MonoBehaviour, IEnemyBehaviour
 	public float checkRadius;
 	public float attackRange;
 	public float inSightRange;
-	public float abilityDuration;
 
 	[Space]
 	public float m_SpottingTimer = 3f;
@@ -48,6 +48,7 @@ public class RatBehaviour : MonoBehaviour, IEnemyBehaviour
 	private bool isPatrol = true;
 	private bool mustFlip, isTouchingWall;
 	private bool playerInAggro, canAttackPlayer;
+	private bool abilityUsed, canUseAbilityAtk;
 
 	private float timeBetweenJump = 0f;  // Default is 2f.
 	private float switchDirDelay = 0f;  // Default is 1f.
@@ -76,6 +77,12 @@ public class RatBehaviour : MonoBehaviour, IEnemyBehaviour
 		if (isPatrol)
 			Patrol();
 
+		if (!abilityUsed & (float)stats.currentHP / stats.maxHealth <= .5f)
+		{
+			UseAbility();
+			abilityUsed = true;
+		}
+
 		if (!GameManager.isPlayerDeath)
 		{
 			// Check if the player is in what range of the enemy.
@@ -83,7 +90,7 @@ public class RatBehaviour : MonoBehaviour, IEnemyBehaviour
 			playerInAggro = distToPlayer <= inSightRange;
 			
 			// Bigger range for hopping towards player when attacks.
-			canAttackPlayer = Physics2D.OverlapCircle(centerPoint.position, attackRange + .5f, whatIsPlayer);
+			canAttackPlayer = Physics2D.OverlapCircle(centerPoint.position, attackRange, whatIsPlayer);
 		}
 
 		// If the player's death, simply return.
@@ -157,24 +164,33 @@ public class RatBehaviour : MonoBehaviour, IEnemyBehaviour
 
 	private void OnCollisionStay2D(Collision2D collision)
 	{
-		//Debug.Log("Contacted with the something.");
-
 		if (collision.collider.CompareTag("Player"))
 		{
 			// Engage immediately if contacted with the player.
 			spottingTimer = 0f;
+			
+			int inflictChance = Random.Range(1, 11);
 
 			// Deal contact damage if needed.
 			if (stats.contactDamage > 0f)
 			{
-				int inflictChance = Random.Range(1, 6);
-				player.TakeDamage(stats.contactDamage * .9f, stats.knockBackVal, this.transform, KillSources.Rat);
+				player.TakeDamage(stats.contactDamage, stats.knockBackVal, this.transform, KillSources.Rat);
 
-				if (inflictChance == 1)
+				// Inflict heavier bleeding and slowness debuff if the ability is used.
+				if (canUseAbilityAtk) 
 				{
-					FindObjectOfType<DebuffManager>().ApplyDebuff(Instantiate(bleeding));
+					Debuff extendedBleeding = Instantiate(bleeding);
+					extendedBleeding.duration += 5f;
+
+					FindObjectOfType<DebuffManager>().ApplyDebuff(extendedBleeding);
 					FindObjectOfType<DebuffManager>().ApplyDebuff(Instantiate(slowness));
+
+					canUseAbilityAtk = false;
 				}
+
+				// Else, has 10% chance of inflicting regular bleeding
+				else if (inflictChance == 1)
+					FindObjectOfType<DebuffManager>().ApplyDebuff(Instantiate(bleeding));
 			}
 		}
 	}
@@ -250,6 +266,19 @@ public class RatBehaviour : MonoBehaviour, IEnemyBehaviour
 	{
 		alreadyAttacked = false;
 	}
+
+	private void UseAbility()
+	{
+		if (Random.Range(1, 6) == 1)
+		{
+			animator.SetTrigger("Ability");
+
+			Color popupTextColor = new Color(1f, .76f, 0f);
+			DamageText.Generate(stats.dmgTextPrefab, stats.dmgTextPos.position, popupTextColor, false, "Deadly Bite");
+
+			canUseAbilityAtk = true;
+		}
+	}
 	#endregion
 
 	public void Flip()
@@ -268,6 +297,7 @@ public class RatBehaviour : MonoBehaviour, IEnemyBehaviour
 			return;
 
 		Gizmos.DrawWireSphere(edgeCheck.position, checkRadius);
+		Gizmos.DrawWireSphere(centerPoint.position, attackRange);
 		Gizmos.DrawWireSphere(centerPoint.position, inSightRange);
 	}
 }

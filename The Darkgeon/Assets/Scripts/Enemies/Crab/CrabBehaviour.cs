@@ -71,7 +71,7 @@ public class CrabBehaviour : MonoBehaviour, IEnemyBehaviour
 		if (isPatrol)
 			Patrol();
 
-		if(!abilityUsed && ((float)stats.currentHP/stats.maxHealth) <= .5f && Random.Range(1, 6) == 1)
+		if (!abilityUsed && (float)stats.currentHP / stats.maxHealth <= .5f)
 		{
 			StartCoroutine(UseAbility());
 			abilityUsed = true;
@@ -238,30 +238,33 @@ public class CrabBehaviour : MonoBehaviour, IEnemyBehaviour
 	// Crab's Ability: Hard Shell.
 	private IEnumerator UseAbility()
 	{
-		float baseSpeed = walkSpeed;
-		float baseAtkSpeed = timeBetweenAtk;
-		int baseArmor = stats.armor;
-		float baseAtkDamage = stats.atkDamage;
-		float baseKBRes = stats.knockBackRes;
+		if (Random.Range(1, 6) == 1)
+		{
+			float baseSpeed = walkSpeed;
+			float baseAtkSpeed = timeBetweenAtk;
+			int baseArmor = stats.armor;
+			float baseAtkDamage = stats.atkDamage;
+			float baseKBRes = stats.knockBackRes;
 
-		animator.SetTrigger("Ability");
+			animator.SetTrigger("Ability");
 
-		Color popupTextColor = new Color(1f, .76f, 0f);
-		DamageText.Generate(stats.dmgTextPrefab, stats.dmgTextPos.position, popupTextColor, false, "Hard Shell");
+			Color popupTextColor = new Color(1f, .76f, 0f);
+			DamageText.Generate(stats.dmgTextPrefab, stats.dmgTextPos.position, popupTextColor, false, "Hard Shell");
 
-		walkSpeed /= 2;
-		timeBetweenAtk *= 2;
-		stats.armor *= 2;
-		stats.atkDamage *= 2;
-		stats.knockBackRes *= 2;
+			walkSpeed /= 2;
+			timeBetweenAtk *= 2;
+			stats.armor *= 2;
+			stats.atkDamage *= 2;
+			stats.knockBackRes *= 2;
 
-		yield return new WaitForSeconds(abilityDuration);
+			yield return new WaitForSeconds(abilityDuration);
 
-		walkSpeed = baseSpeed;
-		timeBetweenAtk = baseAtkSpeed;
-		stats.armor = baseArmor;
-		stats.atkDamage = baseAtkDamage;
-		stats.knockBackRes = baseKBRes;
+			walkSpeed = baseSpeed;
+			timeBetweenAtk = baseAtkSpeed;
+			stats.armor = baseArmor;
+			stats.atkDamage = baseAtkDamage;
+			stats.knockBackRes = baseKBRes;
+		}
 	}
 	#endregion
 
