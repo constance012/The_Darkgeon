@@ -7,7 +7,7 @@ using UnityEngine;
 public class Debuff : ScriptableObject
 {
 	public new string name;
-	public string description;
+	[TextArea(5, 10)] public string description;
 	public float duration;
 
 	public Sprite icon;

@@ -8,17 +8,27 @@ public class SpikedSlimeBehaviour : MonoBehaviour, IEnemyBehaviour
 	[SerializeField] private Animator animator;
 	[SerializeField] private PhysicsMaterial2D physicMat;
 
+	[Header("Checking, Layers")]
 	[Space]
 	[SerializeField] private Transform edgeCheck;
 	[SerializeField] private Transform centerPoint;
 	public LayerMask whatIsPlayer;
 	[SerializeField] private LayerMask whatIsGround;
 
+	[Header("Stats Scripts")]
 	[Space]
 	[SerializeField] private PlayerStats player;
 	[SerializeField] private EnemyStat stats;
 
-	[Header("Fields")]
+	[Header("Debuffs")]
+	[Space]
+	[SerializeField] private Debuff poisoned;
+
+	[Header("Effects")]
+	[Space]
+	[SerializeField] private ParticleSystem abilityFx;
+
+	[Header("Check Ranges")]
 	[Space]
 	public float walkSpeed;
 	public float checkRadius;
@@ -26,6 +36,7 @@ public class SpikedSlimeBehaviour : MonoBehaviour, IEnemyBehaviour
 	public float inSightRange;
 	public float abilityDuration;
 
+	[Header("Timers")]
 	[Space]
 	public float m_SpottingTimer = 3f;
 	[SerializeField] private float m_AbandonTimer = 8f;
@@ -39,6 +50,7 @@ public class SpikedSlimeBehaviour : MonoBehaviour, IEnemyBehaviour
 	private bool isPatrol = true;
 	private bool mustFlip, isTouchingWall;
 	private bool playerInAggro, canAttackPlayer;
+	private bool abilityUsed;
 
 	private float timeBetweenJump = 0f;  // Default is 2f.
 	private float switchDirDelay = 0f;  // Default is 1f.
@@ -53,6 +65,7 @@ public class SpikedSlimeBehaviour : MonoBehaviour, IEnemyBehaviour
 		stats = GetComponent<EnemyStat>();
 		physicMat = GetComponent<CircleCollider2D>().sharedMaterial;
 		player = GameObject.Find("Player").GetComponent<PlayerStats>();
+		abilityFx = transform.Find("Toxic Cloud Effect").GetComponent<ParticleSystem>();
 	}
 
 	private void Start()
@@ -66,6 +79,12 @@ public class SpikedSlimeBehaviour : MonoBehaviour, IEnemyBehaviour
 
 		if (isPatrol)
 			Patrol();
+
+		if (!abilityUsed & (float)stats.currentHP / stats.maxHealth <= .8f)
+		{
+			Invoke(nameof(UseAbility), 2f);
+			abilityUsed = true;
+		}
 
 		if (!GameManager.isPlayerDeath)
 		{
@@ -155,10 +174,16 @@ public class SpikedSlimeBehaviour : MonoBehaviour, IEnemyBehaviour
 		{
 			// Engage immediately if contacted with the player.
 			spottingTimer = 0f;
+			int inflictChance = Random.Range(1, 11);
 
 			// Deal contact damage if needed.
 			if (stats.contactDamage > 0f)
+			{
 				player.TakeDamage(stats.contactDamage, stats.knockBackVal, this.transform, KillSources.SpikedSlime);
+
+				if (inflictChance == 1)
+					FindObjectOfType<DebuffManager>().ApplyDebuff(Instantiate(poisoned));
+			}
 		}
 	}
 
@@ -233,6 +258,30 @@ public class SpikedSlimeBehaviour : MonoBehaviour, IEnemyBehaviour
 	public void ResetAttack()
 	{
 		alreadyAttacked = false;
+	}
+
+	private void UseAbility()
+	{
+		if (Random.Range(1, 6) == 1)
+		{
+			animator.SetTrigger("Ability");
+			abilityFx.Play();
+
+			Collider2D hitObj = Physics2D.OverlapCircle(centerPoint.position, attackRange + .2f, whatIsPlayer);
+
+			if (hitObj != null)
+			{
+				player.TakeDamage(stats.atkDamage, 0f, this.transform, KillSources.SpikedSlime);
+				
+				Debuff heavyPoisoned = Instantiate(poisoned);
+				heavyPoisoned.duration *= 3f;
+
+				FindObjectOfType<DebuffManager>().ApplyDebuff(heavyPoisoned);
+			}
+
+			Color popupTextColor = new Color(1f, .76f, 0f);
+			DamageText.Generate(stats.dmgTextPrefab, stats.dmgTextPos.position, popupTextColor, false, "Toxic Cloud");
+		}
 	}
 	#endregion
 

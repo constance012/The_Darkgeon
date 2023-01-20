@@ -12,19 +12,25 @@ public class DebuffManager : MonoBehaviour
 {
 	[Header("References")]
 	[Space]
+
+	[Header("Player")]
+	[Space]
 	[SerializeField] private PlayerStats player;
 	[SerializeField] private CharacterController2D controller;
 	[SerializeField] private Animator playerAnim;
+
+	[Header("UIs")]
+	[Space]
 	[SerializeField] private Transform debuffPanel;
 	[SerializeField] private GameObject debuffUIPrefab;
 
-	private Debuff currentDebuff;
+	// Private fields.
 	private List<Debuff> debuffList = new List<Debuff>();
+	private Debuff currentDebuff;
 
 	private delegate void DebuffDelegate();
 
-	DebuffDelegate handler = null;
-	//DebuffDelegate debuffMethod;
+	private DebuffDelegate handler = null;
 
 	public static bool deathByDebuff { get; set; }
 
@@ -38,7 +44,7 @@ public class DebuffManager : MonoBehaviour
 
 	private void Update()
 	{
-		// If the player bleeds to death.
+		// If the player is killed by any debuff.
 		if (player.currentHP <= 0 && !deathByDebuff)
 		{
 			playerAnim.SetTrigger("TakingDamage");
@@ -64,7 +70,7 @@ public class DebuffManager : MonoBehaviour
 			// Create a delegate holding that private and non-static method.
 			DebuffDelegate debuffMethod = (DebuffDelegate) Delegate.CreateDelegate(typeof(DebuffDelegate), this, methodName);
 
-			ManageHandler(debuffMethod, DelegateAction.Add);
+			ManageHandler(debuffMethod, DebuffManageAction.Add);
 
 			GameObject debuffUIObj = Instantiate(debuffUIPrefab, debuffPanel);
 
@@ -82,7 +88,7 @@ public class DebuffManager : MonoBehaviour
 			debuffList.Find(debuff => debuff.name == target.name).duration = target.duration;
 	}
 
-	public void RemoveDebuff(Debuff target)
+	private void RemoveDebuff(Debuff target)
 	{
 		// Remove debuff from the list.
 		debuffList.Remove(target);
@@ -91,7 +97,7 @@ public class DebuffManager : MonoBehaviour
 		MethodInfo methodName = this.GetType().GetMethod(target.name, BindingFlags.NonPublic | BindingFlags.Instance);
 		DebuffDelegate debuffMethod = (DebuffDelegate)Delegate.CreateDelegate(typeof(DebuffDelegate), this, methodName);
 
-		ManageHandler(debuffMethod, DelegateAction.Remove);
+		ManageHandler(debuffMethod, DebuffManageAction.Remove);
 
 		// Hide the tooltip and destroy the UI Game Object.
 		Transform targetUI = debuffPanel.Find(target.name);
@@ -108,9 +114,9 @@ public class DebuffManager : MonoBehaviour
 			Destroy(debuff.gameObject);
 	}
 
-	private void ManageHandler(DebuffDelegate method, DelegateAction action)
+	private void ManageHandler(DebuffDelegate method, DebuffManageAction action)
 	{
-		if (action == DelegateAction.Add)
+		if (action == DebuffManageAction.Add)
 		{
 			handler -= method;  // Remove first to ensure no duplication.
 			handler += method;
@@ -118,15 +124,13 @@ public class DebuffManager : MonoBehaviour
 
 		else
 			handler -= method;
-
-		//debuffMethod = null;
 	}
 	#endregion
 
 	#region Debuff Types Method
 	private void Bleeding()
 	{
-		currentDebuff = debuffList.Find(debuff => debuff.name == "Bleeding");
+		currentDebuff = debuffList.Find(debuff => debuff.name.ToLower() == "bleeding");
 		
 		currentDebuff.duration -= Time.deltaTime;
 		currentDebuff.hpLossDelay -= Time.deltaTime;
@@ -140,9 +144,6 @@ public class DebuffManager : MonoBehaviour
 
 		player.canRegen = currentDebuff.allowRegenerate;
 
-		// Update the UI.
-		debuffPanel.Find(currentDebuff.name + "/Duration").GetComponent<TextMeshProUGUI>().text = currentDebuff.duration.ToString("0");
-
 		// If the player moves, she'll lose health.
 		if (playerAnim.GetFloat("Speed") > .01f && player.currentHP > 0 && currentDebuff.hpLossDelay <= 0f)
 		{
@@ -155,11 +156,46 @@ public class DebuffManager : MonoBehaviour
 
 			currentDebuff.hpLossDelay = currentDebuff.baseHpLossDelay;
 		}
+
+		// Update the UI.
+		debuffPanel.Find(currentDebuff.name + "/Duration").GetComponent<TextMeshProUGUI>().text = currentDebuff.duration.ToString("0");
+	}
+
+	private void Poisoned()
+	{
+		currentDebuff = debuffList.Find(debuff => debuff.name.ToLower() == "poisoned");
+
+		currentDebuff.duration -= Time.deltaTime;
+		currentDebuff.hpLossDelay -= Time.deltaTime;
+
+		if (currentDebuff.duration <= 0f || player.currentHP <= 0)
+		{
+			RemoveDebuff(currentDebuff);
+			player.canRegen = true;
+			return;
+		}
+
+		player.canRegen = currentDebuff.allowRegenerate;
+
+		// The player loses health over time.
+		if (player.currentHP > 0 && currentDebuff.hpLossDelay <= 0f)
+		{
+			player.currentHP -= currentDebuff.healthLossRate;
+			player.currentHP = Mathf.Clamp(player.currentHP, 0, player.maxHP);
+
+			player.hpBar.SetCurrentHealth(player.currentHP);
+
+			DamageText.Generate(player.dmgTextPrefab, player.dmgTextLoc.position, currentDebuff.healthLossRate.ToString());
+
+			currentDebuff.hpLossDelay = currentDebuff.baseHpLossDelay;
+		}
+		// Update the UI.
+		debuffPanel.Find(currentDebuff.name + "/Duration").GetComponent<TextMeshProUGUI>().text = currentDebuff.duration.ToString("0");
 	}
 
 	private void Slowness()
 	{
-		currentDebuff = debuffList.Find(debuff => debuff.name == "Slowness");
+		currentDebuff = debuffList.Find(debuff => debuff.name.ToLower() == "slowness");
 		
 		currentDebuff.duration -= Time.deltaTime;
 		
@@ -170,18 +206,20 @@ public class DebuffManager : MonoBehaviour
 			return;
 		}
 
+		// The player's movement speed is reduced.
 		if (!currentDebuff.isSpeedReduced)
 		{
 			controller.m_MoveSpeed *= (1 - currentDebuff.speedReduceFactor);
 			currentDebuff.isSpeedReduced = true;
 		}
 
+		// Update the UI.
 		debuffPanel.Find(currentDebuff.name + "/Duration").GetComponent<TextMeshProUGUI>().text = currentDebuff.duration.ToString("0");
 	}
 	#endregion
 }
 
-internal enum DelegateAction
+internal enum DebuffManageAction
 {
 	Add,
 	Remove

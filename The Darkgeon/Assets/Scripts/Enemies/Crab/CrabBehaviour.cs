@@ -11,19 +11,21 @@ public class CrabBehaviour : MonoBehaviour, IEnemyBehaviour
 	[SerializeField] private Rigidbody2D rb2d;
 	[SerializeField] private Animator animator;
 	[SerializeField] private PhysicsMaterial2D physicMat;
-	
+
+	[Header("Checking, Layers")]
 	[Space]
 	[SerializeField] private Transform edgeCheck;
 	[SerializeField] private Transform centerPoint;
 	public Transform attackPoint;
 	public LayerMask whatIsPlayer;
 	[SerializeField] private LayerMask whatIsGround;
-	
+
+	[Header("Stats Scripts")]
 	[Space]
 	[SerializeField] private PlayerStats player;
 	[SerializeField] private EnemyStat stats;
 
-	[Header("Fields")]
+	[Header("Check Ranges")]
 	[Space]
 	public float walkSpeed;
 	public float checkRadius;
@@ -31,6 +33,7 @@ public class CrabBehaviour : MonoBehaviour, IEnemyBehaviour
 	public float inSightRange;
 	public float abilityDuration;
 
+	[Header("Timers")]
 	[Space]
 	public float m_SpottingTimer = 3f;
 	[SerializeField] private float m_AbandonTimer = 8f;

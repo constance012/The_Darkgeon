@@ -13,12 +13,14 @@ public class RatBehaviour : MonoBehaviour, IEnemyBehaviour
 	[SerializeField] private Animator animator;
 	[SerializeField] private PhysicsMaterial2D physicMat;
 
+	[Header("Checking, Layers")]
 	[Space]
 	[SerializeField] private Transform edgeCheck;
 	[SerializeField] private Transform centerPoint;
 	public LayerMask whatIsPlayer;
 	[SerializeField] private LayerMask whatIsGround;
 
+	[Header("Stats Scripts")]
 	[Space]
 	[SerializeField] private PlayerStats player;
 	[SerializeField] private EnemyStat stats;
@@ -28,13 +30,14 @@ public class RatBehaviour : MonoBehaviour, IEnemyBehaviour
 	[SerializeField] private Debuff bleeding;
 	[SerializeField] private Debuff slowness;
 
-	[Header("Fields")]
+	[Header("Check Ranges")]
 	[Space]
 	public float walkSpeed;
 	public float checkRadius;
 	public float attackRange;
 	public float inSightRange;
 
+	[Header("Timers")]
 	[Space]
 	public float m_SpottingTimer = 3f;
 	[SerializeField] private float m_AbandonTimer = 8f;
@@ -79,7 +82,7 @@ public class RatBehaviour : MonoBehaviour, IEnemyBehaviour
 
 		if (!abilityUsed & (float)stats.currentHP / stats.maxHealth <= .5f)
 		{
-			UseAbility();
+			Invoke(nameof(UseAbility), 1f);
 			abilityUsed = true;
 		}
 
@@ -180,7 +183,7 @@ public class RatBehaviour : MonoBehaviour, IEnemyBehaviour
 				if (canUseAbilityAtk) 
 				{
 					Debuff extendedBleeding = Instantiate(bleeding);
-					extendedBleeding.duration += 5f;
+					extendedBleeding.duration *= 1.5f;
 
 					FindObjectOfType<DebuffManager>().ApplyDebuff(extendedBleeding);
 					FindObjectOfType<DebuffManager>().ApplyDebuff(Instantiate(slowness));

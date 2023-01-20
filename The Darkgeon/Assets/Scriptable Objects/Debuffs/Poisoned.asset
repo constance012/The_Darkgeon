@@ -10,15 +10,15 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1571d8cb19cd2fa458d08f8606c3d048, type: 3}
-  m_Name: Bleeding
+  m_Name: Poisoned
   m_EditorClassIdentifier: 
-  name: Bleeding
-  description: Losing health if moving, can't regenerate out of combat.
-  duration: 10
-  icon: {fileID: 21300000, guid: 11d2145e6966f584da33ca2e784eb37b, type: 3}
+  name: Poisoned
+  description: Slowly losing health overtime, can't regenerate.
+  duration: 5
+  icon: {fileID: 21300000, guid: b39d0cce730476844973ec07275e54e6, type: 3}
   healthLossRate: 1
-  baseHpLossDelay: 1
-  hpLossDelay: 1
+  baseHpLossDelay: 0.5
+  hpLossDelay: 0.5
   allowRegenerate: 0
   speedReduceFactor: 0
   isSpeedReduced: 0
