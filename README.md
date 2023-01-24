@@ -3,7 +3,7 @@ Current State: UNDER DEVELOPMENT.
 
 A dungeon raid, 2D screen-scrolling game using free assets on the assets store.
 
-This is a remote repository associates with "The Darkgeon" project files for the Unity Editor.
+This is a remote repository associating with "The Darkgeon" project files for the Unity Editor.
 
 Credits for arts, sprites and packages:
 + A* Pathfinding Project - https://arongranberg.com/astar/front
