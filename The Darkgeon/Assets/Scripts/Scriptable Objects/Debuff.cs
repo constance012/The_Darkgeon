@@ -3,7 +3,7 @@ using UnityEngine;
 /// <summary>
 /// A scriptable object to create a debuff.
 /// </summary>
-[CreateAssetMenu(fileName = "New Debuff")]
+[CreateAssetMenu(fileName = "New Debuff", menuName = "Debuff")]
 public class Debuff : ScriptableObject
 {
 	public new string name;
@@ -11,6 +11,7 @@ public class Debuff : ScriptableObject
 	public float duration;
 
 	public Sprite icon;
+	public GameObject visualEffect;
 
 	[Header("Health Related Debuff")]
 	[Space]

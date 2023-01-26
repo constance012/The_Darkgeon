@@ -27,6 +27,7 @@ public class DebuffManager : MonoBehaviour
 	// Private fields.
 	private List<Debuff> debuffList = new List<Debuff>();
 	private Debuff currentDebuff;
+	private ParticleSystem currentEffect;
 
 	private delegate void DebuffDelegate();
 
@@ -52,6 +53,12 @@ public class DebuffManager : MonoBehaviour
 			return;
 		}
 
+		if (debuffList.Count == 0)
+		{
+			currentDebuff = null;
+			currentEffect = null;
+		}
+
 		// Invoke the debuff handler if not null.
 		handler?.Invoke();
 	}
@@ -66,9 +73,9 @@ public class DebuffManager : MonoBehaviour
 
 			// Get the corresponding private and non-static method using reflection.
 			MethodInfo methodName = this.GetType().GetMethod(target.name, BindingFlags.NonPublic | BindingFlags.Instance);
-			
+
 			// Create a delegate holding that private and non-static method.
-			DebuffDelegate debuffMethod = (DebuffDelegate) Delegate.CreateDelegate(typeof(DebuffDelegate), this, methodName);
+			DebuffDelegate debuffMethod = (DebuffDelegate)Delegate.CreateDelegate(typeof(DebuffDelegate), this, methodName);
 
 			ManageHandler(debuffMethod, DebuffManageAction.Add);
 
@@ -77,15 +84,20 @@ public class DebuffManager : MonoBehaviour
 			debuffUIObj.name = target.name;
 			debuffUIObj.GetComponent<Image>().sprite = target.icon;
 			debuffUIObj.transform.Find("Duration").GetComponent<TextMeshProUGUI>().text = target.duration.ToString();
-			
+
 			TooltipTrigger tooltip = debuffUIObj.GetComponent<TooltipTrigger>();
 			tooltip.header = target.name;
 			tooltip.content = target.description;
 		}
 
-		// Otherwise, just reset its duration.
+		// Otherwise, reset its duration if the current duration is less than the target's.
 		else
-			debuffList.Find(debuff => debuff.name == target.name).duration = target.duration;
+		{
+			Debuff existingDebuff = debuffList.Find(debuff => debuff.name == target.name);
+			
+			if (existingDebuff.duration < target.duration)
+				existingDebuff.duration = target.duration;
+		}
 	}
 
 	private void RemoveDebuff(Debuff target)
@@ -130,13 +142,22 @@ public class DebuffManager : MonoBehaviour
 	#region Debuff Types Method
 	private void Bleeding()
 	{
+		
 		currentDebuff = debuffList.Find(debuff => debuff.name.ToLower() == "bleeding");
 		
+		// Clone the particle system if the player doesn't contain its game object already and play it once.
+		if (currentDebuff.visualEffect != null && player.transform.Find(currentDebuff.visualEffect.name + "(Clone)") == null)
+		{
+			currentEffect = Instantiate(currentDebuff.visualEffect, player.transform).GetComponent<ParticleSystem>();
+			currentEffect.Play();
+		}
+
 		currentDebuff.duration -= Time.deltaTime;
 		currentDebuff.hpLossDelay -= Time.deltaTime;
 
 		if (currentDebuff.duration <= 0f || player.currentHP <= 0)
 		{
+			Destroy(currentEffect.gameObject);
 			RemoveDebuff(currentDebuff);
 			player.canRegen = true;
 			return;

@@ -38,9 +38,16 @@ public class CharacterController2D : MonoBehaviour
 	[Space]
 	[SerializeField] private Animator m_Animator;
 	[SerializeField] private TrailRenderer m_TrailRenderer;
+
+	[Header("Materials")]
+	[Space]
 	[SerializeField] private PhysicsMaterial2D slippery;
 	[SerializeField] private PhysicsMaterial2D grippy;
+
+	[Header("Effects")]
+	[Space]
 	[SerializeField] private ParticleSystem runningDust;
+	[SerializeField] private ParticleSystem jumpingDust;
 
 	[Header("Events")]
 	[Space]
@@ -51,16 +58,17 @@ public class CharacterController2D : MonoBehaviour
 
 	public BoolEvent OnCrouchEvent;
 
-	// Fields.
+	// Private fields.
 	[HideInInspector] public bool m_FacingRight = true;  // For determining which way the player is currently facing.
 	private bool m_wasCrouching;
 	private bool m_Grounded;            // Whether or not the player is grounded.
-	private bool canWalkOnSlope;
-	public bool onSlope;
 	public static bool m_IsDashing { get; private set; }
+	
+	private bool canWalkOnSlope;
+	public bool onSlope { get; private set; }
 
-	const float k_GroundedRadius = .2f; // Radius of the overlap circle to determine if grounded.
-	const float k_CeilingRadius = .2f; // Radius of the overlap circle to determine if the player can stand up.
+	private const float k_GroundedRadius = .2f; // Radius of the overlap circle to determine if grounded.
+	private const float k_CeilingRadius = .2f; // Radius of the overlap circle to determine if the player can stand up.
 	private float m_DashingTime = .2f;
 
 	private float slopeDownAngle;  // Down because the raycast is shooting down.
@@ -76,7 +84,9 @@ public class CharacterController2D : MonoBehaviour
 		m_Animator = GetComponent<Animator>();
 		m_TrailRenderer = GetComponent<TrailRenderer>();
 		m_CrouchDisableCollider = GetComponent<BoxCollider2D>();
+
 		runningDust = transform.Find("Running Dust").GetComponent<ParticleSystem>();
+		jumpingDust = transform.Find("Jumping Dust").GetComponent<ParticleSystem>();
 
 		if (OnLandEvent == null)
 			OnLandEvent = new UnityEvent();
@@ -133,6 +143,7 @@ public class CharacterController2D : MonoBehaviour
 				}
 			}
 
+
 			// If the input is moving the player right and the player is facing left...
 			if (moveInput > 0 && !m_FacingRight)
 				Flip();
@@ -140,6 +151,7 @@ public class CharacterController2D : MonoBehaviour
 			// Otherwise if the input is moving the player left and the player is facing right...
 			else if (moveInput < 0 && m_FacingRight)
 				Flip();
+
 
 			// Calculate the speed at the direction we want to move.
 			float targetSpeed = moveInput * m_MoveSpeed;
@@ -154,10 +166,14 @@ public class CharacterController2D : MonoBehaviour
 			// And multiplies by the sign to reaplly direction.
 			float moveForce = Mathf.Pow(Mathf.Abs(speedDiff) * accelRate, m_VelPower) * Mathf.Sign(speedDiff);
 
+
+			// Play the dust effect when running.
 			if (Mathf.Abs(moveInput) > 0f && m_Grounded && runningDust.isStopped)
 				runningDust.Play();
+			
 			else if ((moveInput == 0f && runningDust.isPlaying) || !m_Grounded)
 				runningDust.Stop();
+
 
 			// Applies the force to the rigidbody, respectively when on slope or not.
 			if (onSlope && canWalkOnSlope)
@@ -169,11 +185,12 @@ public class CharacterController2D : MonoBehaviour
 		}
 
 		// If the player should jump.
-		if (m_Grounded && jump && canWalkOnSlope)
+		if (jump && canWalkOnSlope)
 		{
 			// Add a vertical force to the player.
 			m_Grounded = false;
 			m_Rigidbody2D.AddForce(new Vector2(0f, m_JumpForce));
+			jumpingDust.Play();
 
 			jump = false;
 			m_Animator.SetBool("IsJumping", false);
@@ -229,7 +246,7 @@ public class CharacterController2D : MonoBehaviour
 				m_Grounded = true;
 
 				// Landing event only triggers when falling to the ground.
-				if (!wasGrounded && m_Rigidbody2D.velocity.y < 0)
+				if (!wasGrounded && m_Rigidbody2D.velocity.y < 0f)
 					OnLandEvent.Invoke();
 			}
 	}

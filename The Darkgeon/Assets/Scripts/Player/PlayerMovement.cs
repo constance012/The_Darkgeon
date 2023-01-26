@@ -45,7 +45,7 @@ public class PlayerMovement : MonoBehaviour
 		animator.SetFloat("Speed", rb2D.velocity.magnitude);
 		animator.SetFloat("yVelocity", rb2D.velocity.y);
 
-		if (InputManager.instance.GetKeyDown(KeybindingActions.Jump))
+		if (InputManager.instance.GetKeyDown(KeybindingActions.Jump) && animator.GetBool("Grounded"))
 		{
 			jump = true;
 			animator.SetBool("IsJumping", true);
