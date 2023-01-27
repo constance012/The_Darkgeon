@@ -13,6 +13,7 @@ public class LevelsManager : MonoBehaviour
 			instance = this;
 		else
 		{
+			Debug.LogWarning("More than one instance of Levels Manager found!!");
 			Destroy(gameObject);
 			return;
 		}

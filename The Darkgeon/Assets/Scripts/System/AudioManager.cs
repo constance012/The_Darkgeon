@@ -19,6 +19,7 @@ public class AudioManager : MonoBehaviour
 			instance = this;
 		else
 		{
+			Debug.LogWarning("More than one instance of Audio Manager found!!");
 			Destroy(gameObject);
 			return;
 		}

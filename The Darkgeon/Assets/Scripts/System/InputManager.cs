@@ -19,6 +19,7 @@ public class InputManager : MonoBehaviour
 			instance = this;
 		else
 		{
+			Debug.LogWarning("More than one instance of Input Manager found!!");
 			Destroy(gameObject);
 			return;
 		}

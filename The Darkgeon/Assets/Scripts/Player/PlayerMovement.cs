@@ -32,7 +32,7 @@ public class PlayerMovement : MonoBehaviour
 	// Update is called once per frame
 	private void Update()
 	{
-		if (CharacterController2D.m_IsDashing || PlayerActions.ceasePlayerInput)
+		if (CharacterController2D.m_IsDashing || PlayerActions.ceaseKeyboardInput)
 		{
 			horizontalMove = 0f;
 			return;

@@ -15,6 +15,7 @@ public class TooltipHandler : MonoBehaviour
 			instance = this;
 		else
 		{
+			Debug.LogWarning("More than one instance of Tooltip Handler found!!");
 			Destroy(gameObject);
 			return;
 		}

@@ -23,7 +23,8 @@ public class PlayerActions : MonoBehaviour
 
 	[HideInInspector] public float comboDelay;
 
-	public static bool ceasePlayerInput { get; set; }
+	public static bool ceaseMouseInput { get; set; }
+	public static bool ceaseKeyboardInput { get; set; }
 	public static bool isComboDone { get; set; } = true;
 	public static bool canFaceTowardsCursor { get; set; }
 
@@ -55,7 +56,7 @@ public class PlayerActions : MonoBehaviour
 	
 	private void Attack()
 	{
-		if (Time.time > comboDelay && !GameManager.isPause)
+		if (Time.time > comboDelay && !GameManager.isPause && !ceaseMouseInput)
 		{
 			comboDelay = m_ComboDelay;
 
