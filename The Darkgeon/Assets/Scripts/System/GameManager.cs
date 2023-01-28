@@ -24,6 +24,7 @@ public class GameManager : MonoBehaviour
 	[SerializeField] private GameObject deathPanel;
 	[SerializeField] private GameObject pauseMenu;
 	[SerializeField] private GameObject playerUI;
+	[SerializeField] private GameObject inventory;
 
 	public static bool isPlayerDeath { get; private set; } = false;
 	public static bool isPause { get; private set; }
@@ -47,19 +48,28 @@ public class GameManager : MonoBehaviour
 
 		pauseMenu = GameObject.Find("Pause Menu");
 		playerUI = GameObject.Find("Player UI");
+		inventory = GameObject.Find("Inventory");
 	}
 
 	private void Start()
 	{
 		deathPanel.SetActive(false);
 		pauseMenu.SetActive(false);
+		inventory.SetActive(false);
+
 		playerUI.SetActive(true);
 	}
 
 	private void Update()
 	{
-		if (InputManager.instance.GetKeyDown(KeybindingActions.Pause) && !isPlayerDeath)
-			Invoke(!isPause ? nameof(Pause) : nameof(Unpause), 0f);
+		if (!isPlayerDeath)
+		{
+			if (InputManager.instance.GetKeyDown(KeybindingActions.Pause))
+				Invoke(!isPause ? nameof(Pause) : nameof(Unpause), 0f);
+
+			if (InputManager.instance.GetKeyDown(KeybindingActions.Inventory))
+				inventory.SetActive(!inventory.activeInHierarchy);
+		}
 
 		if (Input.GetKeyDown(KeyCode.R))
 			LevelsManager.instance.RestartLevel();
@@ -107,7 +117,13 @@ public class GameManager : MonoBehaviour
 	#region UI Controls
 	public void ReturnToMenu()
 	{
-		SceneManager.LoadSceneAsync("Scenes/Menu");
+		AsyncOperation op = SceneManager.LoadSceneAsync("Scenes/Menu");
+		op.allowSceneActivation = false;
+
+		Time.timeScale = 1f;
+		isPause = false;
+
+		op.allowSceneActivation = true;
 	}
 
 	private void SetDeathMessage(KillSources sources)

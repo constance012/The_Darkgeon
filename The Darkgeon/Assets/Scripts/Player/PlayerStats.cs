@@ -10,7 +10,6 @@ public class PlayerStats : MonoBehaviour
 	// References.
 	[Header("References")]
 	[Space]
-	[SerializeField] private Material playerMat;
 	public Transform dmgTextLoc;
 	public GameObject dmgTextPrefab;
 
@@ -66,7 +65,6 @@ public class PlayerStats : MonoBehaviour
 
 	private void Awake()
 	{
-		playerMat = GetComponent<SpriteRenderer>().material;
 		hpBar = GameObject.Find("Health Bar").GetComponent<HealthBar>();
 		dmgTextLoc = transform.Find("Damage Text Loc");
 
@@ -88,13 +86,6 @@ public class PlayerStats : MonoBehaviour
 	{
 		if (invincibilityTime > 0f)
 			invincibilityTime -= Time.deltaTime;
-
-		if (Input.GetKeyDown(KeyCode.E))
-		{
-			TakeDamage(12);
-			//playerMat.SetKeyword(isOutlineOn, !playerMat.IsKeywordEnabled(isOutlineOn));
-			playerMat.SetFloat("_Thickness", playerMat.GetFloat("_Thickness") > 0f ? 0f : .0013f);
-		}
 
 		if (Time.time - lastDamagedTime > timeBeforeRegen)
 			Regenerate();
