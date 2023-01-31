@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 /// <summary>
 /// Manages the player's actions, like attacks or abilities.
@@ -23,7 +24,6 @@ public class PlayerActions : MonoBehaviour
 
 	[HideInInspector] public float comboDelay;
 
-	public static bool ceaseMouseInput { get; set; }
 	public static bool ceaseKeyboardInput { get; set; }
 	public static bool isComboDone { get; set; } = true;
 	public static bool canFaceTowardsCursor { get; set; }
@@ -37,6 +37,9 @@ public class PlayerActions : MonoBehaviour
 
 	private void Update()
 	{
+		if (EventSystem.current.IsPointerOverGameObject())
+			return;
+
 		// Check if there is enough time for the next combo to begin.
 		if (InputManager.instance.GetKeyDown(KeybindingActions.PrimaryAttack) && animator.GetBool("Grounded") && isComboDone)
 			Attack();
@@ -56,7 +59,7 @@ public class PlayerActions : MonoBehaviour
 	
 	private void Attack()
 	{
-		if (Time.time > comboDelay && !GameManager.isPause && !ceaseMouseInput)
+		if (Time.time > comboDelay && !GameManager.isPause)
 		{
 			comboDelay = m_ComboDelay;
 

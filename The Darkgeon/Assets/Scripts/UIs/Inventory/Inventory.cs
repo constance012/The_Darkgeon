@@ -1,9 +1,7 @@
+using System;
 using System.Collections.Generic;
-using Unity.VisualScripting;
-using UnityEditor.iOS;
-using UnityEditorInternal.Profiling.Memory.Experimental;
+using System.Linq;
 using UnityEngine;
-using UnityEngine.Rendering;
 
 public class Inventory : MonoBehaviour
 {
@@ -17,11 +15,6 @@ public class Inventory : MonoBehaviour
 	private InventorySlot[] slots;
 
 	public int space = 20;
-
-	private void OnDisable()
-	{
-		PlayerActions.ceaseMouseInput = false;
-	}
 
 	private void OnEnable()
 	{
@@ -122,9 +115,8 @@ public class Inventory : MonoBehaviour
 		for (int i = 0; i < slots.Length; i++)
 		{
 			// Add item to the slot if there's any.
-			if (i < instance.items.Count)
-
-				slots[i].AddItem(instance.items[i]);
+			if (i < items.Count)
+				slots[i].AddItem(items[i]);
 
 			// Otherwise, clear the slot.
 			else

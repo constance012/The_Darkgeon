@@ -5,7 +5,6 @@ public class Item : ScriptableObject
 {
 	[Header("General")]
 	[Space]
-
 	public new string name;
 	[TextArea(5, 10)] public string description;
 
@@ -23,4 +22,6 @@ public class Item : ScriptableObject
 
 	public bool isFavorite;
 	public bool isDefaultItem;
+
+	public virtual void Use() { }
 }
