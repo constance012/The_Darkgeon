@@ -10,9 +10,6 @@ public class TrashSlot : MonoBehaviour, IDropHandler
 			DraggableItem trash = eventData.pointerDrag.GetComponent<DraggableItem>();
 
 			Inventory.instance.Remove(trash.dragItem);
-			
-			eventData.pointerDrag = null;
-			Destroy(trash.clone);
 		}
 	}
 }

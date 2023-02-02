@@ -105,22 +105,69 @@ public class Inventory : MonoBehaviour
 
 	public void Remove(Item target)
 	{
-		items.Remove(target);
+		if (!target.isFavorite)
+			items.Remove(target);
+
+		onItemChanged?.Invoke();
+	}
+
+	public void UpdateSlotIndex(string itemName, int index)
+	{
+		items.Find(item => item.name == itemName).slotIndex = index;
+		onItemChanged?.Invoke();
+	}
+
+	public void UpdateQuantity(string itemName, int quantity)
+	{
+		Item target = items.Find(item => item.name == itemName);
+		target.quantity += quantity;
+
+		// Remove the item if its quantity is less than or equal to 0.
+		if (target.quantity <= 0)
+		{
+			Remove(target);
+			return;
+		}
 
 		onItemChanged?.Invoke();
 	}
 
 	private void ReloadUI()
 	{
-		for (int i = 0; i < slots.Length; i++)
-		{
-			// Add item to the slot if there's any.
-			if (i < items.Count)
-				slots[i].AddItem(items[i]);
+		// Split the master list into 2 smaller lists.
+		List<Item> unindexedItems = items.FindAll(item => item.slotIndex == -1);
+		List<Item> indexedItems = items.FindAll(item => item.slotIndex != -1);
 
-			// Otherwise, clear the slot.
-			else
-				slots[i].ClearItem();
+		Debug.Log("Unindexed items count : " + unindexedItems.Count);
+		Debug.Log("Indexed items count : " + indexedItems.Count);
+		
+		// Clear all the slots.
+		Action<InventorySlot> ClearAllSlots = (slot) => slot.ClearItem();
+		Array.ForEach(slots, ClearAllSlots);
+
+		if (indexedItems.Count != 0)
+		{
+			Action<Item> ReloadIndexedItems = (item) => slots[item.slotIndex].AddItem(item);
+			indexedItems.ForEach(ReloadIndexedItems);
 		}
+
+		if (unindexedItems.Count != 0)
+		{
+			for (int i = 0; i < unindexedItems.Count; i++)
+				for (int j = 0; j < slots.Length; j++)
+					if (slots[j].currentItem == null)
+					{
+						unindexedItems[i].slotIndex = slots[j].transform.GetSiblingIndex();
+
+						slots[j].AddItem(unindexedItems[i]);
+
+						break;
+					}
+		}
+
+		// Update the master list.
+		items.Clear();
+		items.AddRange(unindexedItems);
+		items.AddRange(indexedItems);
 	}
 }

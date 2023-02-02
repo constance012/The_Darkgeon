@@ -9,12 +9,21 @@ public class DraggableItem : MonoBehaviour, IDragHandler, IBeginDragHandler, IEn
 	// A clone that "ships" the current item in this slot.
 	[HideInInspector] public GameObject clone;
 
+	private Image icon;
+
+	private void Awake()
+	{
+		icon = GetComponent<Image>();
+	}
+
 	public void OnBeginDrag(PointerEventData eventData)
 	{
 		dragItem = transform.GetComponentInParent<InventorySlot>().currentItem;
 
 		clone = Instantiate(gameObject, transform.root);
 		clone.GetComponent<Image>().raycastTarget = false;
+		
+		icon.color = new Color(.51f, .51f, .51f);
 		
 		Debug.Log("You're dragging the " + dragItem.name);
 	}
@@ -27,19 +36,15 @@ public class DraggableItem : MonoBehaviour, IDragHandler, IBeginDragHandler, IEn
 
 	public void OnEndDrag(PointerEventData eventData)
 	{
+		icon.color = Color.white;
+
 		Item itemAfterDrag = clone.GetComponent<DraggableItem>().dragItem;
 
 		if (itemAfterDrag != null)
-		{
 			Debug.Log("You received a " + itemAfterDrag.name);
-			transform.GetComponentInParent<InventorySlot>().AddItem(itemAfterDrag);
-		}
 		else
-		{
 			Debug.Log("You received nothing.");
-			transform.GetComponentInParent<InventorySlot>().ClearItem();
-		}
-
+		
 		dragItem = null;
 		Destroy(clone);
 	}

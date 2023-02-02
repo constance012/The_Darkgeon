@@ -1,10 +1,12 @@
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "New Item", menuName = "Inventory/Create New Item")]
+[CreateAssetMenu(fileName = "New Item", menuName = "Inventory/New Base Item")]
 public class Item : ScriptableObject
 {
 	[Header("General")]
 	[Space]
+	public int slotIndex = -1;
+
 	public new string name;
 	[TextArea(5, 10)] public string description;
 
@@ -22,6 +24,10 @@ public class Item : ScriptableObject
 
 	public bool isFavorite;
 	public bool isDefaultItem;
+	public bool canbeUsed;
 
-	public virtual void Use() { }
+	public virtual void Use()
+	{
+		Debug.Log("Using " + name);
+	}
 }

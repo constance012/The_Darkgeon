@@ -1,6 +1,8 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using System.Collections;
+using UnityEditor.Rendering;
 
 /// <summary>
 /// Represents the player's health bar.
@@ -12,7 +14,7 @@ public class HealthBar : MonoBehaviour
 	[Space]
 	[SerializeField] private Slider hpSlider;
 	[SerializeField] private Slider fxSlider;
-	[SerializeField] private Image fillRect;
+
 	[SerializeField] private TextMeshProUGUI healthText;
 
 	[Header("Color")]
@@ -22,15 +24,30 @@ public class HealthBar : MonoBehaviour
 	[Header("Fields")]
 	[Space]
 	public float fxTime = .2f;
-	float smoothVel = .0f;
+	
+	// Private fields
+	private Image fillRect;
+	private Image fxFillRect;
 
-	void Awake()
+	private Color decreaseColor = new Color(.78f, 0f, 0f);
+	private Color increaseColor = new Color(.2f, .81f, .15f, .39f);
+
+	private float smoothVel = 0f;
+
+	private void Awake()
 	{
 		hpSlider = GetComponent<Slider>();
 		fxSlider = transform.Find("Deplete Effect").GetComponent<Slider>();
 
 		fillRect = transform.Find("Fill").GetComponent<Image>();
-		healthText = transform.Find("Text Background").Find("Health Text").GetComponent<TextMeshProUGUI>();
+		fxFillRect = transform.Find("Deplete Effect/Effect Fill").GetComponent<Image>();
+
+		healthText = transform.Find("Text Display/Health Text").GetComponent<TextMeshProUGUI>();
+	}
+
+	public void OnHealthChanged()
+	{
+		fillRect.color = gradient.Evaluate(hpSlider.normalizedValue);  // Return the value between 0f and 1f.
 	}
 
 	public void SetMaxHealth(int maxHP)
@@ -47,13 +64,44 @@ public class HealthBar : MonoBehaviour
 
 	public void SetCurrentHealth(int currentHP)
 	{
-		hpSlider.value = currentHP;
-		fillRect.color = gradient.Evaluate(hpSlider.normalizedValue);  // Return the value between 0f and 1f.
-		healthText.text = currentHP + " / " + hpSlider.maxValue;
+		StopAllCoroutines();
+
+		if (hpSlider.value >= currentHP)
+		{
+			fxFillRect.color = decreaseColor;
+
+			hpSlider.value = currentHP;
+			healthText.text = Mathf.RoundToInt(hpSlider.value) + " / " + hpSlider.maxValue;
+		}
+		else
+		{
+			fxFillRect.color = increaseColor;
+
+			fxSlider.value = currentHP;
+			healthText.text = Mathf.RoundToInt(fxSlider.value) + " / " + hpSlider.maxValue;
+		}
+
+		StartCoroutine(PerformEffect());
 	}
 
-	public void PerformEffect()
+	private IEnumerator PerformEffect()
 	{
-		fxSlider.value = Mathf.SmoothDamp(fxSlider.value, hpSlider.value, ref smoothVel, fxTime);
+		yield return new WaitForSeconds(.5f);
+
+		if (fxFillRect.color == decreaseColor)
+			while (fxSlider.value != hpSlider.value)
+			{
+				yield return new WaitForEndOfFrame();
+
+				fxSlider.value = Mathf.SmoothDamp(fxSlider.value, hpSlider.value, ref smoothVel, fxTime);
+			}
+
+		else if (fxFillRect.color == increaseColor)
+			while (fxSlider.value != hpSlider.value)
+			{
+				yield return new WaitForEndOfFrame();
+
+				hpSlider.value = Mathf.SmoothDamp(hpSlider.value, fxSlider.value, ref smoothVel, fxTime);
+			}
 	}
 }

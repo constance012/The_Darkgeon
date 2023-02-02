@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e41c148885a58c244bc575e21a378b56, type: 3}
   m_Name: Stone
   m_EditorClassIdentifier: 
+  slotIndex: -1
   name: Stone
   description: It's just a rock.
   icon: {fileID: 21300138, guid: 7810966f0f690954c87305933cabf2b0, type: 3}

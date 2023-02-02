@@ -65,7 +65,7 @@ public class PlayerStats : MonoBehaviour
 
 	private void Awake()
 	{
-		hpBar = GameObject.Find("Health Bar").GetComponent<HealthBar>();
+		hpBar = GameObject.Find("Health Bar Slider").GetComponent<HealthBar>();
 		dmgTextLoc = transform.Find("Damage Text Loc");
 
 		animator = GetComponent<Animator>();
@@ -89,9 +89,6 @@ public class PlayerStats : MonoBehaviour
 
 		if (Time.time - lastDamagedTime > timeBeforeRegen)
 			Regenerate();
-
-		if (Time.time - lastDamagedTime > .8f)
-			hpBar.PerformEffect();
 	}
 
 	public void TakeDamage(float dmg, float knockBackVal = 0f, Transform attacker = null, KillSources source = KillSources.Unknown)
@@ -105,6 +102,7 @@ public class PlayerStats : MonoBehaviour
 			int finalDmg = Mathf.RoundToInt(dmg - armor * damageRecFactor);
 			currentHP -= finalDmg;
 			currentHP = Mathf.Clamp(currentHP, 0, maxHP);
+			
 			hpBar.SetCurrentHealth(currentHP);
 
 			animator.SetTrigger("TakingDamage");
@@ -117,6 +115,26 @@ public class PlayerStats : MonoBehaviour
 		}
 	}
 
+	public void Heal(int amount)
+	{
+		if (currentHP > 0)
+		{
+			currentHP += amount;
+			currentHP = Mathf.Clamp(currentHP, 0, maxHP);
+			
+			hpBar.SetCurrentHealth(currentHP);
+
+			DamageText.Generate(dmgTextPrefab, dmgTextLoc.position, Color.green, false, amount.ToString());
+		}
+	}
+
+	public bool IsCriticalStrike()
+	{
+		float rand = Random.Range(0, 101);
+
+		return rand <= criticalChance;
+	}
+	
 	private void Regenerate()
 	{
 		regenDelay -= Time.deltaTime;
@@ -129,13 +147,6 @@ public class PlayerStats : MonoBehaviour
 
 			regenDelay = 2f;
 		}
-	}
-
-	public bool IsCriticalStrike()
-	{
-		float rand = Random.Range(0, 101);
-
-		return rand <= criticalChance;
 	}
 
 	private IEnumerator BeingKnockedBack(float knockBackValue)

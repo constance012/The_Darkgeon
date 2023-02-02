@@ -21,11 +21,14 @@ public class TooltipHandler : MonoBehaviour
 		}
 	}
 
-	public static IEnumerator Show(string contentText, string headerText = "")
+	public static IEnumerator Show(string contentText, string headerText = "", float delay = .2f)
 	{
 		instance.tooltip.SetText(contentText, headerText);
 
-		yield return new WaitForSeconds(1.5f);
+		if (delay < .2f)
+			yield return new WaitForSeconds(.2f);
+		else
+			yield return new WaitForSeconds(delay);
 
 		instance.tooltip.gameObject.SetActive(true);
 	}

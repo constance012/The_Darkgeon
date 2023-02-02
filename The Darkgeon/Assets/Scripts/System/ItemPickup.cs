@@ -3,7 +3,7 @@ using UnityEngine;
 public class ItemPickup : Interactable
 {
 	[SerializeField] private Item itemPrefab;
-	[HideInInspector] public Item currentItem;
+	private Item currentItem;
 
 	private void Start()
 	{
@@ -19,6 +19,7 @@ public class ItemPickup : Interactable
 
 	private void Pickup()
 	{
+		currentItem.name = itemPrefab.name;
 		Debug.Log("You're picking up a(an) " + currentItem.name);
 
 		if (Inventory.instance.Add(currentItem))

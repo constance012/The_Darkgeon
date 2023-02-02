@@ -79,6 +79,7 @@ public class DebuffManager : MonoBehaviour
 
 			ManageHandler(debuffMethod, DebuffManageAction.Add);
 
+
 			GameObject debuffUIObj = Instantiate(debuffUIPrefab, debuffPanel);
 
 			debuffUIObj.name = target.name;

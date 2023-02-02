@@ -30,13 +30,12 @@ public class Tooltip : MonoBehaviour
 	{
 		Vector2 mousePos = Input.mousePosition;
 		
-		float pivotX = mousePos.x / Screen.width;
-		float pivotY = mousePos.y / Screen.height;
+		float mouseX = mousePos.x / Screen.width;
+		float mouseY = mousePos.y / Screen.height;
 
-		// Move the tooltip up if the mouse position is at the bottom half of the screen.
-		// Otherwise, move the tooltip down.
-		mousePos.y += pivotY < 0.5f ? 20f : -30f;
-		
+		float pivotX = mouseX < .5f ? 0f : 1f;
+		float pivotY = mouseY < .5f ? 0f : 1f;
+
 		rectTransform.pivot = new Vector2(pivotX, pivotY);
 		transform.position = mousePos;
 	}

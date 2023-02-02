@@ -9,15 +9,21 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e41c148885a58c244bc575e21a378b56, type: 3}
+  m_Script: {fileID: 11500000, guid: 9182ed007a2251947a1f9efa7602608e, type: 3}
   m_Name: Pumpkin
   m_EditorClassIdentifier: 
+  slotIndex: -1
   name: Pumpkin
-  description: A large, round vegetable with hard yellow or orange flesh. They're
-    the symbol of Fall and Halloween.
-  icon: {fileID: 21300256, guid: 7810966f0f690954c87305933cabf2b0, type: 3}
+  description: '+15 HP.
+
+
+    A large, round vegetable with hard yellow or orange
+    flesh. They''re the symbol of Fall and Halloween.'
+  icon: {fileID: 21300258, guid: 7810966f0f690954c87305933cabf2b0, type: 3}
   stackable: 1
   maxPerStack: 3
   quantity: 1
   isFavorite: 0
   isDefaultItem: 0
+  canbeUsed: 1
+  health: 15
