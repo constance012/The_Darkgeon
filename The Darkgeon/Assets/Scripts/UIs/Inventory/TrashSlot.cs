@@ -7,9 +7,9 @@ public class TrashSlot : MonoBehaviour, IDropHandler
 	{
 		if (eventData.pointerDrag.GetComponent<DraggableItem>() != null)
 		{
-			DraggableItem trash = eventData.pointerDrag.GetComponent<DraggableItem>();
+			Item trash = eventData.pointerDrag.GetComponent<DraggableItem>().dragItem;
 
-			Inventory.instance.Remove(trash.dragItem);
+			Inventory.instance.Remove(trash);
 		}
 	}
 }

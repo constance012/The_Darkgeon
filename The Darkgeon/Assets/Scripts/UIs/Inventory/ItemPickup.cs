@@ -20,7 +20,7 @@ public class ItemPickup : Interactable
 	private void Pickup()
 	{
 		currentItem.name = itemPrefab.name;
-		Debug.Log("You're picking up a(an) " + currentItem.name);
+		//Debug.Log("You're picking up a(an) " + currentItem.name);
 
 		if (Inventory.instance.Add(currentItem))
 			Destroy(gameObject);

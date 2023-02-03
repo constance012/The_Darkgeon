@@ -30,20 +30,12 @@ public class DraggableItem : MonoBehaviour, IDragHandler, IBeginDragHandler, IEn
 
 	public void OnDrag(PointerEventData eventData)
 	{
-		//Debug.Log("On Drag");
 		clone.transform.position = Input.mousePosition;
 	}
 
 	public void OnEndDrag(PointerEventData eventData)
 	{
 		icon.color = Color.white;
-
-		Item itemAfterDrag = clone.GetComponent<DraggableItem>().dragItem;
-
-		if (itemAfterDrag != null)
-			Debug.Log("You received a " + itemAfterDrag.name);
-		else
-			Debug.Log("You received nothing.");
 		
 		dragItem = null;
 		Destroy(clone);

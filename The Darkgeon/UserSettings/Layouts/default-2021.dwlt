@@ -430,9 +430,9 @@ MonoBehaviour:
   m_SceneHierarchy:
     m_TreeViewState:
       scrollPos: {x: 0, y: 0}
-      m_SelectedIDs: 3e700000
-      m_LastClickedID: 28734
-      m_ExpandedIDs: ec5effffe4f6ffffeaf6ffff9af7ffff5efaffff0afbffff7a6f0000ea6f0000f66f00003e70000054710000741f0100ca240100
+      m_SelectedIDs: 
+      m_LastClickedID: 0
+      m_ExpandedIDs: e4f6ffffeaf6ffff0afbffff7a6f0000f66f000056700000
       m_RenameOverlay:
         m_UserAcceptedRename: 0
         m_Name: 
@@ -703,9 +703,9 @@ MonoBehaviour:
   m_PlayAudio: 0
   m_AudioPlay: 0
   m_Position:
-    m_Target: {x: -3.820943, y: 3.7683067, z: -0.00024795532}
+    m_Target: {x: 156.50124, y: 226.936, z: -0.4524469}
     speed: 2
-    m_Value: {x: -3.820943, y: 3.7683067, z: -0.00024795532}
+    m_Value: {x: 156.50124, y: 226.936, z: -0.4524469}
   m_RenderMode: 0
   m_CameraMode:
     drawMode: 0
@@ -756,9 +756,9 @@ MonoBehaviour:
     speed: 2
     m_Value: {x: 0, y: 0, z: 0, w: 1}
   m_Size:
-    m_Target: 3.1309054
+    m_Target: 264.84918
     speed: 2
-    m_Value: 3.1309054
+    m_Value: 264.84918
   m_Ortho:
     m_Target: 1
     speed: 2
@@ -859,22 +859,22 @@ MonoBehaviour:
     m_SkipHidden: 0
     m_SearchArea: 1
     m_Folders:
-    - Assets/Scripts/System
+    - Assets/Prefabs/UI
     m_Globs: []
     m_OriginalText: 
   m_ViewMode: 1
   m_StartGridSize: 64
   m_LastFolders:
-  - Assets/Scripts/System
+  - Assets/Prefabs/UI
   m_LastFoldersGridSize: -1
   m_LastProjectPath: V:\Unity Projects\The_Darkgeon\The Darkgeon
   m_LockTracker:
     m_IsLocked: 0
   m_FolderTreeState:
-    scrollPos: {x: 0, y: 534}
-    m_SelectedIDs: 24800000
-    m_LastClickedID: 32804
-    m_ExpandedIDs: 00000000de7c0000e07c0000e27c0000e47c0000e67c0000e87c0000ea7c0000ec7c00002680000000ca9a3b
+    scrollPos: {x: 0, y: 281.8065}
+    m_SelectedIDs: 3e880000
+    m_LastClickedID: 34878
+    m_ExpandedIDs: 00000000f47c0000f67c0000f87c0000fa7c0000fc7c0000fe7c0000007d0000027d0000429d000000ca9a3b
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -902,7 +902,7 @@ MonoBehaviour:
     scrollPos: {x: 0, y: 0}
     m_SelectedIDs: 
     m_LastClickedID: 0
-    m_ExpandedIDs: 00000000de7c0000e07c0000e27c0000e47c0000e67c0000e87c0000ea7c0000ec7c0000
+    m_ExpandedIDs: 00000000f47c0000f67c0000f87c0000fa7c0000fc7c0000fe7c0000007d0000027d0000
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -927,8 +927,8 @@ MonoBehaviour:
       m_Icon: {fileID: 0}
       m_ResourceFile: 
   m_ListAreaState:
-    m_SelectedInstanceIDs: daf6ffff
-    m_LastClickedInstanceID: -2342
+    m_SelectedInstanceIDs: a244ffff
+    m_LastClickedInstanceID: -47966
     m_HadKeyboardFocusLastEvent: 1
     m_ExpandedInstanceIDs: c6230000f0770000de7400007e990000086e0000946f000048700000ce79000038970000c27c0000000000004c7000001c7e000038810000d07400006e740000
     m_RenameOverlay:
@@ -1016,7 +1016,7 @@ MonoBehaviour:
     m_SaveData: []
   m_LockTracker:
     m_IsLocked: 0
-  m_LastSelectedObjectID: -2342
+  m_LastSelectedObjectID: -47966
 --- !u!114 &20
 MonoBehaviour:
   m_ObjectHideFlags: 52

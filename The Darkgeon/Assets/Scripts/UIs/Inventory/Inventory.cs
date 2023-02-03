@@ -51,7 +51,10 @@ public class Inventory : MonoBehaviour
 		// Add to the list if it's not a default item.
 		if (!target.isDefaultItem)
 		{
-			// Loop through the list to check if there's the same item.
+			// Generate a unique id for the target.
+			target.id = Guid.NewGuid().ToString();
+			
+			// Loop through the list to check if there's the same item with the target.
 			for (int i = 0; i < items.Count; i++)
 			{
 				if (!items[i].name.Equals(target.name))
@@ -71,7 +74,7 @@ public class Inventory : MonoBehaviour
 					{
 						int residue = totalQuantity - items[i].maxPerStack;
 
-						items[i].quantity = items[i].maxPerStack;
+						items[i].quantity = items[i].maxPerStack;			
 						target.quantity = residue;
 
 						items.Add(target);
@@ -103,26 +106,38 @@ public class Inventory : MonoBehaviour
 		return false;
 	}
 
-	public void Remove(Item target)
+	public void Remove(Item target, bool forced = false)
 	{
-		if (!target.isFavorite)
+		if (!target.isFavorite || forced)
+		{
 			items.Remove(target);
+			onItemChanged?.Invoke();
+		}
+	}
 
+	public void SetFavorite(string targetID, bool state)
+	{
+		items.Find(item => item.id.Equals(targetID)).isFavorite = state;
 		onItemChanged?.Invoke();
 	}
 
-	public void UpdateSlotIndex(string itemName, int index)
+	public void UpdateSlotIndex(string targetID, int index)
 	{
-		items.Find(item => item.name == itemName).slotIndex = index;
+		items.Find(item => item.id.Equals(targetID)).slotIndex = index;
 		onItemChanged?.Invoke();
 	}
 
-	public void UpdateQuantity(string itemName, int quantity)
+	public void UpdateQuantity(string targetID, int amount, bool setExactAmount = false)
 	{
-		Item target = items.Find(item => item.name == itemName);
-		target.quantity += quantity;
+		Item target = items.Find(item => item.id.Equals(targetID));
 
-		// Remove the item if its quantity is less than or equal to 0.
+		if (setExactAmount)
+			target.quantity = amount;
+		else
+			target.quantity += amount;
+
+		target.quantity = Mathf.Clamp(target.quantity, 0, target.maxPerStack);
+
 		if (target.quantity <= 0)
 		{
 			Remove(target);
@@ -140,7 +155,7 @@ public class Inventory : MonoBehaviour
 
 		Debug.Log("Unindexed items count : " + unindexedItems.Count);
 		Debug.Log("Indexed items count : " + indexedItems.Count);
-		
+
 		// Clear all the slots.
 		Action<InventorySlot> ClearAllSlots = (slot) => slot.ClearItem();
 		Array.ForEach(slots, ClearAllSlots);

@@ -3,8 +3,11 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "New Item", menuName = "Inventory/New Base Item")]
 public class Item : ScriptableObject
 {
+	[HideInInspector] public string id;
+	
 	[Header("General")]
 	[Space]
+
 	public int slotIndex = -1;
 
 	public new string name;

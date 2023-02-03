@@ -160,7 +160,7 @@ PlayerSettings:
   androidMaxAspectRatio: 2.1
   applicationIdentifier:
     Android: com.CSTGames.TheDarkgeon
-    Standalone: com.CSTGames.2DProject
+    Standalone: com.CST-Games.The-Darkgeon
   buildNumber:
     Standalone: 0
     iPhone: 0
