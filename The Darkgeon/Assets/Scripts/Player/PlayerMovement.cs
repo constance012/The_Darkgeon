@@ -1,5 +1,6 @@
 using JetBrains.Annotations;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 /// <summary>
 /// Manages the player's movement inputs and events.
@@ -53,6 +54,9 @@ public class PlayerMovement : MonoBehaviour
 
 		if (InputManager.instance.GetKeyDown(KeybindingActions.Dash) && Time.time > dashAllowTime && !controller.onSlope)
 		{
+			if (EventSystem.current.IsPointerOverGameObject())
+				return;
+
 			dash = true;
 			dashAllowTime = Time.time + 1f;
 		}

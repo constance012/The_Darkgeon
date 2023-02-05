@@ -10,7 +10,7 @@ public class Item : ScriptableObject
 
 	public int slotIndex = -1;
 
-	public new string name;
+	public string itemName;
 	[TextArea(5, 10)] public string description;
 
 	public Sprite icon;
@@ -31,6 +31,6 @@ public class Item : ScriptableObject
 
 	public virtual void Use()
 	{
-		Debug.Log("Using " + name);
+		Debug.Log("Using " + itemName);
 	}
 }

@@ -1,15 +1,20 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class TrashSlot : MonoBehaviour, IDropHandler
+public class TrashSlot : MonoBehaviour, IPointerDownHandler
 {
-	public void OnDrop(PointerEventData eventData)
+	public void OnPointerDown(PointerEventData eventData)
 	{
-		if (eventData.pointerDrag.GetComponent<DraggableItem>() != null)
+		if (ClickableObject.holdingItem)
 		{
-			Item trash = eventData.pointerDrag.GetComponent<DraggableItem>().dragItem;
+			Item trash = ClickableObject.clone.GetComponent<ClickableObject>().dragItem;
 
-			Inventory.instance.Remove(trash);
+			if (ClickableObject.splittingItem && trash.isFavorite)
+				Inventory.instance.UpdateQuantity(ClickableObject.sender.dragItem.id, trash.quantity);
+			else
+				Inventory.instance.Remove(trash);
+
+			ClickableObject.ClearSingleton();
 		}
 	}
 }

@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 public class Inventory : MonoBehaviour
@@ -40,7 +39,7 @@ public class Inventory : MonoBehaviour
 		instance.onItemChanged += ReloadUI;
 	}
 
-	public bool Add(Item target)
+	public bool Add(Item target, bool forcedSplit = false)
 	{
 		if (items.Count >= space)
 		{
@@ -53,52 +52,63 @@ public class Inventory : MonoBehaviour
 		{
 			// Generate a unique id for the target.
 			target.id = Guid.NewGuid().ToString();
-			
-			// Loop through the list to check if there's the same item with the target.
-			for (int i = 0; i < items.Count; i++)
+
+			if (!forcedSplit)
 			{
-				if (!items[i].name.Equals(target.name))
-					continue;
+				// Check for stackable items.
+				for (int i = 0; i < items.Count; i++)
+				{	
+					if (!items[i].itemName.Equals(target.itemName))
+						continue;
 
-				if (items[i].name.Equals(target.name) && items[i].quantity == items[i].maxPerStack)
-					continue;
+					if (items[i].quantity == items[i].maxPerStack || !items[i].stackable)
+						continue;
 
-				// If the item is stackable and hasn't reached its max per stack yet.
-				if (items[i].stackable && items[i].quantity < items[i].maxPerStack)
-				{
-					int totalQuantity = items[i].quantity + target.quantity;
-
-					// If the new total quantity exceeds the maximum amount.
-					// Then set the current one's quantity to max, set the new one's quantity to the residue amount and add to the next slot.
-					if (totalQuantity > items[i].maxPerStack)
+					// If the item is stackable and hasn't reached its max per stack yet.
+					if (items[i].quantity < items[i].maxPerStack)
 					{
-						int residue = totalQuantity - items[i].maxPerStack;
+						int totalQuantity = items[i].quantity + target.quantity;
 
-						items[i].quantity = items[i].maxPerStack;			
-						target.quantity = residue;
+						// If the new total quantity exceeds the maximum amount.
+						// Then set the current one's quantity to max, set the new one's quantity to the residue amount and add to the next slot.
+						if (totalQuantity > items[i].maxPerStack)
+						{
+							int residue = totalQuantity - items[i].maxPerStack;
 
-						items.Add(target);
+							items[i].quantity = items[i].maxPerStack;
+							target.quantity = residue;
+						}
+
+						else if (totalQuantity == items[i].maxPerStack)
+						{
+							items[i].quantity = totalQuantity;
+							target.quantity = 0;
+						}
+
+						// Otherwise, just increase the quantity of the current one.
+						else
+						{
+							items[i].quantity += target.quantity;
+							target.quantity = 0;
+						}
 					}
 
-					else if (totalQuantity == items[i].maxPerStack)
-						items[i].quantity = totalQuantity;
-
-					// Otherwise, just increase the quantity of the current one.
-					else
-						items[i].quantity += target.quantity;
+					if (target.quantity <= 0)
+						break;
 				}
 
-				// If it's not stackable or has reached the max per stack.
-				// Then add it to the next element.
-				else if (!items[i].stackable || items[i].quantity == items[i].maxPerStack)
+				// If there's a residue or this is a completely different item. Then add it to the list.
+				if (target.quantity > 0)
 					items.Add(target);
 
 				onItemChanged?.Invoke();
 				return true;
 			}
 
-			// If it's a completely new item, then just add it into the list.
-			items.Add(target);
+			// If it's a completely new item or forced to split the same item, then just add it into the list.
+			if (target.quantity > 0)
+				items.Add(target);
+
 			onItemChanged?.Invoke();
 			return true;
 		}
@@ -184,5 +194,8 @@ public class Inventory : MonoBehaviour
 		items.Clear();
 		items.AddRange(unindexedItems);
 		items.AddRange(indexedItems);
+
+		// Sort the list by slot indexes in ascending order.
+		items.Sort((a, b) => a.slotIndex.CompareTo(b.slotIndex));
 	}
 }

@@ -3,7 +3,7 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using TMPro;
 
-public class InventorySlot : MonoBehaviour, IDropHandler
+public class InventorySlot : MonoBehaviour
 {
 	[Header("Current Item")]
 	[Space]
@@ -46,7 +46,7 @@ public class InventorySlot : MonoBehaviour, IDropHandler
 			quantity.enabled = false;
 		}
 
-		tooltip.header = currentItem.name;
+		tooltip.header = currentItem.itemName;
 		tooltip.content = currentItem.description;
 		tooltip.popupDelay = .5f;
 	}
@@ -83,12 +83,12 @@ public class InventorySlot : MonoBehaviour, IDropHandler
 	/// This method used to catch the dragged item from another slot.
 	/// </summary>
 	/// <param name="eventData"></param>
-	public void OnDrop(PointerEventData eventData)
+	public void OnDrop(GameObject shipper)
 	{
-		if (eventData.pointerDrag.GetComponent<DraggableItem>() != null)
+		if (shipper != null)
 		{
-			GameObject droppedObj = eventData.pointerDrag.GetComponent<DraggableItem>().clone;
-			Item droppedItem = droppedObj.GetComponent<DraggableItem>().dragItem;
+			//GameObject droppedObj = eventData.pointerDrag.GetComponent<ClickableObject>().clone;
+			Item droppedItem = shipper.GetComponent<ClickableObject>().dragItem;
 
 			// Local function.
 			void SwapSlotIndexes()
@@ -112,7 +112,7 @@ public class InventorySlot : MonoBehaviour, IDropHandler
 			}
 
 			// If there's an item of the same type, check if it can be stacked together.
-			else if (currentItem.name.Equals(droppedItem.name))
+			else if (currentItem.itemName.Equals(droppedItem.itemName))
 			{
 				if (currentItem.stackable && currentItem.quantity < currentItem.maxPerStack)
 				{

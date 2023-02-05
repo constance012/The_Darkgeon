@@ -9,17 +9,22 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e41c148885a58c244bc575e21a378b56, type: 3}
-  m_Name: Stone
+  m_Script: {fileID: 11500000, guid: 9182ed007a2251947a1f9efa7602608e, type: 3}
+  m_Name: Pumpkin Triple
   m_EditorClassIdentifier: 
   id: 
   slotIndex: -1
-  itemName: Stone
-  description: It's just a rock.
-  icon: {fileID: 21300138, guid: 7810966f0f690954c87305933cabf2b0, type: 3}
+  itemName: Pumpkin
+  description: '+15 HP.
+
+
+    A large, round vegetable with hard yellow or orange
+    flesh. They''re the symbol of Fall and Halloween.'
+  icon: {fileID: 21300258, guid: 7810966f0f690954c87305933cabf2b0, type: 3}
   stackable: 1
   maxPerStack: 3
-  quantity: 1
+  quantity: 3
   isFavorite: 0
   isDefaultItem: 0
-  canbeUsed: 0
+  canbeUsed: 1
+  health: 15

@@ -25,7 +25,7 @@ public class DraggableItem : MonoBehaviour, IDragHandler, IBeginDragHandler, IEn
 		
 		icon.color = new Color(.51f, .51f, .51f);
 		
-		Debug.Log("You're dragging the " + dragItem.name);
+		Debug.Log("You're dragging the " + dragItem.itemName);
 	}
 
 	public void OnDrag(PointerEventData eventData)
