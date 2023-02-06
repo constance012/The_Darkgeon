@@ -3,6 +3,8 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using TMPro;
+using UnityEngine.Rendering.Universal;
+using UnityEditor.Rendering;
 
 public class ClickableObject : MonoBehaviour, IPointerClickHandler, IPointerDownHandler
 {
@@ -41,13 +43,13 @@ public class ClickableObject : MonoBehaviour, IPointerClickHandler, IPointerDown
 
 	public void OnPointerDown(PointerEventData eventData)
 	{
+		dragItem = currentSlot.currentItem;
+		
 		if (eventData.button == PointerEventData.InputButton.Left)
 		{
-			dragItem = currentSlot.currentItem;
-
 			if (isLeftShiftHeld && dragItem != null)
 			{
-				SplitItem();
+				SplitItemInHalf();
 				return;
 			}
 			
@@ -70,19 +72,25 @@ public class ClickableObject : MonoBehaviour, IPointerClickHandler, IPointerDown
 			if (holdingItem)
 			{
 				// Drop if the other slot's item is null or has different id.
-				if (dragItem == null || (dragItem != null && !sender.dragItem.id.Equals(dragItem.id)))
+				if ((splittingItem && (sender == this || dragItem != null)) || !splittingItem)
+					currentSlot.OnDrop(clone);
+				
+				else if (splittingItem && dragItem == null)
 				{
-					if (splittingItem)
-						Inventory.instance.Add(clone.GetComponent<ClickableObject>().dragItem, true);
-
+					Inventory.instance.Add(clone.GetComponent<ClickableObject>().dragItem, true);
 					currentSlot.OnDrop(clone);
 				}
 
-				// If the split item is being put back to the original slot.
-				else if (splittingItem && dragItem != null && sender.dragItem.id.Equals(dragItem.id))
-					currentSlot.OnDrop(clone);
-
 				ClearSingleton();
+				return;
+			}
+		}
+
+		else if (eventData.button == PointerEventData.InputButton.Right)
+		{
+			if (isLeftShiftHeld && dragItem != null)
+			{
+				SplitItemOneByOne();
 				return;
 			}
 		}
@@ -90,21 +98,24 @@ public class ClickableObject : MonoBehaviour, IPointerClickHandler, IPointerDown
 
 	public void OnPointerClick(PointerEventData eventData)
 	{
-		if (eventData.button == PointerEventData.InputButton.Right)
+		if (eventData.button == PointerEventData.InputButton.Right && !isLeftAltHeld && !isLeftShiftHeld)
 			currentSlot.UseItem();
 	}
 
 	public static void ClearSingleton()
 	{
-		sender.icon.color = Color.white;
+		if (sender != null && clone != null)
+		{
+			sender.icon.color = Color.white;
 
-		sender.dragItem = null;
+			sender.dragItem = null;
 
-		sender = null;
-		holdingItem = false;
-		splittingItem = false;
+			sender = null;
+			holdingItem = false;
+			splittingItem = false;
 
-		Destroy(clone);
+			Destroy(clone);
+		}
 	}
 
 	private void BeginDragItem()
@@ -122,37 +133,102 @@ public class ClickableObject : MonoBehaviour, IPointerClickHandler, IPointerDown
 		Debug.Log("You're dragging the " + dragItem.itemName);
 	}
 
-	private void SplitItem()
+	private void SplitItemInHalf()
 	{
 		if (dragItem != null)
 		{
-			if (dragItem.quantity == 1)
+			if (clone == null)
 			{
-				BeginDragItem();
+				if (dragItem.quantity == 1)
+				{
+					BeginDragItem();
+					return;
+				}
+				
+				int half1 = dragItem.quantity / 2;
+			
+				Item split = Instantiate(dragItem);
+				split.quantity = half1;
+				split.name = dragItem.name;
+
+				clone = Instantiate(gameObject, transform.root);
+				clone.GetComponent<ClickableObject>().dragItem = split;
+
+				clone.GetComponent<Image>().enabled = false;
+				clone.transform.Find("Icon").GetComponent<Image>().raycastTarget = false;
+				clone.transform.Find("Favorite Border").GetComponent<Image>().enabled = false;
+				clone.transform.Find("Quantity").GetComponent<TextMeshProUGUI>().text = half1.ToString();
+
+				holdingItem = true;
+				splittingItem = true;
+				sender = this;
+				
+				Inventory.instance.UpdateQuantity(dragItem.id, -half1);
 				return;
 			}
 
-			int halfQuantity = dragItem.quantity / 2;
-			
-			Item split = Instantiate(dragItem);
-			split.quantity = halfQuantity;
-			split.name = dragItem.name;
+			Item holdItem = clone.GetComponent<ClickableObject>().dragItem;
 
-			clone = Instantiate(gameObject, transform.root);
-			clone.GetComponent<ClickableObject>().dragItem = split;
+			int half2 = dragItem.quantity / 2;
+			holdItem.quantity += half2;
 
-			clone.GetComponent<Image>().enabled = false;
-			clone.transform.Find("Icon").GetComponent<Image>().raycastTarget = false;
-			clone.transform.Find("Favorite Border").GetComponent<Image>().enabled = false;
-			clone.transform.Find("Quantity").GetComponent<TextMeshProUGUI>().text = halfQuantity.ToString();
+			clone.transform.Find("Quantity").GetComponent<TextMeshProUGUI>().text = holdItem.quantity.ToString();
 
-			holdingItem = true;
-			splittingItem = true;
-			sender = this;
+			if (dragItem.quantity <= 1)
+			{
+				Inventory.instance.Remove(dragItem, true);
+				holdItem.quantity++;  // Because 1 / 2 == 0, we need to increase the quantity by 1.
+				clone.transform.Find("Quantity").GetComponent<TextMeshProUGUI>().text = holdItem.quantity.ToString();
+				return;
+			}
 
-			Inventory.instance.UpdateQuantity(dragItem.id, -halfQuantity);
+			Inventory.instance.UpdateQuantity(dragItem.id, -half2);
+		}
+	}
 
-			Debug.Log("Original item quantity: " + sender.dragItem.quantity);
+	private void SplitItemOneByOne()
+	{
+		if (dragItem != null)
+		{
+			if (clone == null)
+			{
+				if (dragItem.quantity == 1)
+				{
+					BeginDragItem();
+					return;
+				}
+				
+				Item split = Instantiate(dragItem);
+				split.quantity = 1;
+				split.name = dragItem.name;
+
+				clone = Instantiate(gameObject, transform.root);
+				clone.GetComponent<ClickableObject>().dragItem = split;
+
+				clone.GetComponent<Image>().enabled = false;
+				clone.transform.Find("Icon").GetComponent<Image>().raycastTarget = false;
+				clone.transform.Find("Favorite Border").GetComponent<Image>().enabled = false;
+				clone.transform.Find("Quantity").GetComponent<TextMeshProUGUI>().text = "1";
+
+				holdingItem = true;
+				splittingItem = true;
+				sender = this;
+
+				Inventory.instance.UpdateQuantity(dragItem.id, -1);
+				return;
+			}
+
+			Item holdItem = clone.GetComponent<ClickableObject>().dragItem;
+			holdItem.quantity++;
+			clone.transform.Find("Quantity").GetComponent<TextMeshProUGUI>().text = holdItem.quantity.ToString();
+
+			if (dragItem.quantity == 1)
+			{
+				Inventory.instance.Remove(dragItem, true);
+				return;
+			}
+
+			Inventory.instance.UpdateQuantity(dragItem.id, -1);
 		}
 	}
 }

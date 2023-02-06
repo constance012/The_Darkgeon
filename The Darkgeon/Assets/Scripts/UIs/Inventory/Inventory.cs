@@ -125,6 +125,11 @@ public class Inventory : MonoBehaviour
 		}
 	}
 
+	public bool IsExisting(string targetID)
+	{
+		return items.Exists(item => item.id == targetID);
+	}
+
 	public void SetFavorite(string targetID, bool state)
 	{
 		items.Find(item => item.id.Equals(targetID)).isFavorite = state;
@@ -150,7 +155,7 @@ public class Inventory : MonoBehaviour
 
 		if (target.quantity <= 0)
 		{
-			Remove(target);
+			Remove(target, true);
 			return;
 		}
 

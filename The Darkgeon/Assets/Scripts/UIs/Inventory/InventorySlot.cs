@@ -104,14 +104,25 @@ public class InventorySlot : MonoBehaviour
 				Debug.Log("Dragged item index " + droppedItem.slotIndex);
 			}
 
-			// If this is a empty slot, then move the item to this slot.
+			// If this is an empty slot.
 			if (currentItem == null)
 			{
+				// Add the item if it doesn't already exist, otherwise move the item to this slot.
+				if (!Inventory.instance.IsExisting(droppedItem.id))
+					Inventory.instance.Add(droppedItem, true);
+
 				Inventory.instance.UpdateSlotIndex(droppedItem.id, transform.GetSiblingIndex());
 				return;
 			}
 
-			// If there's an item of the same type, check if it can be stacked together.
+			// If this is the original item that we had dragged.
+			else if (currentItem.id.Equals(droppedItem.id) && !ClickableObject.splittingItem)
+			{
+				ClickableObject.ClearSingleton();
+				return;
+			}
+
+			// If this is an item with the same name, check if it can be stacked together.
 			else if (currentItem.itemName.Equals(droppedItem.itemName))
 			{
 				if (currentItem.stackable && currentItem.quantity < currentItem.maxPerStack)
@@ -123,7 +134,22 @@ public class InventorySlot : MonoBehaviour
 						int residue = totalQuantity - currentItem.maxPerStack;
 
 						Inventory.instance.UpdateQuantity(currentItem.id, currentItem.maxPerStack, true);
-						Inventory.instance.UpdateQuantity(droppedItem.id, residue, true);
+
+						if (!ClickableObject.splittingItem)
+							Inventory.instance.UpdateQuantity(droppedItem.id, residue, true);
+						else
+						{
+							Item splitItem = ClickableObject.sender.dragItem;
+
+							if (!Inventory.instance.IsExisting(splitItem.id))
+							{
+								Inventory.instance.Add(splitItem, true);
+								Inventory.instance.UpdateQuantity(splitItem.id, residue, true);
+							}
+
+							else
+								Inventory.instance.UpdateQuantity(splitItem.id, residue);
+						}
 
 						return;
 					}
@@ -134,11 +160,11 @@ public class InventorySlot : MonoBehaviour
 					// Otherwise, just increase the quantity of the current one.
 					else
 						Inventory.instance.UpdateQuantity(currentItem.id, droppedItem.quantity);
-					
+
 					// Set as favorite when needed.
 					if (!currentItem.isFavorite && droppedItem.isFavorite)
 						Inventory.instance.SetFavorite(currentItem.id, true);
-					
+
 					// Finally, destroy the dragged one if there's no residue was created.
 					Inventory.instance.Remove(droppedItem, true);
 				}
