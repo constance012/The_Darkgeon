@@ -14952,7 +14952,7 @@ MonoBehaviour:
   m_MaxSlopeAngle: 45.1
   m_WhatIsGround:
     serializedVersion: 2
-    m_Bits: 119
+    m_Bits: 64
   m_GroundCheck: {fileID: 8545219307455233613}
   m_CeilingCheck: {fileID: 8545219309251609121}
   m_CrouchDisableCollider: {fileID: 0}
@@ -15042,7 +15042,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7506d567b828b7847a18870b616b24af, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerMat: {fileID: 0}
   dmgTextLoc: {fileID: 0}
   dmgTextPrefab: {fileID: 1002002582291494483, guid: 010fe3952a6d9ba4a81d8d56d99c52a3, type: 3}
   animator: {fileID: 0}

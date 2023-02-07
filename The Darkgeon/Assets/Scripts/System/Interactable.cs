@@ -2,15 +2,16 @@ using UnityEngine;
 
 public class Interactable : MonoBehaviour
 {
-	[SerializeField] protected float radius = 1f;
+	public Transform player;
 
-	[SerializeField] protected Transform player;
+	[SerializeField] protected float radius = 1f;
 
 	private bool hasInteracted;
 
 	private void Awake()
 	{
-		player = GameObject.FindWithTag("Player").transform;
+		if (player == null)
+			player = GameObject.FindWithTag("Player").transform;
 	}
 
 	private void Update()

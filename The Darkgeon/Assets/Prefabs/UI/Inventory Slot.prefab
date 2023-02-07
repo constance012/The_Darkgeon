@@ -425,6 +425,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   dragItem: {fileID: 0}
+  droppedItemPrefab: {fileID: 6994718978722962414, guid: 2c248f9dcbada824d9027a98c85012db, type: 3}
+  player: {fileID: 0}
 --- !u!1 &5835338857698163788
 GameObject:
   m_ObjectHideFlags: 0

@@ -136,6 +136,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8b0377f70f684dd4289e9d63ab12a8c5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  radius: 0.5
   player: {fileID: 0}
+  radius: 0.5
   itemPrefab: {fileID: 0}

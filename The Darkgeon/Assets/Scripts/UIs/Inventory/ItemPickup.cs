@@ -2,12 +2,16 @@ using UnityEngine;
 
 public class ItemPickup : Interactable
 {
-	[SerializeField] private Item itemPrefab;
+	public Item itemPrefab;
+
 	private Item currentItem;
+	private SpriteRenderer spriteRenderer;
 
 	private void Start()
 	{
+		spriteRenderer = GetComponent<SpriteRenderer>();
 		currentItem = Instantiate(itemPrefab);
+		spriteRenderer.sprite = currentItem.icon;
 	}
 
 	protected override void Interact()

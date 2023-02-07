@@ -48,7 +48,7 @@ public class GameManager : MonoBehaviour
 
 		pauseMenu = GameObject.Find("Pause Menu");
 		playerUI = GameObject.Find("Player UI");
-		inventory = GameObject.Find("Inventory");
+		inventory = GameObject.Find("Inventory Canvas");
 	}
 
 	private void Start()

@@ -5,11 +5,17 @@ using UnityEngine.EventSystems;
 using TMPro;
 using UnityEngine.Rendering.Universal;
 using UnityEditor.Rendering;
+using Cinemachine.Utility;
 
 public class ClickableObject : MonoBehaviour, IPointerClickHandler, IPointerDownHandler
 {
+	[Header("References")]
+	[Space]
+
 	public Item dragItem;
-	
+	[SerializeField] private GameObject droppedItemPrefab;
+	[SerializeField] private Transform player;
+
 	// Private fields.
 	private InventorySlot currentSlot;
 	private Image icon;
@@ -30,6 +36,7 @@ public class ClickableObject : MonoBehaviour, IPointerClickHandler, IPointerDown
 	{
 		currentSlot = transform.GetComponentInParent<InventorySlot>();
 		icon = transform.Find("Icon").GetComponent<Image>();
+		player = GameObject.FindWithTag("Player").transform;
 	}
 
 	private void Update()
@@ -100,6 +107,47 @@ public class ClickableObject : MonoBehaviour, IPointerClickHandler, IPointerDown
 	{
 		if (eventData.button == PointerEventData.InputButton.Right && !isLeftAltHeld && !isLeftShiftHeld)
 			currentSlot.UseItem();
+	}
+
+	public void DisposeItem()
+	{
+		Debug.Log("Outside of inventory area.");
+
+		if (clone != null)
+		{
+			Item disposeItem = clone.GetComponent<ClickableObject>().dragItem;
+
+			if (!disposeItem.isFavorite)
+			{
+				ItemPickup droppedItem = droppedItemPrefab.GetComponent<ItemPickup>();
+
+				droppedItem.itemPrefab = disposeItem;
+				droppedItem.itemPrefab.slotIndex = -1;
+				droppedItem.player = player;
+
+				GameObject droppedItemObj = Instantiate(droppedItemPrefab, player.position, Quaternion.identity);
+
+				droppedItemObj.name = disposeItem.name;
+				droppedItemObj.transform.SetParent(GameObject.Find("Items").transform);
+				
+				// Add force to the dropped item.
+				Rigidbody2D rb2d = droppedItemObj.GetComponent<Rigidbody2D>();
+
+				Vector3 screenPlayerPos = Camera.main.WorldToScreenPoint(player.position);
+				Vector3 aimingDir = Input.mousePosition - screenPlayerPos;
+
+				rb2d.AddForce(5f * aimingDir.normalized, ForceMode2D.Impulse);
+
+				if (!splittingItem)
+					Inventory.instance.Remove(disposeItem);
+			}
+
+			// Update the quantity if we dispose a favorite item via splitting.
+			else if (disposeItem.isFavorite && splittingItem)
+				Inventory.instance.UpdateQuantity(dragItem.id, disposeItem.quantity);
+
+			ClearSingleton();
+		}
 	}
 
 	public static void ClearSingleton()

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Inventory : MonoBehaviour
 {
@@ -9,11 +10,13 @@ public class Inventory : MonoBehaviour
 	public delegate void OnItemChanged();
 	public OnItemChanged onItemChanged;
 
-	// Fields
+	[Header("Items List")]
+	[Space]
 	public List<Item> items = new List<Item>();
-	private InventorySlot[] slots;
-
 	public int space = 20;
+
+	private InventorySlot[] slots;
+	private Image outsideZone;
 
 	private void OnEnable()
 	{
@@ -32,11 +35,17 @@ public class Inventory : MonoBehaviour
 		}
 
 		slots = transform.Find("Slots").GetComponentsInChildren<InventorySlot>();
+		outsideZone = transform.root.Find("Outside Zone").GetComponent<Image>();
 	}
 
 	private void Start()
 	{
 		instance.onItemChanged += ReloadUI;
+	}
+
+	private void Update()
+	{
+		outsideZone.raycastTarget = ClickableObject.holdingItem;
 	}
 
 	public bool Add(Item target, bool forcedSplit = false)
