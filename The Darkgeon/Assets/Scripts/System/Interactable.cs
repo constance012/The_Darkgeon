@@ -6,7 +6,8 @@ public class Interactable : MonoBehaviour
 
 	[SerializeField] protected float radius = 1f;
 
-	private bool hasInteracted;
+	protected Material mat;
+	protected bool hasInteracted;
 
 	private void Awake()
 	{
@@ -14,18 +15,26 @@ public class Interactable : MonoBehaviour
 			player = GameObject.FindWithTag("Player").transform;
 	}
 
-	private void Update()
+	protected void Update()
 	{
 		float distance = Vector2.Distance(player.position, transform.position);
 
-		if (distance <= radius && !hasInteracted && InputManager.instance.GetKeyDown(KeybindingActions.Interact))
+		if (distance <= radius)
 		{
-			Interact();
-			hasInteracted = true;
+			mat.SetFloat("_Thickness", .002f);
+
+			if (!hasInteracted && InputManager.instance.GetKeyDown(KeybindingActions.Interact))
+			{
+				Interact();
+				hasInteracted = true;
+			}
 		}
 
 		else if (distance > radius)
+		{
+			mat.SetFloat("_Thickness", 0f);
 			hasInteracted = false;
+		}
 	}
 
 	protected virtual void Interact()

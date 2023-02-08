@@ -1,11 +1,8 @@
-using System;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using TMPro;
-using UnityEngine.Rendering.Universal;
-using UnityEditor.Rendering;
-using Cinemachine.Utility;
 
 public class ClickableObject : MonoBehaviour, IPointerClickHandler, IPointerDownHandler
 {
@@ -22,6 +19,9 @@ public class ClickableObject : MonoBehaviour, IPointerClickHandler, IPointerDown
 
 	private bool isLeftAltHeld;
 	private bool isLeftShiftHeld;
+
+	private float mouseHoldTimer = 1f;
+	private bool isMouseButtonHeld;
 
 	// Static fields.
 
@@ -44,6 +44,20 @@ public class ClickableObject : MonoBehaviour, IPointerClickHandler, IPointerDown
 		isLeftAltHeld = Input.GetKey(KeyCode.LeftAlt);
 		isLeftShiftHeld = Input.GetKey(KeyCode.LeftShift);
 
+		if (splittingItem && (Input.GetMouseButton(0) || Input.GetMouseButton(1)))
+		{
+			mouseHoldTimer -= Time.deltaTime;
+
+			if (mouseHoldTimer <= 0f)
+				isMouseButtonHeld = true;
+		}
+
+		else
+		{
+			mouseHoldTimer = 1f;
+			isMouseButtonHeld = false;
+		}
+
 		if (clone != null)
 			clone.transform.position = Input.mousePosition;
 	}
@@ -56,6 +70,7 @@ public class ClickableObject : MonoBehaviour, IPointerClickHandler, IPointerDown
 		{
 			if (isLeftShiftHeld && dragItem != null)
 			{
+				StartCoroutine(ContinueSplitting(eventData.button));
 				SplitItemInHalf();
 				return;
 			}
@@ -97,6 +112,7 @@ public class ClickableObject : MonoBehaviour, IPointerClickHandler, IPointerDown
 		{
 			if (isLeftShiftHeld && dragItem != null)
 			{
+				StartCoroutine(ContinueSplitting(eventData.button));
 				SplitItemOneByOne();
 				return;
 			}
@@ -215,6 +231,10 @@ public class ClickableObject : MonoBehaviour, IPointerClickHandler, IPointerDown
 				return;
 			}
 
+			// Can only split at 1 slot or the item is existing.
+			if (sender != this)
+				return;
+
 			Item holdItem = clone.GetComponent<ClickableObject>().dragItem;
 
 			int half2 = dragItem.quantity / 2;
@@ -266,8 +286,13 @@ public class ClickableObject : MonoBehaviour, IPointerClickHandler, IPointerDown
 				return;
 			}
 
+			// Can only split at 1 slot or the item is existing.
+			if (sender != this)
+				return;
+
 			Item holdItem = clone.GetComponent<ClickableObject>().dragItem;
 			holdItem.quantity++;
+
 			clone.transform.Find("Quantity").GetComponent<TextMeshProUGUI>().text = holdItem.quantity.ToString();
 
 			if (dragItem.quantity == 1)
@@ -277,6 +302,37 @@ public class ClickableObject : MonoBehaviour, IPointerClickHandler, IPointerDown
 			}
 
 			Inventory.instance.UpdateQuantity(dragItem.id, -1);
+		}
+	}
+
+	private IEnumerator ContinueSplitting(PointerEventData.InputButton heldMouseButton)
+	{
+		yield return new WaitForSeconds(1f);
+
+		if (!isMouseButtonHeld || !isLeftShiftHeld)
+			yield break;
+
+		Debug.Log("Continue splitting");
+		
+		while (isMouseButtonHeld && isLeftShiftHeld)
+		{
+			if (!Inventory.instance.IsExisting(dragItem.id))
+				yield break;
+
+			switch (heldMouseButton)
+			{
+				case PointerEventData.InputButton.Left:
+					SplitItemInHalf();
+					Debug.Log("Splitting by a half");
+					break;
+
+				case PointerEventData.InputButton.Right:
+					SplitItemOneByOne();
+					Debug.Log("Splitting one by one");
+					break;
+			}
+
+			yield return new WaitForSeconds(.5f);
 		}
 	}
 }

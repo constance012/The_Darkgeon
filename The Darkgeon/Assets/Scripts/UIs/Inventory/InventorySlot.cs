@@ -96,6 +96,13 @@ public class InventorySlot : MonoBehaviour
 				int dropOnIndex = currentItem.slotIndex;
 				int draggedFromIndex = droppedItem.slotIndex;
 
+				// Add if the dropped item is missing.
+				if (!Inventory.instance.IsExisting(droppedItem.id))
+					Inventory.instance.Add(droppedItem, true);
+
+				else if (ClickableObject.splittingItem)
+					Inventory.instance.UpdateQuantity(droppedItem.id, droppedItem.quantity);
+				
 				// Swap their slot indexes.
 				Inventory.instance.UpdateSlotIndex(currentItem.id, draggedFromIndex);
 				Inventory.instance.UpdateSlotIndex(droppedItem.id, dropOnIndex);

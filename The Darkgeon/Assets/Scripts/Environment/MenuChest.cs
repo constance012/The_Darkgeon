@@ -12,7 +12,7 @@ public class MenuChest : MonoBehaviour
 	private void Awake()
 	{
 		animator = GetComponent<Animator>();
-		mat = GetComponentInChildren<SpriteRenderer>().sharedMaterial;
+		mat = GetComponentInChildren<SpriteRenderer>().material;
 	}
 
 	private void OnMouseDown()

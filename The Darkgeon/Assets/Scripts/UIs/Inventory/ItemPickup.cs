@@ -9,9 +9,12 @@ public class ItemPickup : Interactable
 
 	private void Start()
 	{
-		spriteRenderer = GetComponent<SpriteRenderer>();
 		currentItem = Instantiate(itemPrefab);
+
+		spriteRenderer = GetComponent<SpriteRenderer>();
 		spriteRenderer.sprite = currentItem.icon;
+		
+		mat = spriteRenderer.material;
 	}
 
 	protected override void Interact()

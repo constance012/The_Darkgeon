@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 2026201434}
   - component: {fileID: 2026201435}
   - component: {fileID: 2026201436}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Point Light
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -137,7 +137,7 @@ GameObject:
   - component: {fileID: 8179542987865338714}
   - component: {fileID: 8299419971739079772}
   - component: {fileID: 8310889464791096368}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Fire
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4969,7 +4969,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8183758440019976683}
   - component: {fileID: 8183758440019976680}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Normal Torch
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5058,7 +5058,7 @@ GameObject:
   - component: {fileID: 8186748154644464390}
   - component: {fileID: 8310114502250290404}
   - component: {fileID: 8311152172158745086}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Glow
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -9882,7 +9882,7 @@ GameObject:
   - component: {fileID: 8179262094380249278}
   - component: {fileID: 8309889265007128516}
   - component: {fileID: 8310428774770248992}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Spark
   m_TagString: Untagged
   m_Icon: {fileID: 0}

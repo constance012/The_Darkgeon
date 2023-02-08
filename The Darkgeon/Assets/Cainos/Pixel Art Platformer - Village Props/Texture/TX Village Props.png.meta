@@ -1457,10 +1457,10 @@ TextureImporter:
       name: TX Village Props Anvil
       rect:
         serializedVersion: 2
-        x: 506
-        y: 960
-        width: 42
-        height: 20
+        x: 505
+        y: 958
+        width: 46
+        height: 24
       alignment: 7
       pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -1982,10 +1982,10 @@ TextureImporter:
       name: TX Village Props Rock A
       rect:
         serializedVersion: 2
-        x: 816
-        y: 639
-        width: 33
-        height: 19
+        x: 814
+        y: 638
+        width: 37
+        height: 23
       alignment: 7
       pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -2003,10 +2003,10 @@ TextureImporter:
       name: TX Village Props Rock B
       rect:
         serializedVersion: 2
-        x: 874
-        y: 640
-        width: 46
-        height: 26
+        x: 872
+        y: 638
+        width: 50
+        height: 30
       alignment: 7
       pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -2024,10 +2024,10 @@ TextureImporter:
       name: TX Village Props Rock C
       rect:
         serializedVersion: 2
-        x: 934
-        y: 640
-        width: 21
-        height: 15
+        x: 932
+        y: 638
+        width: 25
+        height: 19
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -3263,10 +3263,10 @@ TextureImporter:
       name: TX Village Props Pumpkin A
       rect:
         serializedVersion: 2
-        x: 577
-        y: 896
-        width: 30
-        height: 31
+        x: 575
+        y: 894
+        width: 35
+        height: 35
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -3284,10 +3284,10 @@ TextureImporter:
       name: TX Village Props Pumpkin B
       rect:
         serializedVersion: 2
-        x: 614
-        y: 896
-        width: 21
-        height: 23
+        x: 612
+        y: 894
+        width: 25
+        height: 27
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -3606,14 +3606,14 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      TX Village Props Fence A Pillar A: 21300024
+      TX Village Props Platform S: 21300216
       TX Village Props Spike: 21300228
       TX Village Props Clother Hanger Rope A: 21300234
       TX Village Props Fence B Rail: 21300040
       TX Village Props Well: 21300066
       TX Village Props Statue Bouquet: 21300152
       TX Village Props Chest Silver: -8851566310641887263
-      TX Village Props Flower A: 21300100
+      TX Village Props Road Sign Text C: 21300050
       TX Village Props Clother Hanger Pillar B: 21300232
       TX Village Props Bush A: 21300110
       TX Village Props Bucket: 21300068
@@ -3748,8 +3748,8 @@ TextureImporter:
       TX Village Props Archert Target: 21300154
       TX Village Props Grass E: 21300104
       TX Village Props Barrel: 21300008
-      TX Village Props Road Sign Text C: 21300050
-      TX Village Props Platform S: 21300216
+      TX Village Props Fence A Pillar A: 21300024
+      TX Village Props Flower A: 21300100
   spritePackingTag: 
   pSDRemoveMatte: 0
   pSDShowRemoveMatteOption: 0
