@@ -1,9 +1,8 @@
 using UnityEngine;
-using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using TMPro;
 
-public class InventorySlot : MonoBehaviour
+public class ChestSlot : MonoBehaviour
 {
 	[Header("Current Item")]
 	[Space]
@@ -12,16 +11,14 @@ public class InventorySlot : MonoBehaviour
 
 	// Private fields.
 	private Image icon;
-	private Image favoriteBorder;
 	private TextMeshProUGUI quantity;
 
 	private TooltipTrigger tooltip;
 
 	private void Awake()
 	{
-		favoriteBorder = transform.Find("Item Button/Favorite Border").GetComponent<Image>();
 		icon = transform.Find("Item Button/Icon").GetComponent<Image>();
-		
+
 		quantity = transform.Find("Item Button/Quantity").GetComponent<TextMeshProUGUI>();
 		tooltip = GetComponent<TooltipTrigger>();
 	}
@@ -29,8 +26,6 @@ public class InventorySlot : MonoBehaviour
 	public void AddItem(Item newItem)
 	{
 		currentItem = newItem;
-
-		favoriteBorder.enabled = currentItem.isFavorite;
 
 		icon.sprite = currentItem.icon;
 		icon.enabled = true;
@@ -55,8 +50,6 @@ public class InventorySlot : MonoBehaviour
 	{
 		currentItem = null;
 
-		favoriteBorder.enabled = false;
-
 		icon.sprite = null;
 		icon.enabled = false;
 
@@ -66,16 +59,6 @@ public class InventorySlot : MonoBehaviour
 		tooltip.header = "";
 		tooltip.content = "";
 		tooltip.popupDelay = 0f;
-	}
-
-	public void UseItem()
-	{
-		// Use the item if it's not null and be used.
-		if (currentItem != null && currentItem.canbeUsed)
-		{
-			currentItem.Use();
-			Inventory.instance.UpdateQuantity(currentItem.id, -1);
-		}
 	}
 
 	/// <summary>
@@ -95,34 +78,33 @@ public class InventorySlot : MonoBehaviour
 				int dropOnIndex = currentItem.slotIndex;
 				int draggedFromIndex = droppedItem.slotIndex;
 
-				if (!cloneData.isChestSlot)
+				// Add if the dropped item is missing.
+				if (cloneData.isChestSlot)
 				{
-					// Add if the dropped item is missing.
-					if (!Inventory.instance.IsExisting(droppedItem.id))
-						Inventory.instance.Add(droppedItem, true);
+					if (!ChestStorage.instance.IsExisting(droppedItem.id))
+						ChestStorage.instance.Add(droppedItem, true);
 
 					else if (ClickableObject.splittingItem)
-						Inventory.instance.UpdateQuantity(droppedItem.id, droppedItem.quantity);
+						ChestStorage.instance.UpdateQuantity(droppedItem.id, droppedItem.quantity);
 
 					// Swap their slot indexes.
-					Inventory.instance.UpdateSlotIndex(droppedItem.id, dropOnIndex);
-					Inventory.instance.UpdateSlotIndex(currentItem.id, draggedFromIndex);
+					ChestStorage.instance.UpdateSlotIndex(droppedItem.id, dropOnIndex);
+					ChestStorage.instance.UpdateSlotIndex(currentItem.id, draggedFromIndex);
 				}
 				else
 				{
 					if (ClickableObject.splittingItem)
-						ChestStorage.instance.UpdateQuantity(droppedItem.id, droppedItem.quantity);
+						Inventory.instance.UpdateQuantity(droppedItem.id, droppedItem.quantity);
 
 					droppedItem.slotIndex = dropOnIndex;
 					currentItem.slotIndex = draggedFromIndex;
 
-					ChestStorage.instance.openedChest.storedItem.Remove(droppedItem);
-					Inventory.instance.items.Remove(currentItem);
+					Inventory.instance.items.Remove(droppedItem);
+					ChestStorage.instance.openedChest.storedItem.Remove(currentItem);
 
-					ChestStorage.instance.Add(currentItem, true);
-					Inventory.instance.Add(droppedItem, true);
-				}
-
+					Inventory.instance.Add(currentItem, true);
+					ChestStorage.instance.Add(droppedItem, true);
+				}		
 
 				//Debug.Log("Destination item index " + currentItem.slotIndex);
 				Debug.Log("Dragged item index " + droppedItem.slotIndex);
@@ -132,13 +114,16 @@ public class InventorySlot : MonoBehaviour
 			if (currentItem == null)
 			{
 				// Add the item if it doesn't already exist, otherwise move the item to this slot.
-				if (!Inventory.instance.IsExisting(droppedItem.id) || ClickableObject.splittingItem)
-					Inventory.instance.Add(droppedItem, true);
-
-				Inventory.instance.UpdateSlotIndex(droppedItem.id, transform.GetSiblingIndex());
+				if (!ChestStorage.instance.IsExisting(droppedItem.id) || ClickableObject.splittingItem)
+				{
+					droppedItem.slotIndex = transform.GetSiblingIndex();
+					ChestStorage.instance.Add(droppedItem, true);
+				}
 				
-				if (cloneData.isChestSlot && !ClickableObject.splittingItem)
-					ChestStorage.instance.Remove(droppedItem, true);
+				ChestStorage.instance.UpdateSlotIndex(droppedItem.id, transform.GetSiblingIndex());
+
+				if (!cloneData.isChestSlot && !ClickableObject.splittingItem)
+					Inventory.instance.Remove(droppedItem, true);
 				
 				return;
 			}
@@ -161,32 +146,21 @@ public class InventorySlot : MonoBehaviour
 					{
 						int residue = totalQuantity - currentItem.maxPerStack;
 
-						Inventory.instance.UpdateQuantity(currentItem.id, currentItem.maxPerStack, true);
+						ChestStorage.instance.UpdateQuantity(currentItem.id, currentItem.maxPerStack, true);
 
 						if (!ClickableObject.splittingItem)
 						{
-							if (cloneData.isChestSlot)
-								ChestStorage.instance.UpdateQuantity(droppedItem.id, residue, true);
-							else
+							if (!cloneData.isChestSlot)
 								Inventory.instance.UpdateQuantity(droppedItem.id, residue, true);
+							else
+								ChestStorage.instance.UpdateQuantity(droppedItem.id, residue, true);
 						}
 
 						else
 						{
 							Item splitItem = ClickableObject.sender.dragItem;
 
-							if (!cloneData.isChestSlot)
-							{
-								if (!Inventory.instance.IsExisting(splitItem.id))
-								{
-									Inventory.instance.Add(splitItem, true);
-									Inventory.instance.UpdateQuantity(splitItem.id, residue, true);
-								}
-
-								else
-									Inventory.instance.UpdateQuantity(splitItem.id, residue);
-							}
-							else
+							if (cloneData.isChestSlot)
 							{
 								if (!ChestStorage.instance.IsExisting(splitItem.id))
 								{
@@ -197,21 +171,32 @@ public class InventorySlot : MonoBehaviour
 								else
 									ChestStorage.instance.UpdateQuantity(splitItem.id, residue);
 							}
+							else
+							{
+								if (!Inventory.instance.IsExisting(splitItem.id))
+								{
+									Inventory.instance.Add(splitItem, true);
+									Inventory.instance.UpdateQuantity(splitItem.id, residue, true);
+								}
+
+								else 
+									Inventory.instance.UpdateQuantity(splitItem.id, residue);
+							}
 						}
 
 						return;
 					}
 
 					else if (totalQuantity == currentItem.maxPerStack)
-						Inventory.instance.UpdateQuantity(currentItem.id, totalQuantity, true);
+						ChestStorage.instance.UpdateQuantity(currentItem.id, totalQuantity, true);
 
 					// Otherwise, just increase the quantity of the current one.
 					else
-						Inventory.instance.UpdateQuantity(currentItem.id, droppedItem.quantity);
+						ChestStorage.instance.UpdateQuantity(currentItem.id, droppedItem.quantity);
 
 					// Set as favorite when needed.
 					if (!currentItem.isFavorite && droppedItem.isFavorite)
-						Inventory.instance.SetFavorite(currentItem.id, true);
+						ChestStorage.instance.SetFavorite(currentItem.id, true);
 
 					// Finally, destroy the dragged one if there's no residue was created.
 					if (cloneData.isChestSlot)

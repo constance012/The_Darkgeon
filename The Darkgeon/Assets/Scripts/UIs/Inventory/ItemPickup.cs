@@ -17,7 +17,7 @@ public class ItemPickup : Interactable
 		mat = spriteRenderer.material;
 	}
 
-	protected override void Interact()
+	public override void Interact()
 	{
 		base.Interact();
 

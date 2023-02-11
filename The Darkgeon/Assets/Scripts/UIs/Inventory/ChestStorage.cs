@@ -1,35 +1,26 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 
-public class Inventory : MonoBehaviour
+public class ChestStorage : MonoBehaviour
 {
-	public static Inventory instance { get; private set; }
+	public static ChestStorage instance { get; private set; }
 
+	[Header("References")]
+	[Space]
+
+	public Chest openedChest;
+	public int space = 10;
+
+	// Delegate.
 	public delegate void OnItemChanged();
 	public OnItemChanged onItemChanged;
 
-	[Header("Items List")]
-	[Space]
-	public List<Item> items = new List<Item>();
-	public int space = 20;
-
-	private InventorySlot[] slots;
-	private Image outsideZone;
+	private ChestSlot[] slots;
 
 	private void OnEnable()
 	{
 		ReloadUI();
-	}
-
-	private void OnDisable()
-	{
-		if (ChestStorage.instance.openedChest != null)
-		{
-			ChestStorage.instance.openedChest.Interact();
-			ChestStorage.instance.gameObject.SetActive(false);
-		}
 	}
 
 	private void Awake()
@@ -38,13 +29,13 @@ public class Inventory : MonoBehaviour
 			instance = this;
 		else
 		{
-			Debug.LogWarning("More than one instance of Inventory found!!");
+			Debug.LogWarning("More than one instance of Chest Storage found!!");
 			Destroy(gameObject);
 			return;
 		}
 
-		slots = transform.Find("Slots").GetComponentsInChildren<InventorySlot>();
-		outsideZone = transform.root.Find("Outside Zone").GetComponent<Image>();
+		slots = transform.Find("Slots").GetComponentsInChildren<ChestSlot>();
+		gameObject.SetActive(false);
 	}
 
 	private void Start()
@@ -52,16 +43,13 @@ public class Inventory : MonoBehaviour
 		instance.onItemChanged += ReloadUI;
 	}
 
-	private void Update()
-	{
-		outsideZone.raycastTarget = ClickableObject.holdingItem;
-	}
-
 	public bool Add(Item target, bool forcedSplit = false)
 	{
+		List<Item> items = openedChest.storedItem;
+
 		if (items.Count >= space)
 		{
-			Debug.Log("Inventory Full.");
+			Debug.Log("This chest is full.");
 			return false;
 		}
 
@@ -75,7 +63,7 @@ public class Inventory : MonoBehaviour
 			{
 				// Check for stackable items.
 				for (int i = 0; i < items.Count; i++)
-				{	
+				{
 					if (!items[i].itemName.Equals(target.itemName))
 						continue;
 
@@ -117,7 +105,10 @@ public class Inventory : MonoBehaviour
 
 				// If there's a residue or this is a completely different item. Then add it to the list.
 				if (target.quantity > 0)
+				{
 					items.Add(target);
+					Debug.Log("This is empty slot.");
+				}
 
 				onItemChanged?.Invoke();
 				return true;
@@ -138,32 +129,32 @@ public class Inventory : MonoBehaviour
 	{
 		if (!target.isFavorite || forced)
 		{
-			items.Remove(target);
+			openedChest.storedItem.Remove(target);
 			onItemChanged?.Invoke();
 		}
 	}
 
 	public bool IsExisting(string targetID)
 	{
-		return items.Exists(item => item.id == targetID);
+		return openedChest.storedItem.Exists(item => item.id == targetID);
 	}
 
 	public void SetFavorite(string targetID, bool state)
 	{
-		items.Find(item => item.id.Equals(targetID)).isFavorite = state;
+		openedChest.storedItem.Find(item => item.id.Equals(targetID)).isFavorite = state;
 		onItemChanged?.Invoke();
 	}
 
 	public void UpdateSlotIndex(string targetID, int index)
 	{
 		index = Mathf.Clamp(index, 0, space - 1);
-		items.Find(item => item.id.Equals(targetID)).slotIndex = index;
+		openedChest.storedItem.Find(item => item.id.Equals(targetID)).slotIndex = index;
 		onItemChanged?.Invoke();
 	}
 
 	public void UpdateQuantity(string targetID, int amount, bool setExactAmount = false)
 	{
-		Item target = items.Find(item => item.id.Equals(targetID));
+		Item target = openedChest.storedItem.Find(item => item.id.Equals(targetID));
 
 		if (setExactAmount)
 			target.quantity = amount;
@@ -183,15 +174,18 @@ public class Inventory : MonoBehaviour
 
 	private void ReloadUI()
 	{
-		// Split the master list into 2 smaller lists.
-		List<Item> unindexedItems = items.FindAll(item => item.slotIndex == -1);
-		List<Item> indexedItems = items.FindAll(item => item.slotIndex != -1);
+		if (openedChest == null)
+			return;
 
-		//Debug.Log("Unindexed items count : " + unindexedItems.Count);
-		//Debug.Log("Indexed items count : " + indexedItems.Count);
+		// Split the master list into 2 smaller lists.
+		List<Item> unindexedItems = openedChest.storedItem.FindAll(item => item.slotIndex == -1);
+		List<Item> indexedItems = openedChest.storedItem.FindAll(item => item.slotIndex != -1);
+
+		//Debug.Log("Unindexed items in chest count : " + unindexedItems.Count);
+		//Debug.Log("Indexed items in chest count : " + indexedItems.Count);
 
 		// Clear all the slots.
-		Action<InventorySlot> ClearAllSlots = (slot) => slot.ClearItem();
+		Action<ChestSlot> ClearAllSlots = (slot) => slot.ClearItem();
 		Array.ForEach(slots, ClearAllSlots);
 
 		// Load the indexed items first.
@@ -217,11 +211,11 @@ public class Inventory : MonoBehaviour
 		}
 
 		// Update the master list.
-		items.Clear();
-		items.AddRange(unindexedItems);
-		items.AddRange(indexedItems);
+		openedChest.storedItem.Clear();
+		openedChest.storedItem.AddRange(unindexedItems);
+		openedChest.storedItem.AddRange(indexedItems);
 
 		// Sort the list by slot indexes in ascending order.
-		items.Sort((a, b) => a.slotIndex.CompareTo(b.slotIndex));
+		openedChest.storedItem.Sort((a, b) => a.slotIndex.CompareTo(b.slotIndex));
 	}
 }

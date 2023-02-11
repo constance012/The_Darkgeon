@@ -9,13 +9,19 @@ public class ClickableObject : MonoBehaviour, IPointerClickHandler, IPointerDown
 	[Header("References")]
 	[Space]
 
+	public bool isChestSlot;
+
+	[Space]
+
 	public Item dragItem;
 	[SerializeField] private GameObject droppedItemPrefab;
 	[SerializeField] private Transform player;
 
 	// Private fields.
 	private InventorySlot currentSlot;
+	private ChestSlot currentChestSlot;
 	private Image icon;
+	private TooltipTrigger tooltip;
 
 	private bool isLeftAltHeld;
 	private bool isLeftShiftHeld;
@@ -34,8 +40,13 @@ public class ClickableObject : MonoBehaviour, IPointerClickHandler, IPointerDown
 
 	private void Awake()
 	{
-		currentSlot = transform.GetComponentInParent<InventorySlot>();
+		if (!isChestSlot)
+			currentSlot = transform.GetComponentInParent<InventorySlot>();
+		else
+			currentChestSlot = transform.GetComponentInParent<ChestSlot>();
+
 		icon = transform.Find("Icon").GetComponent<Image>();
+		tooltip = GetComponentInParent<TooltipTrigger>();
 		player = GameObject.FindWithTag("Player").transform;
 	}
 
@@ -64,8 +75,9 @@ public class ClickableObject : MonoBehaviour, IPointerClickHandler, IPointerDown
 
 	public void OnPointerDown(PointerEventData eventData)
 	{
-		dragItem = currentSlot.currentItem;
-		
+		dragItem = isChestSlot ? currentChestSlot.currentItem : currentSlot.currentItem;
+		tooltip.HideTooltip();
+
 		if (eventData.button == PointerEventData.InputButton.Left)
 		{
 			if (isLeftShiftHeld && dragItem != null)
@@ -75,7 +87,7 @@ public class ClickableObject : MonoBehaviour, IPointerClickHandler, IPointerDown
 				return;
 			}
 			
-			if (isLeftAltHeld && dragItem != null)
+			if (isLeftAltHeld && dragItem != null && !isChestSlot)
 			{
 				bool favorite = !dragItem.isFavorite;
 				Inventory.instance.SetFavorite(dragItem.id, favorite);
@@ -93,15 +105,10 @@ public class ClickableObject : MonoBehaviour, IPointerClickHandler, IPointerDown
 			// Drop item down.
 			if (holdingItem)
 			{
-				// Drop if the other slot's item is null or has different id.
-				if ((splittingItem && (sender == this || dragItem != null)) || !splittingItem)
+				if (!isChestSlot)
 					currentSlot.OnDrop(clone);
-				
-				else if (splittingItem && dragItem == null)
-				{
-					Inventory.instance.Add(clone.GetComponent<ClickableObject>().dragItem, true);
-					currentSlot.OnDrop(clone);
-				}
+				else
+					currentChestSlot.OnDrop(clone);
 
 				ClearSingleton();
 				return;
@@ -122,7 +129,7 @@ public class ClickableObject : MonoBehaviour, IPointerClickHandler, IPointerDown
 	public void OnPointerClick(PointerEventData eventData)
 	{
 		if (eventData.button == PointerEventData.InputButton.Right && !isLeftAltHeld && !isLeftShiftHeld)
-			currentSlot.UseItem();
+			currentSlot?.UseItem();
 	}
 
 	public void DisposeItem()
@@ -155,7 +162,12 @@ public class ClickableObject : MonoBehaviour, IPointerClickHandler, IPointerDown
 				rb2d.AddForce(5f * aimingDir.normalized, ForceMode2D.Impulse);
 
 				if (!splittingItem)
-					Inventory.instance.Remove(disposeItem);
+				{
+					if (!isChestSlot)
+						Inventory.instance.Remove(disposeItem);
+					else
+						ChestStorage.instance.Remove(disposeItem);
+				}
 			}
 
 			// Update the quantity if we dispose a favorite item via splitting.
@@ -170,6 +182,11 @@ public class ClickableObject : MonoBehaviour, IPointerClickHandler, IPointerDown
 	{
 		if (sender != null && clone != null)
 		{
+			if (!sender.isChestSlot)
+				Inventory.instance.onItemChanged?.Invoke();
+			else
+				ChestStorage.instance.onItemChanged?.Invoke();
+
 			sender.icon.color = Color.white;
 
 			sender.dragItem = null;
@@ -198,111 +215,145 @@ public class ClickableObject : MonoBehaviour, IPointerClickHandler, IPointerDown
 	}
 
 	private void SplitItemInHalf()
-	{
-		if (dragItem != null)
+	{	
+		if (clone == null)
 		{
-			if (clone == null)
+			if (dragItem.quantity == 1)
 			{
-				if (dragItem.quantity == 1)
-				{
-					BeginDragItem();
-					return;
-				}
+				BeginDragItem();
+				return;
+			}
 				
-				int half1 = dragItem.quantity / 2;
+			int half1 = dragItem.quantity / 2;
 			
-				Item split = Instantiate(dragItem);
-				split.quantity = half1;
-				split.name = dragItem.name;
+			Item split = Instantiate(dragItem);
+			split.quantity = half1;
+			split.name = dragItem.name;
 
-				clone = Instantiate(gameObject, transform.root);
-				clone.GetComponent<ClickableObject>().dragItem = split;
+			clone = Instantiate(gameObject, transform.root);
+			clone.GetComponent<ClickableObject>().dragItem = split;
 
-				clone.GetComponent<Image>().enabled = false;
-				clone.transform.Find("Icon").GetComponent<Image>().raycastTarget = false;
-				clone.transform.Find("Favorite Border").GetComponent<Image>().enabled = false;
-				clone.transform.Find("Quantity").GetComponent<TextMeshProUGUI>().text = half1.ToString();
+			clone.GetComponent<Image>().enabled = false;
+			clone.transform.Find("Icon").GetComponent<Image>().raycastTarget = false;
+			clone.transform.Find("Favorite Border").GetComponent<Image>().enabled = false;
+			clone.transform.Find("Quantity").GetComponent<TextMeshProUGUI>().text = half1.ToString();
 
-				holdingItem = true;
-				splittingItem = true;
-				sender = this;
+			holdingItem = true;
+			splittingItem = true;
+			sender = this;
 				
+			if (!isChestSlot)
 				Inventory.instance.UpdateQuantity(dragItem.id, -half1);
-				return;
-			}
-
-			// Can only split at 1 slot or the item is existing.
-			if (sender != this)
-				return;
-
-			Item holdItem = clone.GetComponent<ClickableObject>().dragItem;
-
-			int half2 = dragItem.quantity / 2;
-			holdItem.quantity += half2;
-
-			clone.transform.Find("Quantity").GetComponent<TextMeshProUGUI>().text = holdItem.quantity.ToString();
-
-			if (dragItem.quantity <= 1)
-			{
-				Inventory.instance.Remove(dragItem, true);
-				holdItem.quantity++;  // Because 1 / 2 == 0, we need to increase the quantity by 1.
-				clone.transform.Find("Quantity").GetComponent<TextMeshProUGUI>().text = holdItem.quantity.ToString();
-				return;
-			}
-
-			Inventory.instance.UpdateQuantity(dragItem.id, -half2);
+			else
+				ChestStorage.instance.UpdateQuantity(dragItem.id, -half1);
+			return;
 		}
+
+		// Can only split at 1 slot or the item is existing.
+		if (sender != this)
+			return;
+
+		Item holdItem = clone.GetComponent<ClickableObject>().dragItem;
+
+		int half2 = dragItem.quantity / 2;
+		holdItem.quantity += half2;
+
+		clone.transform.Find("Quantity").GetComponent<TextMeshProUGUI>().text = holdItem.quantity.ToString();
+
+		if (dragItem.quantity <= 1)
+		{
+			if (!isChestSlot)
+			{
+				Inventory.instance.items.Remove(dragItem);
+				currentSlot.currentItem = null;
+			}
+			else
+			{
+				ChestStorage.instance.openedChest.storedItem.Remove(dragItem);
+				currentChestSlot.currentItem = null;
+			}
+
+			sender.transform.Find("Quantity").GetComponent<TextMeshProUGUI>().text = "0";
+			icon.color = new Color(.51f, .51f, .51f);
+
+			holdItem.quantity++;  // Because 1 / 2 == 0, we need to increase the quantity by 1.
+			clone.transform.Find("Quantity").GetComponent<TextMeshProUGUI>().text = holdItem.quantity.ToString();
+				
+			return;
+		}
+
+		if (!isChestSlot)
+			Inventory.instance.UpdateQuantity(dragItem.id, -half2);
+		else
+			ChestStorage.instance.UpdateQuantity(dragItem.id, -half2);
 	}
 
 	private void SplitItemOneByOne()
 	{
-		if (dragItem != null)
+		if (clone == null)
 		{
-			if (clone == null)
-			{
-				if (dragItem.quantity == 1)
-				{
-					BeginDragItem();
-					return;
-				}
-				
-				Item split = Instantiate(dragItem);
-				split.quantity = 1;
-				split.name = dragItem.name;
-
-				clone = Instantiate(gameObject, transform.root);
-				clone.GetComponent<ClickableObject>().dragItem = split;
-
-				clone.GetComponent<Image>().enabled = false;
-				clone.transform.Find("Icon").GetComponent<Image>().raycastTarget = false;
-				clone.transform.Find("Favorite Border").GetComponent<Image>().enabled = false;
-				clone.transform.Find("Quantity").GetComponent<TextMeshProUGUI>().text = "1";
-
-				holdingItem = true;
-				splittingItem = true;
-				sender = this;
-
-				Inventory.instance.UpdateQuantity(dragItem.id, -1);
-				return;
-			}
-
-			// Can only split at 1 slot or the item is existing.
-			if (sender != this)
-				return;
-
-			Item holdItem = clone.GetComponent<ClickableObject>().dragItem;
-			holdItem.quantity++;
-
-			clone.transform.Find("Quantity").GetComponent<TextMeshProUGUI>().text = holdItem.quantity.ToString();
-
 			if (dragItem.quantity == 1)
 			{
-				Inventory.instance.Remove(dragItem, true);
+				BeginDragItem();
 				return;
 			}
+				
+			Item split = Instantiate(dragItem);
+			split.quantity = 1;
+			split.name = dragItem.name;
 
-			Inventory.instance.UpdateQuantity(dragItem.id, -1);
+			clone = Instantiate(gameObject, transform.root);
+			clone.GetComponent<ClickableObject>().dragItem = split;
+
+			clone.GetComponent<Image>().enabled = false;
+			clone.transform.Find("Icon").GetComponent<Image>().raycastTarget = false;
+			clone.transform.Find("Favorite Border").GetComponent<Image>().enabled = false;
+			clone.transform.Find("Quantity").GetComponent<TextMeshProUGUI>().text = "1";
+
+			holdingItem = true;
+			splittingItem = true;
+			sender = this;
+
+			if (!isChestSlot)
+				Inventory.instance.UpdateQuantity(dragItem.id, -1);
+			else
+				ChestStorage.instance.UpdateQuantity(dragItem.id, -1);
+
+			return;
 		}
+
+		// Can only split at 1 slot or the item is existing.
+		if (sender != this)
+			return;
+
+		Item holdItem = clone.GetComponent<ClickableObject>().dragItem;
+		holdItem.quantity++;
+
+		clone.transform.Find("Quantity").GetComponent<TextMeshProUGUI>().text = holdItem.quantity.ToString();
+
+		if (dragItem.quantity == 1)
+		{
+			if (!isChestSlot)
+			{
+				Inventory.instance.items.Remove(dragItem);
+				currentSlot.currentItem = null;
+			}
+			else
+			{
+				ChestStorage.instance.openedChest.storedItem.Remove(dragItem);
+				currentChestSlot.currentItem = null;
+			}
+
+			sender.transform.Find("Quantity").GetComponent<TextMeshProUGUI>().text = "0";
+			icon.color = new Color(.51f, .51f, .51f);
+
+			return;
+		}
+
+		if (!isChestSlot)
+			Inventory.instance.UpdateQuantity(dragItem.id, -1);
+		else
+			ChestStorage.instance.UpdateQuantity(dragItem.id, -1);
 	}
 
 	private IEnumerator ContinueSplitting(PointerEventData.InputButton heldMouseButton)
@@ -316,7 +367,10 @@ public class ClickableObject : MonoBehaviour, IPointerClickHandler, IPointerDown
 		
 		while (isMouseButtonHeld && isLeftShiftHeld)
 		{
-			if (!Inventory.instance.IsExisting(dragItem.id))
+			if (!isChestSlot && !Inventory.instance.IsExisting(dragItem.id))
+				yield break;
+
+			if (isChestSlot && !ChestStorage.instance.IsExisting(dragItem.id))
 				yield break;
 
 			switch (heldMouseButton)

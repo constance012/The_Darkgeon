@@ -37,7 +37,7 @@ public class Interactable : MonoBehaviour
 		}
 	}
 
-	protected virtual void Interact()
+	public virtual void Interact()
 	{
 		Debug.Log("Interacting with " + transform.name);
 	}

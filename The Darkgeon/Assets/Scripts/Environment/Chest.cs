@@ -6,16 +6,12 @@ public class Chest : Interactable
 	[Header("Items List")]
 	[Space]
 
+	// Special items list for each chest.
 	public List<Item> storedItem = new List<Item>();
-	public int space = 10;
 
 	[Header("References")]
 	[Space]
 	[SerializeField] private Animator animator;
-
-	// Delegate.
-	public delegate void OnItemChanged();
-	public OnItemChanged onItemChanged;
 
 	// Private fields.
 
@@ -54,7 +50,7 @@ public class Chest : Interactable
 		}
 	}
 
-	protected override void Interact()
+	public override void Interact()
 	{
 		base.Interact();
 
@@ -66,8 +62,22 @@ public class Chest : Interactable
 	private void OpenAndClose()
 	{
 		if (!hasInteracted)
+		{
 			animator.SetTrigger("Open");
+			
+			if (!Inventory.instance.transform.parent.gameObject.activeInHierarchy)
+				Inventory.instance.transform.parent.gameObject.SetActive(true);
+
+			ChestStorage.instance.openedChest = this;
+			ChestStorage.instance.gameObject.SetActive(true);
+
+		}
 		else
+		{
 			animator.SetTrigger("Close");
+
+			ChestStorage.instance.openedChest = null;
+			ChestStorage.instance.gameObject.SetActive(false);
+		}
 	}
 }
