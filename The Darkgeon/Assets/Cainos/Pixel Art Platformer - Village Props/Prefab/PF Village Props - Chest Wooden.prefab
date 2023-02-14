@@ -200,7 +200,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   player: {fileID: 0}
-  radius: 1
+  radius: 0.3
+  type: 0
+  distanceBeforeClosed: 1.5
   storedItem: []
-  space: 10
   animator: {fileID: 0}

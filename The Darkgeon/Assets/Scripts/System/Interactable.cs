@@ -2,8 +2,12 @@ using UnityEngine;
 
 public class Interactable : MonoBehaviour
 {
+	[Header("Reference")]
 	public Transform player;
 
+	[Space]
+
+	[Header("Interact Radius")]
 	[SerializeField] protected float radius = 1f;
 
 	protected Material mat;

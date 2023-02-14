@@ -64,6 +64,11 @@ public class DebuffManager : MonoBehaviour
 	}
 
 	#region Handling debuff.
+	public Debuff GetDebuff(string nameLowered)
+	{
+		return debuffList.Find(debuff => debuff.name.ToLower().Equals(nameLowered));
+	}
+
 	public void ApplyDebuff(Debuff target)
 	{
 		// If the debuff hasn't been apllied yet.
@@ -94,7 +99,7 @@ public class DebuffManager : MonoBehaviour
 		// Otherwise, reset its duration if the current duration is less than the target's.
 		else
 		{
-			Debuff existingDebuff = debuffList.Find(debuff => debuff.name == target.name);
+			Debuff existingDebuff = debuffList.Find(debuff => debuff.name.Equals(target.name));
 			
 			if (existingDebuff.duration < target.duration)
 				existingDebuff.duration = target.duration;
@@ -144,7 +149,7 @@ public class DebuffManager : MonoBehaviour
 	private void Bleeding()
 	{
 		
-		currentDebuff = debuffList.Find(debuff => debuff.name.ToLower() == "bleeding");
+		currentDebuff = GetDebuff("bleeding");
 		
 		// Clone the particle system if the player doesn't contain its game object already and play it once.
 		if (currentDebuff.visualEffect != null && player.transform.Find(currentDebuff.visualEffect.name + "(Clone)") == null)
@@ -185,7 +190,7 @@ public class DebuffManager : MonoBehaviour
 
 	private void Poisoned()
 	{
-		currentDebuff = debuffList.Find(debuff => debuff.name.ToLower() == "poisoned");
+		currentDebuff = GetDebuff("poisoned");
 
 		currentDebuff.duration -= Time.deltaTime;
 		currentDebuff.hpLossDelay -= Time.deltaTime;
@@ -217,8 +222,8 @@ public class DebuffManager : MonoBehaviour
 
 	private void Slowness()
 	{
-		currentDebuff = debuffList.Find(debuff => debuff.name.ToLower() == "slowness");
-		
+		currentDebuff = GetDebuff("slowness");
+
 		currentDebuff.duration -= Time.deltaTime;
 		
 		if (currentDebuff.duration <= 0f || player.currentHP <= 0)

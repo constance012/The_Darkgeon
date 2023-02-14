@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class ChestStorage : MonoBehaviour
@@ -17,10 +18,12 @@ public class ChestStorage : MonoBehaviour
 	public OnItemChanged onItemChanged;
 
 	private ChestSlot[] slots;
+	private TextMeshProUGUI uiTitle;
 
 	private void OnEnable()
 	{
 		ReloadUI();
+		uiTitle.text = openedChest?.type.ToString().ToUpper() + " CHEST";
 	}
 
 	private void Awake()
@@ -35,6 +38,8 @@ public class ChestStorage : MonoBehaviour
 		}
 
 		slots = transform.Find("Slots").GetComponentsInChildren<ChestSlot>();
+		uiTitle = transform.Find("Title/Text").GetComponent<TextMeshProUGUI>();
+
 		gameObject.SetActive(false);
 	}
 
@@ -125,13 +130,21 @@ public class ChestStorage : MonoBehaviour
 		return false;
 	}
 
-	public void Remove(Item target, bool forced = false)
+	public void Remove(Item target)
 	{
-		if (!target.isFavorite || forced)
-		{
-			openedChest.storedItem.Remove(target);
-			onItemChanged?.Invoke();
-		}
+		openedChest.storedItem.Remove(target);
+		onItemChanged?.Invoke();
+	}
+
+	public void Remove(string targetID)
+	{
+		openedChest.storedItem.Remove(GetItem(targetID));
+		onItemChanged?.Invoke();
+	}
+
+	public Item GetItem(string targetID)
+	{
+		return openedChest.storedItem.Find(item => item.id.Equals(targetID));
 	}
 
 	public bool IsExisting(string targetID)
@@ -141,20 +154,20 @@ public class ChestStorage : MonoBehaviour
 
 	public void SetFavorite(string targetID, bool state)
 	{
-		openedChest.storedItem.Find(item => item.id.Equals(targetID)).isFavorite = state;
+		GetItem(targetID).isFavorite = state;
 		onItemChanged?.Invoke();
 	}
 
 	public void UpdateSlotIndex(string targetID, int index)
 	{
 		index = Mathf.Clamp(index, 0, space - 1);
-		openedChest.storedItem.Find(item => item.id.Equals(targetID)).slotIndex = index;
+		GetItem(targetID).slotIndex = index;
 		onItemChanged?.Invoke();
 	}
 
 	public void UpdateQuantity(string targetID, int amount, bool setExactAmount = false)
 	{
-		Item target = openedChest.storedItem.Find(item => item.id.Equals(targetID));
+		Item target = GetItem(targetID);
 
 		if (setExactAmount)
 			target.quantity = amount;
@@ -165,7 +178,7 @@ public class ChestStorage : MonoBehaviour
 
 		if (target.quantity <= 0)
 		{
-			Remove(target, true);
+			Remove(target);
 			return;
 		}
 

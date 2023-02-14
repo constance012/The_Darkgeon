@@ -3,9 +3,12 @@ using UnityEngine;
 
 public class Chest : Interactable
 {
-	[Header("Items List")]
 	[Space]
+	[Header("General Info")]
+	public ChestType type;
+	public float distanceBeforeClosed;
 
+	[Space]
 	// Special items list for each chest.
 	public List<Item> storedItem = new List<Item>();
 
@@ -27,22 +30,32 @@ public class Chest : Interactable
 	// Use this Update instead of the parent's one.
 	private new void Update()
 	{
-		float distance = Vector2.Distance(player.position, transform.position);
+		Vector2 worldMousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+		float interactDistance = Vector2.Distance(worldMousePos, transform.position);
+		float forcedCloseDistance = Vector2.Distance(player.position, transform.position);
 
-		if (distance <= radius)
+		if (interactDistance <= radius)
 		{
 			mat.SetFloat("_Thickness", .002f);
 
-			if (InputManager.instance.GetKeyDown(KeybindingActions.Interact))
+			if (Input.GetMouseButtonDown(1))
+			{
+				Chest target = ChestStorage.instance.openedChest;
+
+				// Close any currently opening chest before opening the other one.
+				if (target != null && target != this)
+					target.Interact();
+				
 				Interact();
+			}
 		}
 
-		else if (distance > radius)
+		else if (interactDistance > radius)
 		{
 			mat.SetFloat("_Thickness", 0f);
 
 			// Close the chest when out of range.
-			if (!hasInteracted)
+			if (!hasInteracted && forcedCloseDistance > distanceBeforeClosed)
 			{
 				hasInteracted = true;
 				OpenAndClose();
@@ -81,3 +94,5 @@ public class Chest : Interactable
 		}
 	}
 }
+
+public enum ChestType { Wooden, Iron, Silver, Golden }

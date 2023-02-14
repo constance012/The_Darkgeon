@@ -25,9 +25,12 @@ public class ClickableObject : MonoBehaviour, IPointerClickHandler, IPointerDown
 
 	private bool isLeftAltHeld;
 	private bool isLeftShiftHeld;
+	private bool isLeftControlHeld;
 
 	private float mouseHoldTimer = 1f;
 	private bool isMouseButtonHeld;
+
+	private bool isCoroutineRunning;
 
 	// Static fields.
 
@@ -52,8 +55,12 @@ public class ClickableObject : MonoBehaviour, IPointerClickHandler, IPointerDown
 
 	private void Update()
 	{
+		if (isCoroutineRunning)
+			Debug.Log("Coroutine is running.");
+
 		isLeftAltHeld = Input.GetKey(KeyCode.LeftAlt);
 		isLeftShiftHeld = Input.GetKey(KeyCode.LeftShift);
+		isLeftControlHeld = Input.GetKey(KeyCode.LeftControl);
 
 		if (splittingItem && (Input.GetMouseButton(0) || Input.GetMouseButton(1)))
 		{
@@ -78,16 +85,23 @@ public class ClickableObject : MonoBehaviour, IPointerClickHandler, IPointerDown
 		dragItem = isChestSlot ? currentChestSlot.currentItem : currentSlot.currentItem;
 		tooltip.HideTooltip();
 
+		if (dragItem == null && !holdingItem)
+			return;
+
 		if (eventData.button == PointerEventData.InputButton.Left)
 		{
-			if (isLeftShiftHeld && dragItem != null)
+			// Split a stack in half.
+			if (isLeftShiftHeld)
 			{
-				StartCoroutine(ContinueSplitting(eventData.button));
+				if (!isCoroutineRunning)
+					StartCoroutine(ContinueSplitting(eventData.button));
+
 				SplitItemInHalf();
 				return;
 			}
 			
-			if (isLeftAltHeld && dragItem != null && !isChestSlot)
+			// Set an item as favorite.
+			if (isLeftAltHeld && !isChestSlot)
 			{
 				bool favorite = !dragItem.isFavorite;
 				Inventory.instance.SetFavorite(dragItem.id, favorite);
@@ -95,8 +109,15 @@ public class ClickableObject : MonoBehaviour, IPointerClickHandler, IPointerDown
 				return;
 			}
 
+			// Quick deposit an item between the currently opening chest and the inventory.
+			if (isLeftControlHeld && ChestStorage.instance.openedChest != null)
+			{
+				QuickDeposit();
+				return;
+			}
+
 			// Pick item up.
-			if (!holdingItem && dragItem != null)
+			if (!holdingItem)
 			{
 				BeginDragItem();
 				return;
@@ -117,9 +138,11 @@ public class ClickableObject : MonoBehaviour, IPointerClickHandler, IPointerDown
 
 		else if (eventData.button == PointerEventData.InputButton.Right)
 		{
-			if (isLeftShiftHeld && dragItem != null)
+			if (isLeftShiftHeld)
 			{
-				StartCoroutine(ContinueSplitting(eventData.button));
+				if (!isCoroutineRunning)
+					StartCoroutine(ContinueSplitting(eventData.button));
+
 				SplitItemOneByOne();
 				return;
 			}
@@ -132,6 +155,7 @@ public class ClickableObject : MonoBehaviour, IPointerClickHandler, IPointerDown
 			currentSlot?.UseItem();
 	}
 
+	// This method is called from an event trigger.
 	public void DisposeItem()
 	{
 		Debug.Log("Outside of inventory area.");
@@ -140,19 +164,20 @@ public class ClickableObject : MonoBehaviour, IPointerClickHandler, IPointerDown
 		{
 			Item disposeItem = clone.GetComponent<ClickableObject>().dragItem;
 
-			if (!disposeItem.isFavorite)
+			if (!disposeItem.isFavorite || sender.isChestSlot)
 			{
 				ItemPickup droppedItem = droppedItemPrefab.GetComponent<ItemPickup>();
 
 				droppedItem.itemPrefab = disposeItem;
 				droppedItem.itemPrefab.slotIndex = -1;
+				droppedItem.itemPrefab.isFavorite = false;
 				droppedItem.player = player;
 
 				GameObject droppedItemObj = Instantiate(droppedItemPrefab, player.position, Quaternion.identity);
 
 				droppedItemObj.name = disposeItem.name;
 				droppedItemObj.transform.SetParent(GameObject.Find("Items").transform);
-				
+
 				// Add force to the dropped item.
 				Rigidbody2D rb2d = droppedItemObj.GetComponent<Rigidbody2D>();
 
@@ -163,7 +188,7 @@ public class ClickableObject : MonoBehaviour, IPointerClickHandler, IPointerDown
 
 				if (!splittingItem)
 				{
-					if (!isChestSlot)
+					if (!sender.isChestSlot)
 						Inventory.instance.Remove(disposeItem);
 					else
 						ChestStorage.instance.Remove(disposeItem);
@@ -172,7 +197,12 @@ public class ClickableObject : MonoBehaviour, IPointerClickHandler, IPointerDown
 
 			// Update the quantity if we dispose a favorite item via splitting.
 			else if (disposeItem.isFavorite && splittingItem)
-				Inventory.instance.UpdateQuantity(dragItem.id, disposeItem.quantity);
+			{
+				if (sender.isChestSlot)
+					ChestStorage.instance.UpdateQuantity(disposeItem.id, disposeItem.quantity);
+				else
+					Inventory.instance.UpdateQuantity(disposeItem.id, disposeItem.quantity);
+			}
 
 			ClearSingleton();
 		}
@@ -182,11 +212,6 @@ public class ClickableObject : MonoBehaviour, IPointerClickHandler, IPointerDown
 	{
 		if (sender != null && clone != null)
 		{
-			if (!sender.isChestSlot)
-				Inventory.instance.onItemChanged?.Invoke();
-			else
-				ChestStorage.instance.onItemChanged?.Invoke();
-
 			sender.icon.color = Color.white;
 
 			sender.dragItem = null;
@@ -214,8 +239,31 @@ public class ClickableObject : MonoBehaviour, IPointerClickHandler, IPointerDown
 		Debug.Log("You're dragging the " + dragItem.itemName);
 	}
 
+	private void QuickDeposit()
+	{
+		dragItem.slotIndex = -1;
+
+		holdingItem = true;
+		sender = this;
+
+		if (!sender.isChestSlot)
+		{
+			Inventory.instance.Remove(sender.dragItem);
+			ChestStorage.instance.Add(sender.dragItem);
+		}
+		else
+		{
+			ChestStorage.instance.Remove(sender.dragItem);
+			Inventory.instance.Add(sender.dragItem);
+		}
+
+		holdingItem = false;
+		sender = null;
+	}
+
 	private void SplitItemInHalf()
 	{	
+		// Create a clone if it doesn't already exist.
 		if (clone == null)
 		{
 			if (dragItem.quantity == 1)
@@ -290,6 +338,7 @@ public class ClickableObject : MonoBehaviour, IPointerClickHandler, IPointerDown
 
 	private void SplitItemOneByOne()
 	{
+		// Create a clone if it doesn't already exist.
 		if (clone == null)
 		{
 			if (dragItem.quantity == 1)
@@ -358,20 +407,31 @@ public class ClickableObject : MonoBehaviour, IPointerClickHandler, IPointerDown
 
 	private IEnumerator ContinueSplitting(PointerEventData.InputButton heldMouseButton)
 	{
+		isCoroutineRunning = true;
+
 		yield return new WaitForSeconds(1f);
 
 		if (!isMouseButtonHeld || !isLeftShiftHeld)
+		{
+			isCoroutineRunning = false;
 			yield break;
+		}
 
 		Debug.Log("Continue splitting");
 		
 		while (isMouseButtonHeld && isLeftShiftHeld)
 		{
 			if (!isChestSlot && !Inventory.instance.IsExisting(dragItem.id))
+			{
+				isCoroutineRunning = false;
 				yield break;
+			}
 
 			if (isChestSlot && !ChestStorage.instance.IsExisting(dragItem.id))
+			{
+				isCoroutineRunning = false;
 				yield break;
+			}
 
 			switch (heldMouseButton)
 			{
@@ -388,5 +448,7 @@ public class ClickableObject : MonoBehaviour, IPointerClickHandler, IPointerDown
 
 			yield return new WaitForSeconds(.5f);
 		}
+
+		isCoroutineRunning = false;
 	}
 }

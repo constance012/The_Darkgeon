@@ -92,39 +92,51 @@ public class InventorySlot : MonoBehaviour
 			// Local function.
 			void SwapSlotIndexes()
 			{
-				int dropOnIndex = currentItem.slotIndex;
-				int draggedFromIndex = droppedItem.slotIndex;
+				int senderIndex = droppedItem.slotIndex;
+				int destinationIndex = currentItem.slotIndex;
 
+				// If swap within the inventory.
 				if (!cloneData.isChestSlot)
 				{
-					// Add if the dropped item is missing.
+					//Debug.Log("Within the inventoy.");
+					//Debug.Log("Sender index: " + senderIndex + ", Destination index: " + destinationIndex);
+					//Debug.Log("Sender id: " + droppedItem.id + ", Destination id: " + currentItem.id);
+
 					if (!Inventory.instance.IsExisting(droppedItem.id))
 						Inventory.instance.Add(droppedItem, true);
 
 					else if (ClickableObject.splittingItem)
 						Inventory.instance.UpdateQuantity(droppedItem.id, droppedItem.quantity);
 
-					// Swap their slot indexes.
-					Inventory.instance.UpdateSlotIndex(droppedItem.id, dropOnIndex);
-					Inventory.instance.UpdateSlotIndex(currentItem.id, draggedFromIndex);
+					Inventory.instance.UpdateSlotIndex(currentItem.id, senderIndex);
+					Inventory.instance.UpdateSlotIndex(droppedItem.id, destinationIndex);
 				}
+
+				// If swap between the inventory and other storages.
 				else
 				{
-					if (ClickableObject.splittingItem)
+					if (!ChestStorage.instance.IsExisting(droppedItem.id))
+						ChestStorage.instance.Add(droppedItem, true);
+
+					else if (ClickableObject.splittingItem)
+					{
 						ChestStorage.instance.UpdateQuantity(droppedItem.id, droppedItem.quantity);
+						droppedItem.quantity = ChestStorage.instance.GetItem(droppedItem.id).quantity;
+					}
+					
+					Item destinationItem = Instantiate(currentItem);
+					destinationItem.name = currentItem.name;
 
-					droppedItem.slotIndex = dropOnIndex;
-					currentItem.slotIndex = draggedFromIndex;
+					ChestStorage.instance.Remove(droppedItem.id);
+					Inventory.instance.Remove(destinationItem.id);
 
-					ChestStorage.instance.openedChest.storedItem.Remove(droppedItem);
-					Inventory.instance.items.Remove(currentItem);
+					destinationItem.slotIndex = senderIndex;
+					droppedItem.slotIndex = destinationIndex;
 
-					ChestStorage.instance.Add(currentItem, true);
+					ChestStorage.instance.Add(destinationItem, true);
 					Inventory.instance.Add(droppedItem, true);
 				}
 
-
-				//Debug.Log("Destination item index " + currentItem.slotIndex);
 				Debug.Log("Dragged item index " + droppedItem.slotIndex);
 			}
 
@@ -138,7 +150,7 @@ public class InventorySlot : MonoBehaviour
 				Inventory.instance.UpdateSlotIndex(droppedItem.id, transform.GetSiblingIndex());
 				
 				if (cloneData.isChestSlot && !ClickableObject.splittingItem)
-					ChestStorage.instance.Remove(droppedItem, true);
+					ChestStorage.instance.Remove(droppedItem);
 				
 				return;
 			}
@@ -209,13 +221,15 @@ public class InventorySlot : MonoBehaviour
 					else
 						Inventory.instance.UpdateQuantity(currentItem.id, droppedItem.quantity);
 
+
 					// Set as favorite when needed.
 					if (!currentItem.isFavorite && droppedItem.isFavorite)
 						Inventory.instance.SetFavorite(currentItem.id, true);
 
+
 					// Finally, destroy the dragged one if there's no residue was created.
 					if (cloneData.isChestSlot)
-						ChestStorage.instance.Remove(droppedItem, true);
+						ChestStorage.instance.Remove(droppedItem);
 					else
 						Inventory.instance.Remove(droppedItem, true);
 				}

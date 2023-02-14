@@ -143,6 +143,22 @@ public class Inventory : MonoBehaviour
 		}
 	}
 
+	public void Remove(string targetID, bool forced = false)
+	{
+		Item target = GetItem(targetID);
+
+		if (!target.isFavorite || forced)
+		{
+			items.Remove(target);
+			onItemChanged?.Invoke();
+		}
+	}
+
+	public Item GetItem(string targetID)
+	{
+		return items.Find(item => item.id.Equals(targetID));
+	}
+
 	public bool IsExisting(string targetID)
 	{
 		return items.Exists(item => item.id == targetID);
@@ -150,20 +166,20 @@ public class Inventory : MonoBehaviour
 
 	public void SetFavorite(string targetID, bool state)
 	{
-		items.Find(item => item.id.Equals(targetID)).isFavorite = state;
+		GetItem(targetID).isFavorite = state;
 		onItemChanged?.Invoke();
 	}
 
 	public void UpdateSlotIndex(string targetID, int index)
 	{
 		index = Mathf.Clamp(index, 0, space - 1);
-		items.Find(item => item.id.Equals(targetID)).slotIndex = index;
+		GetItem(targetID).slotIndex = index;
 		onItemChanged?.Invoke();
 	}
 
 	public void UpdateQuantity(string targetID, int amount, bool setExactAmount = false)
 	{
-		Item target = items.Find(item => item.id.Equals(targetID));
+		Item target = GetItem(targetID);
 
 		if (setExactAmount)
 			target.quantity = amount;
