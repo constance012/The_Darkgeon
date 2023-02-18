@@ -245,17 +245,17 @@ MonoBehaviour:
     m_Bits: 64
   player: {fileID: 0}
   stats: {fileID: 0}
-  poisoned: {fileID: 11400000, guid: c5c7cf665beabeb4e8679c8bc049f9fd, type: 2}
-  abilityFx: {fileID: 0}
   walkSpeed: 50
   checkRadius: 0.1
   attackRange: 1.2
   inSightRange: 2.5
-  abilityDuration: 10
   m_SpottingTimer: 1
   m_AbandonTimer: 10
   timeBetweenAtk: 1.7
   facingRight: 1
+  poisoned: {fileID: 11400000, guid: c5c7cf665beabeb4e8679c8bc049f9fd, type: 2}
+  abilityFx: {fileID: 0}
+  abilityDuration: 10
   atkAnimDone: 1
 --- !u!1 &1906861128848420086
 GameObject:

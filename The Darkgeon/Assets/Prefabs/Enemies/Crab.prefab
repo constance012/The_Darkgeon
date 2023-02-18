@@ -86,7 +86,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 10
   m_Sprite: {fileID: 6197056623017412966, guid: 25e3c3e2a286eee48bba19e8d339e062, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -236,7 +236,6 @@ MonoBehaviour:
   physicMat: {fileID: 0}
   edgeCheck: {fileID: 7650718340843937049}
   centerPoint: {fileID: 5649026995876315913}
-  attackPoint: {fileID: 4619837858754419681}
   whatIsPlayer:
     serializedVersion: 2
     m_Bits: 8
@@ -249,11 +248,12 @@ MonoBehaviour:
   checkRadius: 0.1
   attackRange: 0.35
   inSightRange: 3
-  abilityDuration: 10
   m_SpottingTimer: 3
   m_AbandonTimer: 8
   timeBetweenAtk: 1.5
   facingRight: 1
+  attackPoint: {fileID: 4619837858754419681}
+  abilityDuration: 10
 --- !u!1 &1906861128848420086
 GameObject:
   m_ObjectHideFlags: 0

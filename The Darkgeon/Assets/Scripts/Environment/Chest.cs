@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class Chest : Interactable
@@ -36,6 +37,11 @@ public class Chest : Interactable
 
 		if (interactDistance <= radius)
 		{
+			if (clone == null)
+				CreatePopupLabel();
+			else
+				clone.transform.position = transform.position;
+
 			mat.SetFloat("_Thickness", .002f);
 
 			if (Input.GetMouseButtonDown(1))
@@ -52,6 +58,8 @@ public class Chest : Interactable
 
 		else if (interactDistance > radius)
 		{
+			Destroy(clone);
+
 			mat.SetFloat("_Thickness", 0f);
 
 			// Close the chest when out of range.
@@ -70,6 +78,13 @@ public class Chest : Interactable
 		hasInteracted = !hasInteracted;
 
 		OpenAndClose();
+	}
+
+	protected override void CreatePopupLabel()
+	{
+		base.CreatePopupLabel();
+
+		clone.transform.Find("Object Name").GetComponent<TextMeshProUGUI>().text = type.ToString().ToUpper() + " CHEST";
 	}
 
 	private void OpenAndClose()
