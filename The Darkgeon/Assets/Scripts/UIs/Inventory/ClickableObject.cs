@@ -166,6 +166,7 @@ public class ClickableObject : MonoBehaviour, IPointerClickHandler, IPointerDown
 
 			if (!disposeItem.isFavorite || sender.isChestSlot)
 			{
+				// Set up the drop.
 				ItemPickup droppedItem = droppedItemPrefab.GetComponent<ItemPickup>();
 
 				droppedItem.itemPrefab = disposeItem;
@@ -173,6 +174,7 @@ public class ClickableObject : MonoBehaviour, IPointerClickHandler, IPointerDown
 				droppedItem.itemPrefab.isFavorite = false;
 				droppedItem.player = player;
 
+				// Make the drop.
 				GameObject droppedItemObj = Instantiate(droppedItemPrefab, player.position, Quaternion.identity);
 
 				droppedItemObj.name = disposeItem.name;

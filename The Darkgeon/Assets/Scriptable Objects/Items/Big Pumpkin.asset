@@ -14,17 +14,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: 
   slotIndex: -1
-  itemName: Pumpkin
-  description: '+15 HP.
-
-
-    A large, round vegetable with hard yellow or orange
-    flesh. They''re the symbol of Fall and Halloween.'
-  icon: {fileID: 21300258, guid: 7810966f0f690954c87305933cabf2b0, type: 3}
+  itemName: Big Pumpkin
+  description: A large, round vegetable with hard yellow or orange flesh. They're
+    the symbol of Fall and Halloween. But this one seems larger than the regular
+    one.
+  icon: {fileID: 21300256, guid: 7810966f0f690954c87305933cabf2b0, type: 3}
+  rarity:
+    title: Uncommon
+    color: {r: 0.1954508, g: 0.6415094, b: 0, a: 1}
   stackable: 1
   maxPerStack: 3
-  quantity: 3
+  quantity: 1
   isFavorite: 0
   isDefaultItem: 0
   canbeUsed: 1
-  health: 15
+  health: 30

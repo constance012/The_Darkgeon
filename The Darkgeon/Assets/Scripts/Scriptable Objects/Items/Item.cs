@@ -1,8 +1,16 @@
+using System;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "New Item", menuName = "Inventory/New Base Item")]
 public class Item : ScriptableObject
 {
+	[Serializable]
+	public struct Rarity
+	{
+		public string title;
+		public Color color;
+	}
+
 	[HideInInspector] public string id;
 	
 	[Header("General")]
@@ -14,6 +22,7 @@ public class Item : ScriptableObject
 	[TextArea(5, 10)] public string description;
 
 	public Sprite icon;
+	public Rarity rarity;
 
 	[Header("Quantity and Stack")]
 	[Space]
@@ -32,5 +41,11 @@ public class Item : ScriptableObject
 	public virtual void Use()
 	{
 		Debug.Log("Using " + itemName);
+	}
+
+	public override string ToString()
+	{
+		return $"Rarity: {rarity.title}.\n\n" +
+				$"{description}";
 	}
 }

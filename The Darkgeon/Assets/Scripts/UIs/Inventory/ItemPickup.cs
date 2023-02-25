@@ -1,3 +1,4 @@
+using System.Security;
 using TMPro;
 using UnityEngine;
 
@@ -40,19 +41,22 @@ public class ItemPickup : Interactable
 		if (!isCloneExisting)
 		{
 			base.CreatePopupLabel();
-			labelText = clone.transform.Find("Object Name").GetComponent<TextMeshProUGUI>();
+			labelText = clone.transform.Find("Names/Object Name").GetComponent<TextMeshProUGUI>();
 
 			labelText.text = quantity > 1 ? currentItem.itemName.ToUpper() + " x" + currentItem.quantity
 										: currentItem.itemName.ToUpper();
+			labelText.color = currentItem.rarity.color;
 		}
 		// Otherwise, use the existing one.
 		else
 		{
 			clone = worldCanvas.transform.Find("Popup Label").gameObject;
-			labelText = clone.transform.Find("Object Name").GetComponent<TextMeshProUGUI>();
+			labelText = clone.transform.Find("Names/Object Name").GetComponent<TextMeshProUGUI>();
+			TextMeshProUGUI duplicatedLabel = Instantiate(labelText, labelText.transform.parent);
 
-			labelText.text += quantity > 1 ? "\n" + currentItem.itemName.ToUpper() + " x" + currentItem.quantity
-										: "\n" + currentItem.itemName.ToUpper();
+			duplicatedLabel.text = quantity > 1 ? currentItem.itemName.ToUpper() + " x" + currentItem.quantity
+										: currentItem.itemName.ToUpper();
+			duplicatedLabel.color = currentItem.rarity.color;
 		}
 	}
 

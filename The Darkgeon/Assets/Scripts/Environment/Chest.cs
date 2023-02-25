@@ -84,7 +84,7 @@ public class Chest : Interactable
 	{
 		base.CreatePopupLabel();
 
-		clone.transform.Find("Object Name").GetComponent<TextMeshProUGUI>().text = type.ToString().ToUpper() + " CHEST";
+		clone.transform.Find("Names/Object Name").GetComponent<TextMeshProUGUI>().text = type.ToString().ToUpper() + " CHEST";
 	}
 
 	private void OpenAndClose()

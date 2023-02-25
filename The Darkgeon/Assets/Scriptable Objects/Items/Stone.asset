@@ -17,7 +17,10 @@ MonoBehaviour:
   itemName: Stone
   description: It's just a rock.
   icon: {fileID: 21300138, guid: 7810966f0f690954c87305933cabf2b0, type: 3}
-  stackable: 1
+  rarity:
+    title: Common
+    color: {r: 0.7372549, g: 0.7372549, b: 0.7372549, a: 1}
+  stackable: 0
   maxPerStack: 3
   quantity: 1
   isFavorite: 0

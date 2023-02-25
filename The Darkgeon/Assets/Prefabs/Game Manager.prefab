@@ -45,11 +45,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerAnim: {fileID: 0}
+  rb2d: {fileID: 0}
   playerStats: {fileID: 0}
-  controller: {fileID: 0}
   moveScript: {fileID: 0}
   actionsScript: {fileID: 0}
   deathMessageText: {fileID: 0}
   killSourceText: {fileID: 0}
+  countdownText: {fileID: 0}
   deathPanel: {fileID: 0}
-  isPlayerDeath: 0
+  pauseMenu: {fileID: 0}
+  playerUI: {fileID: 0}
+  inventory: {fileID: 0}
+  m_RespawnTimer: 5.5

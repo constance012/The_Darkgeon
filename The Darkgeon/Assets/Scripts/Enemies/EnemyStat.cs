@@ -1,40 +1,55 @@
+using Pathfinding;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting.Antlr3.Runtime.Misc;
 using UnityEngine;
-using UnityEngine.UI;
 
 /// <summary>
 /// Manages all the enemy's stats.
 /// </summary>
 public class EnemyStat : MonoBehaviour
 {
-	[Header("References")]
+	[Serializable]
+	public struct DeathLoot
+	{
+		public Item loot;
+		public int quantity;
+		[Range(.001f, 100f)] public float dropChance;
+		public bool isGuaranteed;
+	}
+
+	[Header("Death Loots")]
+	[Space]
+	[SerializeField] private GameObject droppedItemPrefab;
+	[SerializeField] private DeathLoot[] loots;
+
+	[Header("Transform, Layers")]
 	[Space]
 	[SerializeField] private EnemyHPBar hpBar;
 	public Transform dmgTextPos;
 	public Transform worldCanvas;
 
 	[Space]
+	[SerializeField] private Transform player;
 	[SerializeField] private Transform centerPoint;
 	[SerializeField] private Transform groundCheck;
 	[SerializeField] private LayerMask whatIsGround;
 
+	[Header("References")]
 	[Space]
 	[SerializeField] private Animator animator;
 	[SerializeField] private Rigidbody2D rb2d;
 	[SerializeField] private Material enemyMat;
 	[SerializeField] private ParticleSystem deathFx;
 
-	[Space]
-	[SerializeField] private PlayerStats player;
-
 	public GameObject dmgTextPrefab;
-	public MonoBehaviour behaviour;
+	public EnemyBehaviour behaviour;
 
 	[Header("STATS")]
 	[Space]
-	[SerializeField] private new string name;
+	[SerializeField] private string enemyName;
+	public bool isFlyingEnemy;
 
 	[Header("Offensive")]
 	[Space]
@@ -64,17 +79,17 @@ public class EnemyStat : MonoBehaviour
 		hpBar = transform.Find("Enemy Health Bar").GetComponent<EnemyHPBar>();
 		dmgTextPos = transform.Find("Damage Text Pos").transform;
 
-		worldCanvas = GameObject.Find("World Canvas").transform;
+		worldCanvas = GameObject.FindWithTag("World Canvas").transform;
 		animator = GetComponent<Animator>();
-		rb2d = GetComponent<Rigidbody2D>();
 		enemyMat = GetComponent<SpriteRenderer>().material;
 		deathFx = transform.Find("Soul Release Effect").GetComponent<ParticleSystem>();
 		
+		rb2d = GetComponent<Rigidbody2D>();
 		centerPoint = transform.Find("Center Point");
 		groundCheck = transform.Find("Ground Check");
 		GetBehaviour();
 		
-		player = GameObject.Find("Player").GetComponent<PlayerStats>();
+		player = GameObject.FindWithTag("Player").transform;
 	}
 
 	private void Start()
@@ -91,20 +106,22 @@ public class EnemyStat : MonoBehaviour
 		{
 			StopAllCoroutines();
 			Die();
-			Dissolve();
 			isDeath = true;
 		}
 
 		if (canDissolve && Time.time > timeToDissolve)
 			Dissolve();
 
-		if (isDeath && grounded)
+		if (isDeath && grounded && !isFlyingEnemy)
 			rb2d.simulated = false;
 	}
 
-	// Check if the enemy is grounded.
+	// Check if the enemy is grounded. Ignore for flying enemies.
 	private void FixedUpdate()
 	{
+		if (isFlyingEnemy)
+			return;
+
 		grounded = false;
 
 		Collider2D[] colliders = Physics2D.OverlapCircleAll(groundCheck.position, .1f, whatIsGround);
@@ -115,7 +132,7 @@ public class EnemyStat : MonoBehaviour
 
 	public void TakeDamage(float dmg, float critDmgMul = 1f, float knockBackVal = 0f)
 	{
-		EngageThePlayer();
+		behaviour.spottingTimer = 0f;
 
 		if (currentHP > 0)
 		{
@@ -136,13 +153,17 @@ public class EnemyStat : MonoBehaviour
 			textColor = isCrit ? new Color(1f, .5f, 0f) : new Color(1f, .84f, .2f);
 			DamageText.Generate(dmgTextPrefab, dmgTextPos.position, textColor, isCrit, finalDmg.ToString());
 
-			StartCoroutine(BeingKnockedBack(knockBackVal));
+			if (!isFlyingEnemy)
+				StartCoroutine(BeingKnockedBack(knockBackVal));
 		}
 	}
 
 	private void Die()
 	{
 		animator.SetBool("IsDeath", true);
+
+		if (isFlyingEnemy)
+			rb2d.gravityScale = 1f;
 
 		behaviour.enabled = false;
 		hpBar.gameObject.SetActive(false);
@@ -157,7 +178,10 @@ public class EnemyStat : MonoBehaviour
 		enemyMat.SetFloat("_Fade", fade);
 
 		if (fade < .4f && fade > 0f && !deathFx.isPlaying)
+		{
 			deathFx.Play();
+			DropDeathLoots();
+		}
 
 		if (fade <= 0f && deathFx.isStopped)
 		{
@@ -165,6 +189,51 @@ public class EnemyStat : MonoBehaviour
 			canDissolve = false;
 			Destroy(hpBar.gameObject);
 			Destroy(gameObject);
+		}
+	}
+
+	private void DropDeathLoots()
+	{
+		void DropLoot(DeathLoot target)
+		{
+			// Set up the drop.
+			ItemPickup droppedLoot = droppedItemPrefab.GetComponent<ItemPickup>();
+
+			droppedLoot.itemPrefab = Instantiate(target.loot);
+			droppedLoot.itemPrefab.quantity = target.quantity;
+			droppedLoot.player = player;
+
+			// Make the drop.
+			GameObject droppedItemObj = Instantiate(droppedItemPrefab, transform.position, Quaternion.identity);
+
+			droppedItemObj.name = target.loot.name;
+			droppedItemObj.transform.SetParent(GameObject.Find("Items").transform);
+
+			// Add force to the dropped item.
+			Rigidbody2D rb2d = droppedItemObj.GetComponent<Rigidbody2D>();
+
+			float randomX = UnityEngine.Random.Range(transform.position.x - 1f, transform.position.x + 1f);
+			float randomY = UnityEngine.Random.Range(transform.position.y, transform.position.y + 1f);
+
+			Vector3 randomPoint = new Vector3(randomX, randomY);
+			Vector3 aimingDir = randomPoint - transform.position;
+
+			Debug.Log(aimingDir);
+
+			rb2d.AddForce(2f * aimingDir.normalized, ForceMode2D.Impulse);
+		}
+
+		for (int i = 0; i < loots.Length; i++)
+		{
+			if (loots[i].isGuaranteed)
+			{
+				DropLoot(loots[i]);
+				continue;
+			}
+
+			float rand = UnityEngine.Random.Range(0f, 100f);
+			if (rand <= loots[i].dropChance)
+				DropLoot(loots[i]);
 		}
 	}
 
@@ -185,9 +254,7 @@ public class EnemyStat : MonoBehaviour
 
 	private void GetBehaviour()
 	{
-		string enemyName = name.ToLower().Trim();
-
-		switch (enemyName)
+		switch (enemyName.ToLower().Trim())
 		{
 			case "crab":
 				behaviour = GetComponent<CrabBehaviour>();
@@ -198,33 +265,12 @@ public class EnemyStat : MonoBehaviour
 			case "spiked slime":
 				behaviour = GetComponent<SpikedSlimeBehaviour>();
 				break;
-			
+			case "bat":
+				behaviour = GetComponent<BatBehaviour>();
+				break;
+
 			default:
 				behaviour = null;
-				Debug.LogWarning("Behaviour script for enemy " + name + " not found!!");
-				break;
-		}
-	}
-
-	private void EngageThePlayer()
-	{
-		string enemyName = name.ToLower().Trim();
-		
-		switch (enemyName)
-		{
-			case "crab":
-				GetComponent<CrabBehaviour>().spottingTimer = 0f;
-				break;
-			
-			case "rat":
-				GetComponent<RatBehaviour>().spottingTimer = 0f;
-				break;
-			
-			case "spiked slime":
-				GetComponent<SpikedSlimeBehaviour>().spottingTimer = 0f;
-				break;
-			
-			default:
 				Debug.LogWarning("Behaviour script for enemy " + name + " not found!!");
 				break;
 		}

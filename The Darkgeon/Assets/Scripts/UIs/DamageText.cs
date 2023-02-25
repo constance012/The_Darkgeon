@@ -67,7 +67,7 @@ public class DamageText : MonoBehaviour
 	// Default color is red, and parent is world canvas.
 	public static DamageText Generate(GameObject prefab, Vector3 pos, string textContent)
 	{
-		Transform canvas = GameObject.Find("World Canvas").transform;
+		Transform canvas = GameObject.FindWithTag("World Canvas").transform;
 		GameObject dmgTextObj = Instantiate(prefab, pos, Quaternion.identity);
 		dmgTextObj.transform.SetParent(canvas, true);
 
@@ -80,7 +80,7 @@ public class DamageText : MonoBehaviour
 	// Default parent is world canvas.
 	public static DamageText Generate(GameObject prefab, Vector3 pos, Color txtColor, bool isCrit, string textContent)
 	{
-		Transform canvas = GameObject.Find("World Canvas").transform;
+		Transform canvas = GameObject.FindWithTag("World Canvas").transform;
 
 		GameObject dmgTextObj = Instantiate(prefab, pos, Quaternion.identity);
 		dmgTextObj.transform.SetParent(canvas, true);

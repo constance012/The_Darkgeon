@@ -83,7 +83,7 @@ public class CrabBehaviour : EnemyBehaviour
 	protected override void Attack()
 	{
 		// Make sure the enemy doesn't move.
-		rb2d.velocity = Vector3.zero;
+		rb2d.velocity = Vector2.zero;
 
 		if (!alreadyAttacked)
 		{

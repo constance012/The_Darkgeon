@@ -25,7 +25,7 @@ public class DashAttack : StateMachineBehaviour
 
 		canCrit = stats.IsCriticalStrike();
 
-		PlayerActions.ceaseKeyboardInput = true;
+		PlayerMovement.ceaseKeyboardInput = true;
 	}
 
 	// OnStateUpdate is called on each Update frame between OnStateEnter and OnStateExit callbacks
@@ -58,8 +58,8 @@ public class DashAttack : StateMachineBehaviour
 		animator.SetBool("DashAtk", false);  // Disable the bool.
 		action.comboDelay += Time.time;
 		PlayerActions.isComboDone = true;
-		PlayerActions.ceaseKeyboardInput = false;  // The player can move again as soon as the animation is completed.
 		PlayerActions.canFaceTowardsCursor = false;
+		PlayerMovement.ceaseKeyboardInput = false;  // The player can move again as soon as the animation is completed.
 	}
 
 	// OnStateMove is called right after Animator.OnAnimatorMove()

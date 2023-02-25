@@ -3,15 +3,22 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "New Food", menuName = "Inventory/New Food")]
 public class Food : Item
 {
-    [Header("Healing")]
-    [Space]
+	[Header("Healing")]
+	[Space]
 
-    public int health;
+	public int health;
 
-    public override void Use()
-    {
-        base.Use();
+	public override void Use()
+	{
+		base.Use();
 
-        FindObjectOfType<PlayerStats>().Heal(health);
-    }
+		GameObject.FindWithTag("Player").GetComponent<PlayerStats>().Heal(health);
+	}
+
+	public override string ToString()
+	{
+		return $"Rarity: {rarity.title}.\n\n" +
+				$"+{health} HP.\n\n" +
+				$"{description}";
+	}
 }

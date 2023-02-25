@@ -39,7 +39,7 @@ Material:
     m_Ints: []
     m_Floats:
     - _Fade: 1
-    - _Scale: 50
+    - _Scale: 20
     m_Colors:
-    - _Color: {r: 1.6078432, g: 0.24313726, b: 0.21960784, a: 0}
+    - _Color: {r: 3.2941177, g: 0.047058824, b: 0, a: 0}
   m_BuildTextureStacks: []

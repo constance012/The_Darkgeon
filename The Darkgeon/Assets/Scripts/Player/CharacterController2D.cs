@@ -12,8 +12,8 @@ public class CharacterController2D : MonoBehaviour
 	[Header("Movement")]
 	[Space]
 	public float m_MoveSpeed = 10f;
-	[SerializeField] private float m_Acceleration = 7f;
-	[SerializeField] private float m_Deceleration = 7f;
+	[SerializeField] [Range(.1f, 10f)] private float m_Acceleration = 7f;
+	[SerializeField] [Range(.1f, 10f)] private float m_Deceleration = 7f;
 	[SerializeField] private float m_VelPower = .9f;
 	[SerializeField] private float m_FrictionAmount = .2f;
 	//[Range(0, .3f)][SerializeField] private float m_MovementSmoothing = .05f;   // How much to smooth out the movement
@@ -25,7 +25,7 @@ public class CharacterController2D : MonoBehaviour
 	[SerializeField] private float m_DashForce = 200f;                          // Amount of force added when the player dashes.
 	[SerializeField] private bool m_AirControl;                         // Whether or not a player can steer while jumping;
 	[SerializeField] private float m_SlopeCheckDistance;
-	[Range(10f, 89f)][SerializeField] private float m_MaxSlopeAngle;
+	[SerializeField] [Range(10f, 89f)] private float m_MaxSlopeAngle;
 
 	[Header("Checks")]
 	[Space]

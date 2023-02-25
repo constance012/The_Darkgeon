@@ -1,4 +1,5 @@
 using TMPro;
+using Unity.Android.Types;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -12,7 +13,7 @@ public class NewItemUI : MonoBehaviour
 	private TextMeshProUGUI displayText;
 
 	private float disappearSpeed = 50f;
-	private float smoothVel = 0f;
+	private float smoothVel;
 
 	private void Awake()
 	{
@@ -30,13 +31,14 @@ public class NewItemUI : MonoBehaviour
 	{
 		if (aliveTime <= 0f)
 		{
+			if (displayText.fontSize >= 10f)
+				displayText.GetComponent<Animator>().SetTrigger("Disappear");
+			
 			float newHeight = rTransform.rect.height;
 
 			newHeight -= disappearSpeed * Time.deltaTime;
 
 			rTransform.sizeDelta = new Vector2(rTransform.rect.width, newHeight);
-
-			displayText.fontSize = Mathf.SmoothDamp(displayText.fontSize, 0f, ref smoothVel, .5f);
 
 			if (rTransform.rect.height <= 0f)
 			{
@@ -49,7 +51,7 @@ public class NewItemUI : MonoBehaviour
 			return;
 		}
 
-		if (transform.GetSiblingIndex() < 6)
+		if (transform.GetSiblingIndex() < 4)
 			aliveTime -= Time.deltaTime;
 	}
 
@@ -74,6 +76,7 @@ public class NewItemUI : MonoBehaviour
 
 		// Set the text.
 		newItem.displayText.text = target.itemName.ToUpper() + " x" + target.quantity;
+		newItem.displayText.color = target.rarity.color;
 		
 		return newItem;
 	}

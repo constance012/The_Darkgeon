@@ -24,9 +24,9 @@ public class PlayerActions : MonoBehaviour
 
 	[HideInInspector] public float comboDelay;
 
-	public static bool ceaseKeyboardInput { get; set; }
 	public static bool isComboDone { get; set; } = true;
 	public static bool canFaceTowardsCursor { get; set; }
+	public static bool canAttack { get; set; } = true;
 
 	private void Awake()
 	{
@@ -37,8 +37,11 @@ public class PlayerActions : MonoBehaviour
 
 	private void Update()
 	{
-		if (EventSystem.current.IsPointerOverGameObject())
+		if (!canAttack)
+		{
+			Debug.Log("Can not attack.");
 			return;
+		}
 
 		// Check if there is enough time for the next combo to begin.
 		if (InputManager.instance.GetKeyDown(KeybindingActions.PrimaryAttack) && animator.GetBool("Grounded") && isComboDone)

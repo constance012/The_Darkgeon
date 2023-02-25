@@ -23,7 +23,7 @@ public class Interactable : MonoBehaviour
 		if (player == null)
 			player = GameObject.FindWithTag("Player").transform;
 
-		worldCanvas = GameObject.Find("World Canvas").transform;
+		worldCanvas = GameObject.FindWithTag("World Canvas").transform;
 	}
 
 	protected virtual void Update()
@@ -65,7 +65,7 @@ public class Interactable : MonoBehaviour
 		clone = Instantiate(popupLabelPrefab);
 		clone.name = "Popup Label";
 
-		clone.transform.Find("Object Name").GetComponent<TextMeshProUGUI>().text = "";
+		clone.transform.Find("Names/Object Name").GetComponent<TextMeshProUGUI>().text = "";
 
 		clone.transform.SetParent(worldCanvas, true);
 		clone.transform.SetAsLastSibling();

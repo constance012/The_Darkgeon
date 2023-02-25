@@ -194,9 +194,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ea0294bc2146c3c45a9f32c0a3f37c18, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  droppedItemPrefab: {fileID: 6994718978722962414, guid: 2c248f9dcbada824d9027a98c85012db, type: 3}
+  loots:
+  - loot: {fileID: 11400000, guid: 58f8c5aac4c879247a788b2917bdde98, type: 2}
+    quantity: 30
+    dropChance: 100
+    isGuaranteed: 1
+  - loot: {fileID: 11400000, guid: 6c8ac6b5c48eb1d40baee656e2148f50, type: 2}
+    quantity: 2
+    dropChance: 100
+    isGuaranteed: 1
+  - loot: {fileID: 11400000, guid: 2a4e842369014604287ab6d92fac5a59, type: 2}
+    quantity: 1
+    dropChance: 50
+    isGuaranteed: 0
   hpBar: {fileID: 0}
   dmgTextPos: {fileID: 0}
   worldCanvas: {fileID: 0}
+  player: {fileID: 0}
   centerPoint: {fileID: 0}
   groundCheck: {fileID: 0}
   whatIsGround:
@@ -206,10 +221,10 @@ MonoBehaviour:
   rb2d: {fileID: 0}
   enemyMat: {fileID: 0}
   deathFx: {fileID: 0}
-  player: {fileID: 0}
   dmgTextPrefab: {fileID: 1002002582291494483, guid: 010fe3952a6d9ba4a81d8d56d99c52a3, type: 3}
   behaviour: {fileID: 0}
-  name: Spiked Slime
+  enemyName: Spiked Slime
+  isFlyingEnemy: 0
   maxHealth: 100
   atkDamage: 15
   contactDamage: 12
@@ -218,7 +233,7 @@ MonoBehaviour:
   knockBackVal: 2
   armorReduceFactor: 0.5
   knockBackRes: 0.25
-  timeToDissolve: 5
+  timeToDissolve: 3
   grounded: 0
 --- !u!114 &6436354577461718669
 MonoBehaviour:
@@ -10279,18 +10294,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 2849164132980755751, guid: d67e7cda7069a6043833ef52b23537ca, type: 3}
-      propertyPath: m_AnchorMax.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2849164132980755751, guid: d67e7cda7069a6043833ef52b23537ca, type: 3}
-      propertyPath: m_AnchorMax.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8376423479250616279, guid: d67e7cda7069a6043833ef52b23537ca, type: 3}
-      propertyPath: hpBarPos
-      value: 
-      objectReference: {fileID: 6815839622324444003}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d67e7cda7069a6043833ef52b23537ca, type: 3}
 --- !u!224 &902604609496795154 stripped

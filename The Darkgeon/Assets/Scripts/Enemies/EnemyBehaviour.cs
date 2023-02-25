@@ -38,7 +38,7 @@ public class EnemyBehaviour : MonoBehaviour
 	[SerializeField] protected float m_AbandonTimer = 8f;
 	[SerializeField] protected float timeBetweenAtk = 1.5f;
 
-	[HideInInspector] public bool facingRight = true;
+	[HideInInspector] public bool facingRight { get; set; } = true;
 
 	// Protected fields.
 	protected bool alreadyAttacked;
@@ -69,7 +69,8 @@ public class EnemyBehaviour : MonoBehaviour
 
 	protected virtual void Update()
 	{
-		animator.SetFloat("Speed", Mathf.Abs(rb2d.velocity.x));
+		if (!stats.isFlyingEnemy)
+			animator.SetFloat("Speed", Mathf.Abs(rb2d.velocity.x));
 
 		if (isPatrol)
 			Patrol();
@@ -138,7 +139,7 @@ public class EnemyBehaviour : MonoBehaviour
 		#endregion
 	}
 
-	protected void FixedUpdate()
+	protected virtual void FixedUpdate()
 	{
 		physicMat.friction = stats.grounded ? .5f : 0f;
 
@@ -148,7 +149,7 @@ public class EnemyBehaviour : MonoBehaviour
 
 	protected void OnTriggerEnter2D(Collider2D collision)
 	{
-		if (collision.CompareTag("Ground"))
+		if (collision.CompareTag("Ground") && !stats.isFlyingEnemy)
 			isTouchingWall = true;
 	}
 
@@ -168,10 +169,7 @@ public class EnemyBehaviour : MonoBehaviour
     protected virtual void ChasePlayer() { }
     protected virtual void Attack() { }
 
-    protected void ResetAttack()
-	{
-		alreadyAttacked = false;
-	}
+    protected void ResetAttack() => alreadyAttacked = false;
     
 	protected void Flip()
 	{

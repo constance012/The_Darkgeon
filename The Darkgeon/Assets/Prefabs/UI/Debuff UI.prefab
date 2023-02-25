@@ -227,3 +227,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   header: 
   content: 
+  popupDelay: 0

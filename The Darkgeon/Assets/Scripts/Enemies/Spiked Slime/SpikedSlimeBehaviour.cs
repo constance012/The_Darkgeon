@@ -73,14 +73,9 @@ public class SpikedSlimeBehaviour : EnemyBehaviour
 		if (atkAnimDone)
 		{
 			if (yDistance >= 2f && switchDirDelay <= 0f)
-			{
-				chaseDirection = Mathf.Sign(player.transform.position.x - centerPoint.position.x) * 1.5f;
 				switchDirDelay = 1f;
-			}
 
-			else if (yDistance < 2f)
-				chaseDirection = Mathf.Sign(player.transform.position.x - centerPoint.position.x) * 1.5f;
-
+			chaseDirection = Mathf.Sign(player.transform.position.x - centerPoint.position.x) * 1.5f;
 			rb2d.velocity = new Vector2(walkSpeed * chaseDirection * Time.fixedDeltaTime, rb2d.velocity.y);
 		}
 
@@ -104,7 +99,7 @@ public class SpikedSlimeBehaviour : EnemyBehaviour
 		if (!alreadyAttacked)
 		{
 			// Make sure the enemy doesn't move.
-			rb2d.velocity = Vector3.zero;
+			rb2d.velocity = Vector2.zero;
 
 			animator.SetTrigger("Atk");
 

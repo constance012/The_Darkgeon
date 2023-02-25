@@ -23,6 +23,8 @@ public class PlayerMovement : MonoBehaviour
 	bool crouch = false;
 	bool dash = false;
 
+	public static bool ceaseKeyboardInput { get; set; }
+
 	private void Awake()
 	{
 		controller = GetComponent<CharacterController2D>();
@@ -33,7 +35,7 @@ public class PlayerMovement : MonoBehaviour
 	// Update is called once per frame
 	private void Update()
 	{
-		if (CharacterController2D.m_IsDashing || PlayerActions.ceaseKeyboardInput)
+		if (CharacterController2D.m_IsDashing || ceaseKeyboardInput)
 		{
 			horizontalMove = 0f;
 			return;
@@ -69,7 +71,7 @@ public class PlayerMovement : MonoBehaviour
 
 	private void FixedUpdate()
 	{
-		controller.Move(horizontalMove * Time.fixedDeltaTime, crouch, ref jump, ref dash);
+		controller.Move(horizontalMove, crouch, ref jump, ref dash);
 	}
 
 	public void OnLanding()

@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using TMPro;
+using System.Threading;
 
 /// <summary>
 /// A core manager for the current game's session.
@@ -11,6 +12,7 @@ public class GameManager : MonoBehaviour
 	[Space]
 
 	[SerializeField] private Animator playerAnim;
+	[SerializeField] private Rigidbody2D rb2d;
 	[SerializeField] private PlayerStats playerStats;
 
 	[SerializeField] private PlayerMovement moveScript;
@@ -20,6 +22,7 @@ public class GameManager : MonoBehaviour
 	[Space]
 	[SerializeField] private TextMeshProUGUI deathMessageText;
 	[SerializeField] private TextMeshProUGUI killSourceText;
+	[SerializeField] private TextMeshProUGUI countdownText;
 
 	[SerializeField] private GameObject deathPanel;
 	[SerializeField] private GameObject pauseMenu;
@@ -33,22 +36,28 @@ public class GameManager : MonoBehaviour
 													"YOUR FACE WAS RIPPED OFF", "YOUR BODY WAS EVISCERATED", 
 													"THEY SPLIT YOU IN TWO", "YOUR FATE WAS SHATTERED" };
 
+	[Header("Fields")]
+	[Space]
+	public float m_RespawnTimer;
+	private float respawnTimer;
 
 	private void Awake()
 	{
 		playerAnim = GameObject.FindWithTag("Player").GetComponent<Animator>();
 		playerStats = playerAnim.GetComponent<PlayerStats>();
+		rb2d = playerAnim.GetComponent<Rigidbody2D>();
 
 		moveScript = playerAnim.GetComponent<PlayerMovement>();
 		actionsScript = playerAnim.GetComponent<PlayerActions>();
 
-		deathPanel = GameObject.Find("Death Message");
+		deathPanel = GameObject.FindWithTag("UI Canvas").transform.Find("Death Message").gameObject;
 		deathMessageText = deathPanel.transform.Find("Message").GetComponent<TextMeshProUGUI>();
 		killSourceText = deathPanel.transform.Find("Kill Source").GetComponent<TextMeshProUGUI>();
+		countdownText = deathPanel.transform.Find("Countdown").GetComponent<TextMeshProUGUI>();
 
-		pauseMenu = GameObject.Find("Pause Menu");
-		playerUI = GameObject.Find("Player UI");
-		inventory = GameObject.Find("Inventory Canvas");
+		pauseMenu = GameObject.FindWithTag("UI Canvas").transform.Find("Pause Menu").gameObject;
+		playerUI = GameObject.FindWithTag("UI Canvas").transform.Find("Player UI").gameObject;
+		inventory = GameObject.FindWithTag("Inventory Canvas");
 	}
 
 	private void Start()
@@ -58,6 +67,7 @@ public class GameManager : MonoBehaviour
 		inventory.SetActive(false);
 
 		playerUI.SetActive(true);
+		respawnTimer = m_RespawnTimer;
 	}
 
 	private void Update()
@@ -82,8 +92,21 @@ public class GameManager : MonoBehaviour
 		}
 
 		// If the player is death and grounded, then disable the physics simulation.
-		if (isPlayerDeath && playerAnim.GetBool("Grounded"))
-			playerStats.GetComponent<Rigidbody2D>().simulated = false;
+		if (isPlayerDeath)
+		{
+			respawnTimer -= Time.deltaTime;
+
+			if (playerAnim.GetBool("Grounded") && !rb2d.simulated)
+				rb2d.simulated = false;
+
+			countdownText.text = respawnTimer.ToString("0");
+
+			if (respawnTimer <= 0f)
+			{
+				Respawn();
+				respawnTimer = m_RespawnTimer;
+			}
+		}
 	}
 
 	#region Player States
@@ -94,7 +117,7 @@ public class GameManager : MonoBehaviour
 		playerStats.hpBar.SetMaxHealth(playerStats.maxHP);
 
 		moveScript.enabled = actionsScript.enabled = true;
-		playerStats.GetComponent<Rigidbody2D>().simulated = true;
+		rb2d.simulated = true;
 
 		playerAnim.SetTrigger("Respawn");
 		playerAnim.SetBool("IsDeath", false);

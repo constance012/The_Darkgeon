@@ -7,6 +7,9 @@ TagManager:
   - Ladder
   - Platform
   - Ground
+  - Inventory Canvas
+  - UI Canvas
+  - World Canvas
   layers:
   - Default
   - TransparentFX

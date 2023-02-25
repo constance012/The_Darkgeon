@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -13,9 +14,11 @@ public class Inventory : MonoBehaviour
 	[Header("Items List")]
 	[Space]
 	public List<Item> items = new List<Item>();
+	public int coins = 0;
 	public int space = 20;
 
 	private InventorySlot[] slots;
+	private CoinSlot coinSlot;
 	private Image outsideZone;
 
 	private void OnEnable()
@@ -44,6 +47,7 @@ public class Inventory : MonoBehaviour
 		}
 
 		slots = transform.Find("Slots").GetComponentsInChildren<InventorySlot>();
+		coinSlot = transform.Find("Coin Slot").GetComponent<CoinSlot>();
 		outsideZone = transform.root.Find("Outside Zone").GetComponent<Image>();
 	}
 
@@ -59,6 +63,13 @@ public class Inventory : MonoBehaviour
 
 	public bool Add(Item target, bool forcedSplit = false)
 	{
+		if (target.itemName.Equals("Coin"))
+		{
+			coins += target.quantity;
+			coinSlot.AddCoin(coins);
+			return true;
+		}
+		
 		if (items.Count >= space)
 		{
 			Debug.Log("Inventory Full.");

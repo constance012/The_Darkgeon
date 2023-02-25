@@ -128,12 +128,11 @@ public class PlayerStats : MonoBehaviour
 		}
 	}
 
-	public bool IsCriticalStrike()
-	{
-		float rand = Random.Range(0, 101);
-
-		return rand <= criticalChance;
-	}
+	/// <summary>
+	/// Decide whether or not this attack is a critical hit.
+	/// </summary>
+	/// <returns></returns>
+	public bool IsCriticalStrike() => Random.Range(0f, 100f) <= criticalChance;
 	
 	private void Regenerate()
 	{
