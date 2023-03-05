@@ -15052,13 +15052,13 @@ MonoBehaviour:
   currentHP: 0
   criticalChance: 20
   criticalDamage: 50
+  knockBackVal: 5
   armor: 5
   damageRecFactor: 0.5
   knockBackRes: 0.2
-  m_InvincibilityTime: 0.5
+  m_InvincibilityTime: 0.67
   timeBeforeRegen: 5
   lastDamagedTime: 0
-  knockBackVal: 15
   killSource: 0
   respawnPos: {x: 0, y: 0, z: 0}
   attacker: {fileID: 0}

@@ -17,7 +17,6 @@ public class SpikedSlimeBehaviour : EnemyBehaviour
 	[SerializeField] private ParticleSystem abilityFx;
 
 	public float abilityDuration;
-
 	[HideInInspector] public bool atkAnimDone = true;
 
 	protected override void Awake()

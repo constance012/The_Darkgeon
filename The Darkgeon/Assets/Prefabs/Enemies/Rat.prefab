@@ -192,8 +192,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ea0294bc2146c3c45a9f32c0a3f37c18, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  droppedItemPrefab: {fileID: 0}
-  loots: []
+  droppedItemPrefab: {fileID: 6994718978722962414, guid: 2c248f9dcbada824d9027a98c85012db, type: 3}
+  loots:
+  - loot: {fileID: 11400000, guid: 58f8c5aac4c879247a788b2917bdde98, type: 2}
+    quantity: 30
+    dropChance: 100
+    isGuaranteed: 1
   hpBar: {fileID: 0}
   dmgTextPos: {fileID: 0}
   worldCanvas: {fileID: 0}
@@ -214,9 +218,9 @@ MonoBehaviour:
   maxHealth: 75
   atkDamage: 10
   contactDamage: 10
+  knockBackVal: 2.5
   currentHP: 0
   armor: 3
-  knockBackVal: 2
   armorReduceFactor: 0.5
   knockBackRes: 0.1
   timeToDissolve: 3
@@ -253,9 +257,8 @@ MonoBehaviour:
   m_SpottingTimer: 0.5
   m_AbandonTimer: 10
   timeBetweenAtk: 1
-  facingRight: 1
-  bleeding: {fileID: 11400000, guid: 75078578676d2874a94ad00863c083c6, type: 2}
-  slowness: {fileID: 11400000, guid: 936afb31ce3c82e4f857da90a529df44, type: 2}
+  bleeding: {fileID: 11400000, guid: eaf178f04c9f9d041868043b3711d82d, type: 2}
+  slowness: {fileID: 11400000, guid: 9398fc4cf6458ad4989ec1850e8d14ae, type: 2}
   atkAnimDone: 1
 --- !u!1 &1906861128848420086
 GameObject:

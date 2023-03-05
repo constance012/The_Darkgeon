@@ -28,6 +28,7 @@ public class Interactable : MonoBehaviour
 
 	protected virtual void Update()
 	{
+		//Debug.Log("Base Update");
 		float distance = Vector2.Distance(player.position, transform.position);
 
 		if (distance <= radius)

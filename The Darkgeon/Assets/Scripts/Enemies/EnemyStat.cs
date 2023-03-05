@@ -10,15 +10,6 @@ using UnityEngine;
 /// </summary>
 public class EnemyStat : MonoBehaviour
 {
-	[Serializable]
-	public struct DeathLoot
-	{
-		public Item loot;
-		public int quantity;
-		[Range(.001f, 100f)] public float dropChance;
-		public bool isGuaranteed;
-	}
-
 	[Header("Death Loots")]
 	[Space]
 	[SerializeField] private GameObject droppedItemPrefab;
@@ -56,12 +47,12 @@ public class EnemyStat : MonoBehaviour
 	public int maxHealth = 50;
 	public float atkDamage = 15f;
 	public float contactDamage = 5f;
+	public float knockBackVal = 2f;
 	[HideInInspector] public int currentHP;
 
 	[Header("Defensive")]
 	[Space]
 	public int armor = 0;
-	public float knockBackVal = 2f;
 	public float armorReduceFactor = .5f;
 	[Range(0f, 1f)] public float knockBackRes = .2f;
 
@@ -112,16 +103,13 @@ public class EnemyStat : MonoBehaviour
 		if (canDissolve && Time.time > timeToDissolve)
 			Dissolve();
 
-		if (isDeath && grounded && !isFlyingEnemy)
+		if (isDeath && grounded)
 			rb2d.simulated = false;
 	}
 
 	// Check if the enemy is grounded. Ignore for flying enemies.
 	private void FixedUpdate()
 	{
-		if (isFlyingEnemy)
-			return;
-
 		grounded = false;
 
 		Collider2D[] colliders = Physics2D.OverlapCircleAll(groundCheck.position, .1f, whatIsGround);
@@ -153,8 +141,7 @@ public class EnemyStat : MonoBehaviour
 			textColor = isCrit ? new Color(1f, .5f, 0f) : new Color(1f, .84f, .2f);
 			DamageText.Generate(dmgTextPrefab, dmgTextPos.position, textColor, isCrit, finalDmg.ToString());
 
-			if (!isFlyingEnemy)
-				StartCoroutine(BeingKnockedBack(knockBackVal));
+			StartCoroutine(BeingKnockedBack(knockBackVal));
 		}
 	}
 
@@ -243,9 +230,12 @@ public class EnemyStat : MonoBehaviour
 		rb2d.velocity = Vector3.zero;
 		behaviour.enabled = false;
 
-		float knockbackDir = Mathf.Sign(centerPoint.position.x - player.transform.position.x);  // The direction of the knock back.
-		knockBackValue = knockBackValue * (1f - knockBackRes) * knockbackDir;  // Calculate the actual knock back value.
-		rb2d.velocity = new Vector2(knockBackValue, 0f);
+		// The direction of the knock back.
+		Vector2 knockbackDir = isFlyingEnemy ? transform.position - player.transform.position 
+											: centerPoint.position - player.transform.position;
+		float knockBackForce = knockBackValue * (1f - knockBackRes);  // Calculate the actual knock back value.
+
+		rb2d.AddForce(knockBackForce * knockbackDir.normalized, ForceMode2D.Impulse);
 
 		yield return new WaitForSeconds(.15f);
 
@@ -275,4 +265,13 @@ public class EnemyStat : MonoBehaviour
 				break;
 		}
 	}
+}
+
+[Serializable]
+public struct DeathLoot
+{
+	public Item loot;
+	public int quantity;
+	[Range(.001f, 100f)] public float dropChance;
+	public bool isGuaranteed;
 }

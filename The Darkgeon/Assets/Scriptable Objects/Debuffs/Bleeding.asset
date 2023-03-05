@@ -9,10 +9,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1571d8cb19cd2fa458d08f8606c3d048, type: 3}
+  m_Script: {fileID: 11500000, guid: 32bc9dbda4680024abae4beba4edb7a0, type: 3}
   m_Name: Bleeding
   m_EditorClassIdentifier: 
-  name: Bleeding
+  debuffName: Bleeding
   description: Losing health if moving, can't regenerate out of combat.
   duration: 10
   icon: {fileID: 21300000, guid: 11d2145e6966f584da33ca2e784eb37b, type: 3}
@@ -21,5 +21,3 @@ MonoBehaviour:
   baseHpLossDelay: 1
   hpLossDelay: 1
   allowRegenerate: 0
-  speedReduceFactor: 0
-  isSpeedReduced: 0

@@ -24,12 +24,43 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3064479190625559178}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.02, y: 0.096, z: 0}
+  m_LocalPosition: {x: -0.02, y: 0.113, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 6531788301741081879}
-  m_RootOrder: 2
+  m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &5168856598737142856
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8570685712063521238}
+  m_Layer: 8
+  m_Name: Ground Check
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8570685712063521238
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5168856598737142856}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.011, y: -0.064, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 6531788301741081879}
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &6500666222207353859
 GameObject:
@@ -354,6 +385,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 6500666222299995900}
+  - {fileID: 8570685712063521238}
   - {fileID: 587448613451582861}
   - {fileID: 9208604744168099808}
   - {fileID: 2142578569371439127}
@@ -509,14 +541,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ea0294bc2146c3c45a9f32c0a3f37c18, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  droppedItemPrefab: {fileID: 0}
-  loots: []
+  droppedItemPrefab: {fileID: 6994718978722962414, guid: 2c248f9dcbada824d9027a98c85012db, type: 3}
+  loots:
+  - loot: {fileID: 11400000, guid: 58f8c5aac4c879247a788b2917bdde98, type: 2}
+    quantity: 30
+    dropChance: 100
+    isGuaranteed: 1
   hpBar: {fileID: 0}
   dmgTextPos: {fileID: 0}
   worldCanvas: {fileID: 0}
   player: {fileID: 0}
   centerPoint: {fileID: 0}
-  groundCheck: {fileID: 0}
+  groundCheck: {fileID: 8570685712063521238}
   whatIsGround:
     serializedVersion: 2
     m_Bits: 64
@@ -528,14 +564,14 @@ MonoBehaviour:
   behaviour: {fileID: 0}
   enemyName: Bat
   isFlyingEnemy: 1
-  maxHealth: 75
-  atkDamage: 10
-  contactDamage: 10
+  maxHealth: 40
+  atkDamage: 8
+  contactDamage: 8
+  knockBackVal: 2.5
   currentHP: 0
   armor: 3
-  knockBackVal: 2
   armorReduceFactor: 0.5
-  knockBackRes: 0.1
+  knockBackRes: 0.05
   timeToDissolve: 3
   grounded: 0
 --- !u!114 &8214373102548806427
@@ -572,6 +608,7 @@ MonoBehaviour:
   timeBetweenAtk: 1.2
   seeker: {fileID: 0}
   nextWaypointDist: 0.35
+  bleeding: {fileID: 11400000, guid: eaf178f04c9f9d041868043b3711d82d, type: 2}
 --- !u!1 &8007562953375633420
 GameObject:
   m_ObjectHideFlags: 0
@@ -603,7 +640,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 6531788301741081879}
-  m_RootOrder: 3
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: -90, y: 0, z: 0}
 --- !u!198 &155872242063359955
 ParticleSystem:
@@ -5467,10 +5504,10 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8384458651130970907}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.009, y: -0.11, z: 0}
+  m_LocalPosition: {x: -0.009, y: -0.13, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 6531788301741081879}
-  m_RootOrder: 1
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

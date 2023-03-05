@@ -37,6 +37,7 @@ public class PlayerStats : MonoBehaviour
 	/// The bonus damage for crtical hit, in percentage.
 	/// </summary>
 	public float criticalDamage;
+	public float knockBackVal;
 
 	[Header("Defensive")]
 	[Space]
@@ -51,7 +52,6 @@ public class PlayerStats : MonoBehaviour
 	private float invincibilityTime = .5f;
 
 	[HideInInspector] public float lastDamagedTime = 0f;
-	[HideInInspector] public float knockBackVal = 1.5f;
 	[HideInInspector] public KillSources killSource = KillSources.Unknown;
 	[HideInInspector] public Vector3 respawnPos;
 	[HideInInspector] public Transform attacker = null;  // Position of the attacker.
@@ -84,6 +84,9 @@ public class PlayerStats : MonoBehaviour
 
 	private void Update()
 	{
+		if (invincibilityTime < 0f && Physics2D.GetIgnoreLayerCollision(3, 8))
+			Physics2D.IgnoreLayerCollision(3, 8, false);
+
 		if (invincibilityTime > 0f)
 			invincibilityTime -= Time.deltaTime;
 
@@ -109,6 +112,7 @@ public class PlayerStats : MonoBehaviour
 			DamageText.Generate(dmgTextPrefab, dmgTextLoc.position, finalDmg.ToString());
 
 			StartCoroutine(BeingKnockedBack(knockBackVal));
+			Physics2D.IgnoreLayerCollision(3, 8, true);
 			
 			lastDamagedTime = Time.time;
 			invincibilityTime = m_InvincibilityTime;
@@ -156,9 +160,10 @@ public class PlayerStats : MonoBehaviour
 			rb2d.velocity = Vector3.zero;
 			transform.GetComponent<PlayerMovement>().enabled = false;
 
-			float knockbackDir = Mathf.Sign(transform.position.x - attacker.position.x);  // The direction of the knock back.
-			Vector2 knockbackForce = new Vector2(knockBackValue * (1f - knockBackRes) * knockbackDir, 1f);  // Calculate the actual knock back value.
-			rb2d.AddForce(knockbackForce, ForceMode2D.Impulse);
+			Vector2 knockbackDir = transform.position - attacker.position;  // The direction of the knock back.
+			float knockbackForce = knockBackValue * (1f - knockBackRes);  // Calculate the actual knock back value.
+			
+			rb2d.AddForce(knockbackForce * knockbackDir.normalized, ForceMode2D.Impulse);
 
 			yield return new WaitForSeconds(.3f);
 

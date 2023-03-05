@@ -16,7 +16,6 @@ public class DebuffManager : MonoBehaviour
 	[Header("Player")]
 	[Space]
 	[SerializeField] private PlayerStats player;
-	[SerializeField] private CharacterController2D controller;
 	[SerializeField] private Animator playerAnim;
 
 	[Header("UIs")]
@@ -26,8 +25,6 @@ public class DebuffManager : MonoBehaviour
 
 	// Private fields.
 	private List<Debuff> debuffList = new List<Debuff>();
-	private Debuff currentDebuff;
-	private ParticleSystem currentEffect;
 
 	private delegate void DebuffDelegate();
 
@@ -38,7 +35,6 @@ public class DebuffManager : MonoBehaviour
 	private void Awake()
 	{
 		player = GameObject.FindWithTag("Player").GetComponent<PlayerStats>();
-		controller = player.GetComponent<CharacterController2D>();
 		playerAnim = player.GetComponent<Animator>();
 		debuffPanel = GameObject.Find("Debuff Panel").transform;
 	}
@@ -51,12 +47,6 @@ public class DebuffManager : MonoBehaviour
 			playerAnim.SetTrigger("TakingDamage");
 			deathByDebuff = true;
 			return;
-		}
-
-		if (debuffList.Count == 0)
-		{
-			currentDebuff = null;
-			currentEffect = null;
 		}
 
 		// Invoke the debuff handler if not null.
@@ -72,53 +62,42 @@ public class DebuffManager : MonoBehaviour
 	public void ApplyDebuff(Debuff target)
 	{
 		// If the debuff hasn't been apllied yet.
-		if (debuffPanel.Find(target.name) == null)
+		if (debuffPanel.Find(target.debuffName) == null)
 		{
 			debuffList.Add(target);
 
-			// Get the corresponding private and non-static method using reflection.
-			MethodInfo methodName = this.GetType().GetMethod(target.name, BindingFlags.NonPublic | BindingFlags.Instance);
-
-			// Create a delegate holding that private and non-static method.
-			DebuffDelegate debuffMethod = (DebuffDelegate)Delegate.CreateDelegate(typeof(DebuffDelegate), this, methodName);
-
-			ManageHandler(debuffMethod, DebuffManageAction.Add);
-
+			ManageHandler(target.TakeEffect, DebuffManageAction.Add);
 
 			GameObject debuffUIObj = Instantiate(debuffUIPrefab, debuffPanel);
 
-			debuffUIObj.name = target.name;
+			debuffUIObj.name = target.debuffName;
 			debuffUIObj.GetComponent<Image>().sprite = target.icon;
 			debuffUIObj.transform.Find("Duration").GetComponent<TextMeshProUGUI>().text = target.duration.ToString();
 
 			TooltipTrigger tooltip = debuffUIObj.GetComponent<TooltipTrigger>();
-			tooltip.header = target.name;
+			tooltip.header = target.debuffName;
 			tooltip.content = target.description;
 		}
 
 		// Otherwise, reset its duration if the current duration is less than the target's.
 		else
 		{
-			Debuff existingDebuff = debuffList.Find(debuff => debuff.name.Equals(target.name));
+			Debuff existingDebuff = GetDebuff(target.name.ToLower());
 			
 			if (existingDebuff.duration < target.duration)
 				existingDebuff.duration = target.duration;
 		}
 	}
 
-	private void RemoveDebuff(Debuff target)
+	public void RemoveDebuff(Debuff target)
 	{
 		// Remove debuff from the list.
 		debuffList.Remove(target);
 
-		// Remove its method from the handler.
-		MethodInfo methodName = this.GetType().GetMethod(target.name, BindingFlags.NonPublic | BindingFlags.Instance);
-		DebuffDelegate debuffMethod = (DebuffDelegate)Delegate.CreateDelegate(typeof(DebuffDelegate), this, methodName);
-
-		ManageHandler(debuffMethod, DebuffManageAction.Remove);
+		ManageHandler(target.TakeEffect, DebuffManageAction.Remove);
 
 		// Hide the tooltip and destroy the UI Game Object.
-		Transform targetUI = debuffPanel.Find(target.name);
+		Transform targetUI = debuffPanel.Find(target.debuffName);
 		
 		targetUI.GetComponent<TooltipTrigger>().OnMouseExit();
 		Destroy(targetUI.gameObject);
@@ -142,106 +121,6 @@ public class DebuffManager : MonoBehaviour
 
 		else
 			handler -= method;
-	}
-	#endregion
-
-	#region Debuff Types Method
-	private void Bleeding()
-	{
-		
-		currentDebuff = GetDebuff("bleeding");
-		
-		// Clone the particle system if the player doesn't contain its game object already and play it once.
-		if (currentDebuff.visualEffect != null && player.transform.Find(currentDebuff.visualEffect.name + "(Clone)") == null)
-		{
-			currentEffect = Instantiate(currentDebuff.visualEffect, player.transform).GetComponent<ParticleSystem>();
-			currentEffect.Play();
-		}
-
-		currentDebuff.duration -= Time.deltaTime;
-		currentDebuff.hpLossDelay -= Time.deltaTime;
-
-		if (currentDebuff.duration <= 0f || player.currentHP <= 0)
-		{
-			Destroy(currentEffect.gameObject);
-			RemoveDebuff(currentDebuff);
-			player.canRegen = true;
-			return;
-		}
-
-		player.canRegen = currentDebuff.allowRegenerate;
-
-		// If the player moves, she'll lose health.
-		if (playerAnim.GetFloat("Speed") > .01f && player.currentHP > 0 && currentDebuff.hpLossDelay <= 0f)
-		{
-			player.currentHP -= currentDebuff.healthLossRate;
-			player.currentHP = Mathf.Clamp(player.currentHP, 0, player.maxHP);
-
-			player.hpBar.SetCurrentHealth(player.currentHP);
-
-			DamageText.Generate(player.dmgTextPrefab, player.dmgTextLoc.position, currentDebuff.healthLossRate.ToString());
-
-			currentDebuff.hpLossDelay = currentDebuff.baseHpLossDelay;
-		}
-
-		// Update the UI.
-		debuffPanel.Find(currentDebuff.name + "/Duration").GetComponent<TextMeshProUGUI>().text = currentDebuff.duration.ToString("0");
-	}
-
-	private void Poisoned()
-	{
-		currentDebuff = GetDebuff("poisoned");
-
-		currentDebuff.duration -= Time.deltaTime;
-		currentDebuff.hpLossDelay -= Time.deltaTime;
-
-		if (currentDebuff.duration <= 0f || player.currentHP <= 0)
-		{
-			RemoveDebuff(currentDebuff);
-			player.canRegen = true;
-			return;
-		}
-
-		player.canRegen = currentDebuff.allowRegenerate;
-
-		// The player loses health over time.
-		if (player.currentHP > 0 && currentDebuff.hpLossDelay <= 0f)
-		{
-			player.currentHP -= currentDebuff.healthLossRate;
-			player.currentHP = Mathf.Clamp(player.currentHP, 0, player.maxHP);
-
-			player.hpBar.SetCurrentHealth(player.currentHP);
-
-			DamageText.Generate(player.dmgTextPrefab, player.dmgTextLoc.position, currentDebuff.healthLossRate.ToString());
-
-			currentDebuff.hpLossDelay = currentDebuff.baseHpLossDelay;
-		}
-		// Update the UI.
-		debuffPanel.Find(currentDebuff.name + "/Duration").GetComponent<TextMeshProUGUI>().text = currentDebuff.duration.ToString("0");
-	}
-
-	private void Slowness()
-	{
-		currentDebuff = GetDebuff("slowness");
-
-		currentDebuff.duration -= Time.deltaTime;
-		
-		if (currentDebuff.duration <= 0f || player.currentHP <= 0)
-		{
-			RemoveDebuff(currentDebuff);
-			controller.m_MoveSpeed *= 1 / (1 - currentDebuff.speedReduceFactor);  // Reverse the speed nerf.
-			return;
-		}
-
-		// The player's movement speed is reduced.
-		if (!currentDebuff.isSpeedReduced)
-		{
-			controller.m_MoveSpeed *= (1 - currentDebuff.speedReduceFactor);
-			currentDebuff.isSpeedReduced = true;
-		}
-
-		// Update the UI.
-		debuffPanel.Find(currentDebuff.name + "/Duration").GetComponent<TextMeshProUGUI>().text = currentDebuff.duration.ToString("0");
 	}
 	#endregion
 }

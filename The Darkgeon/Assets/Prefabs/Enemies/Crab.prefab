@@ -193,8 +193,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ea0294bc2146c3c45a9f32c0a3f37c18, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  droppedItemPrefab: {fileID: 0}
-  loots: []
+  droppedItemPrefab: {fileID: 6994718978722962414, guid: 2c248f9dcbada824d9027a98c85012db, type: 3}
+  loots:
+  - loot: {fileID: 11400000, guid: 58f8c5aac4c879247a788b2917bdde98, type: 2}
+    quantity: 80
+    dropChance: 100
+    isGuaranteed: 1
   hpBar: {fileID: 0}
   dmgTextPos: {fileID: 0}
   worldCanvas: {fileID: 0}
@@ -215,9 +219,9 @@ MonoBehaviour:
   maxHealth: 150
   atkDamage: 15
   contactDamage: 9
+  knockBackVal: 5
   currentHP: 0
   armor: 10
-  knockBackVal: 1.5
   armorReduceFactor: 0.5
   knockBackRes: 0.4
   timeToDissolve: 3
@@ -254,7 +258,6 @@ MonoBehaviour:
   m_SpottingTimer: 3
   m_AbandonTimer: 8
   timeBetweenAtk: 1.5
-  facingRight: 1
   attackPoint: {fileID: 4619837858754419681}
   abilityDuration: 10
 --- !u!1 &1906861128848420086

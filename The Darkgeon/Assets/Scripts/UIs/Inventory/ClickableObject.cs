@@ -224,6 +224,9 @@ public class ClickableObject : MonoBehaviour, IPointerClickHandler, IPointerDown
 
 			Destroy(clone);
 		}
+
+		Inventory.instance.onItemChanged?.Invoke();
+		ChestStorage.instance.onItemChanged?.Invoke();
 	}
 
 	private void BeginDragItem()
@@ -300,7 +303,7 @@ public class ClickableObject : MonoBehaviour, IPointerClickHandler, IPointerDown
 		}
 
 		// Can only split at 1 slot or the item is existing.
-		if (sender != this)
+		if (sender != this || dragItem.quantity == 0)
 			return;
 
 		Item holdItem = clone.GetComponent<ClickableObject>().dragItem;
@@ -374,7 +377,7 @@ public class ClickableObject : MonoBehaviour, IPointerClickHandler, IPointerDown
 		}
 
 		// Can only split at 1 slot or the item is existing.
-		if (sender != this)
+		if (sender != this || dragItem.quantity == 0)
 			return;
 
 		Item holdItem = clone.GetComponent<ClickableObject>().dragItem;

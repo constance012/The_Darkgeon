@@ -197,7 +197,7 @@ MonoBehaviour:
   droppedItemPrefab: {fileID: 6994718978722962414, guid: 2c248f9dcbada824d9027a98c85012db, type: 3}
   loots:
   - loot: {fileID: 11400000, guid: 58f8c5aac4c879247a788b2917bdde98, type: 2}
-    quantity: 30
+    quantity: 50
     dropChance: 100
     isGuaranteed: 1
   - loot: {fileID: 11400000, guid: 6c8ac6b5c48eb1d40baee656e2148f50, type: 2}
@@ -228,9 +228,9 @@ MonoBehaviour:
   maxHealth: 100
   atkDamage: 15
   contactDamage: 12
+  knockBackVal: 4
   currentHP: 0
-  armor: 4
-  knockBackVal: 2
+  armor: 5
   armorReduceFactor: 0.5
   knockBackRes: 0.25
   timeToDissolve: 3
@@ -267,8 +267,7 @@ MonoBehaviour:
   m_SpottingTimer: 1
   m_AbandonTimer: 10
   timeBetweenAtk: 1.7
-  facingRight: 1
-  poisoned: {fileID: 11400000, guid: c5c7cf665beabeb4e8679c8bc049f9fd, type: 2}
+  poisoned: {fileID: 11400000, guid: 84e3734e525198b4699910788acfb4c6, type: 2}
   abilityFx: {fileID: 0}
   abilityDuration: 10
   atkAnimDone: 1

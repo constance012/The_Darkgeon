@@ -143,13 +143,8 @@ public class CharacterController2D : MonoBehaviour
 				}
 			}
 
-
 			// If the input is moving the player right and the player is facing left...
-			if (moveInput > 0 && !m_FacingRight)
-				Flip();
-
-			// Otherwise if the input is moving the player left and the player is facing right...
-			else if (moveInput < 0 && m_FacingRight)
+			if ((moveInput > 0 && !m_FacingRight) || (moveInput < 0 && m_FacingRight))
 				Flip();
 
 
@@ -197,9 +192,11 @@ public class CharacterController2D : MonoBehaviour
 		}
 
 		// If the player should dash.
-		if (dash && !onSlope)
+		if (dash)
 		{
-			StartCoroutine(Dash());
+			if (!onSlope)
+				StartCoroutine(Dash());
+
 			dash = false;
 		}
 
@@ -342,7 +339,7 @@ public class CharacterController2D : MonoBehaviour
 
 		m_TrailRenderer.emitting = true;
 
-		m_Rigidbody2D.velocity = new Vector2(Mathf.Sign(transform.rotation.y) * m_DashForce, 0f);
+		m_Rigidbody2D.AddForce(Mathf.Sign(transform.rotation.y) * m_DashForce * Vector2.right, ForceMode2D.Impulse);
 
 		yield return new WaitForSeconds(m_DashingTime);
 

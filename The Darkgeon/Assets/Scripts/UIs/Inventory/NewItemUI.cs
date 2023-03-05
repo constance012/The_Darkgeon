@@ -13,7 +13,6 @@ public class NewItemUI : MonoBehaviour
 	private TextMeshProUGUI displayText;
 
 	private float disappearSpeed = 50f;
-	private float smoothVel;
 
 	private void Awake()
 	{
@@ -57,7 +56,7 @@ public class NewItemUI : MonoBehaviour
 
 	public static NewItemUI Generate(GameObject samplePrefab, Item target)
 	{
-		Transform parentPanel = GameObject.Find("UI Canvas").transform.Find("New Items Panel");
+		Transform parentPanel = GameObject.FindWithTag("UI Canvas").transform.Find("New Items Panel");
 		
 		// Toggle the title animation.
 		GameObject title = parentPanel.Find("Title").gameObject;

@@ -1,6 +1,7 @@
+using System;
 using System.Collections.Generic;
-using TMPro;
 using UnityEngine;
+using TMPro;
 
 public class Chest : Interactable
 {
@@ -8,6 +9,9 @@ public class Chest : Interactable
 	[Header("General Info")]
 	public ChestType type;
 	public float distanceBeforeClosed;
+
+	[Space]
+	[SerializeField] private List<DeathLoot> treasures = new List<DeathLoot>();
 
 	[Space]
 	// Special items list for each chest.
@@ -24,14 +28,16 @@ public class Chest : Interactable
 		animator = GetComponent<Animator>();
 		mat = GetComponentInChildren<SpriteRenderer>().material;
 
+		InitializeTreasures();
 		// Use this to check if the chest is opened or not. True if the chest is closed.
 		hasInteracted = true;
 	}
 
 	// Use this Update instead of the parent's one.
-	private new void Update()
+	protected override void Update()
 	{
 		Vector2 worldMousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+
 		float interactDistance = Vector2.Distance(worldMousePos, transform.position);
 		float forcedCloseDistance = Vector2.Distance(player.position, transform.position);
 
@@ -93,6 +99,7 @@ public class Chest : Interactable
 		{
 			animator.SetTrigger("Open");
 			
+			// Activate the Inventory canvas if it hasn't already open yet.
 			if (!Inventory.instance.transform.parent.gameObject.activeInHierarchy)
 				Inventory.instance.transform.parent.gameObject.SetActive(true);
 
@@ -107,6 +114,31 @@ public class Chest : Interactable
 			ChestStorage.instance.openedChest = null;
 			ChestStorage.instance.gameObject.SetActive(false);
 		}
+	}
+
+	private void InitializeTreasures()
+	{
+		if (treasures.Count == 0)
+			return;
+
+		foreach (DeathLoot target in treasures)
+		{
+			Item item = Instantiate(target.loot);
+			item.quantity = target.quantity;
+			item.id = Guid.NewGuid().ToString();
+
+			if (target.isGuaranteed)
+			{
+				storedItem.Add(item);
+				continue;
+			}
+
+			float rand = UnityEngine.Random.Range(0f, 100f);
+			if (rand <= target.dropChance)
+				storedItem.Add(item);
+		}
+
+		treasures.Clear();
 	}
 }
 

@@ -44,14 +44,14 @@ public class PlayerActions : MonoBehaviour
 		}
 
 		// Check if there is enough time for the next combo to begin.
-		if (InputManager.instance.GetKeyDown(KeybindingActions.PrimaryAttack) && animator.GetBool("Grounded") && isComboDone)
+		if (InputManager.instance.GetKeyDown(KeybindingActions.PrimaryAttack) && !GameManager.isPause && isComboDone)
 			Attack();
 
 		// Facing the player in the direction of the mouse when certain conditions are matched.
-		if ((rb2d.velocity == Vector2.zero || canFaceTowardsCursor) && !GameManager.isPause)
+		if ((!animator.GetBool("IsRunning") || canFaceTowardsCursor) && !GameManager.isPause)
 		{
-			Vector2 aimingDir = Input.mousePosition - Camera.main.WorldToScreenPoint(transform.position);
-			float angle = Mathf.Abs(Mathf.Atan2(aimingDir.y, aimingDir.x) * Mathf.Rad2Deg);
+			Vector2 facingDir = Input.mousePosition - Camera.main.WorldToScreenPoint(transform.position);
+			float angle = Mathf.Abs(Mathf.Atan2(facingDir.y, facingDir.x) * Mathf.Rad2Deg);
 
 			if (angle <= 90 && !controller.m_FacingRight)
 				controller.Flip();
@@ -62,8 +62,14 @@ public class PlayerActions : MonoBehaviour
 	
 	private void Attack()
 	{
-		if (Time.time > comboDelay && !GameManager.isPause)
+		if (Time.time > comboDelay && !animator.GetBool("IsCrouching") && animator.GetBool("Grounded"))
 		{
+			// Facing the player in the aiming direction before attack.
+			Vector2 aimingDir = Input.mousePosition - Camera.main.WorldToScreenPoint(transform.position);
+
+			if ((aimingDir.x > 0f && !controller.m_FacingRight) || (aimingDir.x < 0f && controller.m_FacingRight))
+				controller.Flip();
+
 			comboDelay = m_ComboDelay;
 
 			animator.SetBool("IsAttacking", true);

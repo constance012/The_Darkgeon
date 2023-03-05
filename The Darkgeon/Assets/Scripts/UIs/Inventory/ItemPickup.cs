@@ -57,6 +57,8 @@ public class ItemPickup : Interactable
 			duplicatedLabel.text = quantity > 1 ? currentItem.itemName.ToUpper() + " x" + currentItem.quantity
 										: currentItem.itemName.ToUpper();
 			duplicatedLabel.color = currentItem.rarity.color;
+
+			clone.GetComponent<Animator>().SetTrigger("Restart");
 		}
 	}
 

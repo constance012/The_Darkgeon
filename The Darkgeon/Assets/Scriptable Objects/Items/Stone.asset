@@ -20,7 +20,7 @@ MonoBehaviour:
   rarity:
     title: Common
     color: {r: 0.7372549, g: 0.7372549, b: 0.7372549, a: 1}
-  stackable: 0
+  stackable: 1
   maxPerStack: 3
   quantity: 1
   isFavorite: 0

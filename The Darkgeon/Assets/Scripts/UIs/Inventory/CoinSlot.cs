@@ -20,6 +20,9 @@ public class CoinSlot : MonoBehaviour
 
 	public void AddCoin(int quantity)
 	{
+		if (tooltipTrigger == null)
+			return;
+
 		tooltipTrigger.content = "Quantity: " + quantity + "\n\nA currency used for trading with merchants and other purposes.";
 		quantityText.text = quantity.ToString();
 

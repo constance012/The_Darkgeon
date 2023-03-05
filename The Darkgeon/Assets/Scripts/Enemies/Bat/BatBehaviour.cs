@@ -9,8 +9,11 @@ public class BatBehaviour : EnemyBehaviour
 	[Header("Path Finding")]
 	[Space]
 	[SerializeField] private Seeker seeker;
-
 	public float nextWaypointDist = .35f;
+
+	[Header("Debuff")]
+	[Space]
+	[SerializeField] private Debuff bleeding;
 
 	// Private fields.
 	private Vector3 patrolCenterPoint;
@@ -72,6 +75,25 @@ public class BatBehaviour : EnemyBehaviour
 			currentWaypoint++;
 	}
 
+	private void OnCollisionStay2D(Collision2D collision)
+	{
+		if (collision.collider.CompareTag("Player"))
+		{
+			// Engage immediately if contacted with the player.
+			spottingTimer = 0f;
+			int inflictChance = Random.Range(1, 11);
+
+			// Deal contact damage if needed.
+			if (stats.contactDamage > 0f)
+			{
+				player.TakeDamage(stats.contactDamage, stats.knockBackVal, this.transform, KillSources.Bat);
+
+				if (inflictChance == 1)
+					FindObjectOfType<DebuffManager>().ApplyDebuff(Instantiate(bleeding));
+			}
+		}
+	}
+
 	protected override void Patrol()
 	{
 		randomNextTimer -= Time.deltaTime;
@@ -103,7 +125,6 @@ public class BatBehaviour : EnemyBehaviour
 
 			Vector2 aimingDir = player.transform.position - transform.position;
 			float angle = Mathf.Atan2(aimingDir.y, aimingDir.x) * Mathf.Rad2Deg;
-			Debug.Log(angle);
 			
 			if (!facingRight)
 			{

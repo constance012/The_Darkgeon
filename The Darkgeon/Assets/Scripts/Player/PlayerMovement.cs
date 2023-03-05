@@ -16,14 +16,15 @@ public class PlayerMovement : MonoBehaviour
 	[Header("Fields")]
 	[Space]
 
-	float horizontalMove;
-	float dashAllowTime = 0f;
+	private float horizontalMove;
+	private float dashAllowTime = 0f;
 
-	bool jump = false;
-	bool crouch = false;
-	bool dash = false;
+	private bool jump = false;
+	private bool crouch = false;
+	private bool dash = false;
 
-	public static bool ceaseKeyboardInput { get; set; }
+	public static bool canMove { get; set; }
+	public static bool isModifierKeysOccupied { get; set; }
 
 	private void Awake()
 	{
@@ -35,7 +36,7 @@ public class PlayerMovement : MonoBehaviour
 	// Update is called once per frame
 	private void Update()
 	{
-		if (CharacterController2D.m_IsDashing || ceaseKeyboardInput)
+		if (CharacterController2D.m_IsDashing || canMove)
 		{
 			horizontalMove = 0f;
 			return;
@@ -54,11 +55,11 @@ public class PlayerMovement : MonoBehaviour
 			animator.SetBool("IsJumping", true);
 		}
 
-		if (InputManager.instance.GetKeyDown(KeybindingActions.Dash) && Time.time > dashAllowTime && !controller.onSlope)
-		{
-			if (EventSystem.current.IsPointerOverGameObject())
-				return;
+		if (isModifierKeysOccupied)
+			return;
 
+		if (InputManager.instance.GetKeyDown(KeybindingActions.Dash) && Time.time > dashAllowTime)
+		{
 			dash = true;
 			dashAllowTime = Time.time + 1f;
 		}

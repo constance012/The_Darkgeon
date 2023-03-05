@@ -33,6 +33,9 @@ public class Inventory : MonoBehaviour
 			ChestStorage.instance.openedChest.Interact();
 			ChestStorage.instance.gameObject.SetActive(false);
 		}
+
+		PlayerActions.canAttack = true;
+		PlayerMovement.isModifierKeysOccupied = false;
 	}
 
 	private void Awake()
@@ -210,6 +213,8 @@ public class Inventory : MonoBehaviour
 
 	private void ReloadUI()
 	{
+		coinSlot.AddCoin(coins);
+
 		// Split the master list into 2 smaller lists.
 		List<Item> unindexedItems = items.FindAll(item => item.slotIndex == -1);
 		List<Item> indexedItems = items.FindAll(item => item.slotIndex != -1);
