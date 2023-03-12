@@ -193,8 +193,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   droppedItemPrefab: {fileID: 6994718978722962414, guid: 2c248f9dcbada824d9027a98c85012db, type: 3}
+  droppedCoinPrefab: {fileID: 3580224330702370156, guid: 8284806231246b443b91a626b4ecf4d8, type: 3}
   loots:
   - loot: {fileID: 11400000, guid: 58f8c5aac4c879247a788b2917bdde98, type: 2}
+    type: 1
     quantity: 30
     dropChance: 100
     isGuaranteed: 1

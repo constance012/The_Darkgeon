@@ -89,7 +89,7 @@ public class BatBehaviour : EnemyBehaviour
 				player.TakeDamage(stats.contactDamage, stats.knockBackVal, this.transform, KillSources.Bat);
 
 				if (inflictChance == 1)
-					FindObjectOfType<DebuffManager>().ApplyDebuff(Instantiate(bleeding));
+					DebuffManager.instance.ApplyDebuff(Instantiate(bleeding));
 			}
 		}
 	}

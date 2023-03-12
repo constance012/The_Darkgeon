@@ -42,7 +42,7 @@ public class PlayerActions : MonoBehaviour
 			Debug.Log("Can not attack.");
 			return;
 		}
-
+		
 		// Check if there is enough time for the next combo to begin.
 		if (InputManager.instance.GetKeyDown(KeybindingActions.PrimaryAttack) && !GameManager.isPause && isComboDone)
 			Attack();

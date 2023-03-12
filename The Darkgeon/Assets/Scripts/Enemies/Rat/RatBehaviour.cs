@@ -48,15 +48,15 @@ public class RatBehaviour : EnemyBehaviour
 					Debuff extendedBleeding = Instantiate(bleeding);
 					extendedBleeding.duration *= 1.5f;
 
-					FindObjectOfType<DebuffManager>().ApplyDebuff(extendedBleeding);
-					FindObjectOfType<DebuffManager>().ApplyDebuff(Instantiate(slowness));
+					DebuffManager.instance.ApplyDebuff(extendedBleeding);
+					DebuffManager.instance.ApplyDebuff(Instantiate(slowness));
 
 					canUseAbilityAtk = false;
 				}
 
 				// Else, has 10% chance of inflicting regular bleeding
 				else if (inflictChance == 1)
-					FindObjectOfType<DebuffManager>().ApplyDebuff(Instantiate(bleeding));
+					DebuffManager.instance.ApplyDebuff(Instantiate(bleeding));
 			}
 		}
 	}

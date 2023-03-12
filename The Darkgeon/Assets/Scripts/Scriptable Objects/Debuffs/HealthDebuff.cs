@@ -41,7 +41,7 @@ public class HealthDebuff : Debuff
 		{
 			Destroy(player.transform.Find(visualEffect.name).gameObject);
 
-			FindObjectOfType<DebuffManager>().RemoveDebuff(this);
+			DebuffManager.instance.RemoveDebuff(this);
 			player.canRegen = true;
 			return;
 		}
@@ -72,7 +72,7 @@ public class HealthDebuff : Debuff
 
 		if (duration <= 0f || player.currentHP <= 0)
 		{
-			FindObjectOfType<DebuffManager>().RemoveDebuff(this);
+			DebuffManager.instance.RemoveDebuff(this);
 			player.canRegen = true;
 			return;
 		}

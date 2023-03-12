@@ -10,6 +10,8 @@ using System;
 /// </summary>
 public class DebuffManager : MonoBehaviour
 {
+	public static DebuffManager instance { get; private set; }
+
 	[Header("References")]
 	[Space]
 
@@ -34,6 +36,16 @@ public class DebuffManager : MonoBehaviour
 
 	private void Awake()
 	{
+		if (instance == null)
+			instance = this;
+		else
+		{
+			Debug.LogWarning("More than one instance of Debuff Manager found!!");
+			instance = null;
+			this.enabled = false;
+			return;
+		}
+
 		player = GameObject.FindWithTag("Player").GetComponent<PlayerStats>();
 		playerAnim = player.GetComponent<Animator>();
 		debuffPanel = GameObject.Find("Debuff Panel").transform;
@@ -125,7 +137,7 @@ public class DebuffManager : MonoBehaviour
 	#endregion
 }
 
-internal enum DebuffManageAction
+public enum DebuffManageAction
 {
 	Add,
 	Remove

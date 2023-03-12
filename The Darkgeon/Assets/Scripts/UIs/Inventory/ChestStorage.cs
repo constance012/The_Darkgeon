@@ -45,7 +45,7 @@ public class ChestStorage : MonoBehaviour
 
 	private void Start()
 	{
-		instance.onItemChanged += ReloadUI;
+		onItemChanged += ReloadUI;
 	}
 
 	public bool Add(Item target, bool forcedSplit = false)

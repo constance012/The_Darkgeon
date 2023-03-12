@@ -13,6 +13,7 @@ public class EnemyStat : MonoBehaviour
 	[Header("Death Loots")]
 	[Space]
 	[SerializeField] private GameObject droppedItemPrefab;
+	[SerializeField] private GameObject droppedCoinPrefab;
 	[SerializeField] private DeathLoot[] loots;
 
 	[Header("Transform, Layers")]
@@ -181,17 +182,17 @@ public class EnemyStat : MonoBehaviour
 
 	private void DropDeathLoots()
 	{
-		void DropLoot(DeathLoot target)
+		void DropLoot(DeathLoot target, GameObject selectedPrefab)
 		{
 			// Set up the drop.
-			ItemPickup droppedLoot = droppedItemPrefab.GetComponent<ItemPickup>();
+			ItemPickup droppedLoot = selectedPrefab.GetComponent<ItemPickup>();
 
 			droppedLoot.itemPrefab = Instantiate(target.loot);
 			droppedLoot.itemPrefab.quantity = target.quantity;
 			droppedLoot.player = player;
 
 			// Make the drop.
-			GameObject droppedItemObj = Instantiate(droppedItemPrefab, transform.position, Quaternion.identity);
+			GameObject droppedItemObj = Instantiate(selectedPrefab, transform.position, Quaternion.identity);
 
 			droppedItemObj.name = target.loot.name;
 			droppedItemObj.transform.SetParent(GameObject.Find("Items").transform);
@@ -212,15 +213,21 @@ public class EnemyStat : MonoBehaviour
 
 		for (int i = 0; i < loots.Length; i++)
 		{
+			if (loots[i].loot.itemName.Equals("Coin"))
+			{
+				DropLoot(loots[i], droppedCoinPrefab);
+				continue;
+			}
+
 			if (loots[i].isGuaranteed)
 			{
-				DropLoot(loots[i]);
+				DropLoot(loots[i], droppedItemPrefab);
 				continue;
 			}
 
 			float rand = UnityEngine.Random.Range(0f, 100f);
 			if (rand <= loots[i].dropChance)
-				DropLoot(loots[i]);
+				DropLoot(loots[i], droppedItemPrefab);
 		}
 	}
 
@@ -267,10 +274,16 @@ public class EnemyStat : MonoBehaviour
 	}
 }
 
+/// <summary>
+/// Represents a loot dropped from enemies or generated in chests.
+/// </summary>
 [Serializable]
 public struct DeathLoot
 {
 	public Item loot;
+	public TreasureType type;
+
+	[Space]
 	public int quantity;
 	[Range(.001f, 100f)] public float dropChance;
 	public bool isGuaranteed;

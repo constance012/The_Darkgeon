@@ -8,6 +8,8 @@ using System.Threading;
 /// </summary>
 public class GameManager : MonoBehaviour
 {
+	public static GameManager instance { get; private set; }
+
 	[Header("Player References")]
 	[Space]
 
@@ -43,6 +45,16 @@ public class GameManager : MonoBehaviour
 
 	private void Awake()
 	{
+		if (instance == null)
+			instance = this;
+		else
+		{
+			Debug.LogWarning("More than one instance of Game Manager found!!");
+			instance = null;
+			this.enabled = false;
+			return;
+		}
+
 		playerAnim = GameObject.FindWithTag("Player").GetComponent<Animator>();
 		playerStats = playerAnim.GetComponent<PlayerStats>();
 		rb2d = playerAnim.GetComponent<Rigidbody2D>();

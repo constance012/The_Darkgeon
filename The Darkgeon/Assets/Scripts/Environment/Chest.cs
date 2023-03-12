@@ -121,25 +121,76 @@ public class Chest : Interactable
 		if (treasures.Count == 0)
 			return;
 
+		// Essential local variables.
+		TreasureType currentType = TreasureType.Null;
+		List<DeathLoot> itemsOfCurrentType = new List<DeathLoot>();
+
+		int numberOfItemsRemaining = 0;
+
+		// Explicit writing of int.CompareTo(int value) method.
+		treasures.Sort((x, y) =>
+		{
+			if ((int)x.type < (int)y.type) return -1;
+			else if ((int)x.type > (int)y.type) return 1;
+			else return 0;
+		});
+
 		foreach (DeathLoot target in treasures)
 		{
-			Item item = Instantiate(target.loot);
-			item.quantity = target.quantity;
-			item.id = Guid.NewGuid().ToString();
-
-			if (target.isGuaranteed)
+			if (target.isGuaranteed || target.type == TreasureType.Primary)
 			{
-				storedItem.Add(item);
+				Item primaryItem = Instantiate(target.loot);
+				primaryItem.quantity = target.quantity;
+				primaryItem.id = Guid.NewGuid().ToString();
+
+				storedItem.Add(primaryItem);
 				continue;
 			}
 
-			float rand = UnityEngine.Random.Range(0f, 100f);
-			if (rand <= target.dropChance)
-				storedItem.Add(item);
+			// If the target treasure type is changed, than update these locals.
+			else if (target.type != currentType) 
+			{
+				currentType = target.type;
+				itemsOfCurrentType = treasures.FindAll(loot => loot.type == currentType);
+
+				numberOfItemsRemaining = (int)currentType;
+			}
+
+			// Skip this iteration if items of the current type are fully added.
+			if (numberOfItemsRemaining <= 0 || itemsOfCurrentType.Count == 0)
+				continue;
+
+			int randomIndex = UnityEngine.Random.Range(0, itemsOfCurrentType.Count);
+
+			DeathLoot selectedLoot = itemsOfCurrentType[randomIndex];
+
+			Item otherItem = Instantiate(selectedLoot.loot);
+			otherItem.quantity = selectedLoot.quantity;
+			otherItem.id = Guid.NewGuid().ToString();
+
+			storedItem.Add(otherItem);
+			itemsOfCurrentType.Remove(itemsOfCurrentType[randomIndex]);
+
+			numberOfItemsRemaining--;
 		}
 
 		treasures.Clear();
 	}
 }
 
+/// <summary>
+/// Represent every type of chest.
+/// </summary>
 public enum ChestType { Wooden, Iron, Silver, Golden }
+
+/// <summary>
+/// Represents types of treasure and the thier maximum quantity when generated in a chest.
+/// </summary>
+public enum TreasureType
+{
+	Null = 0,
+	Primary = 1,
+	Food = 2,
+	Potion = 3,
+	Material = 4
+}

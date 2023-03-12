@@ -53,7 +53,7 @@ public class SpikedSlimeBehaviour : EnemyBehaviour
 				player.TakeDamage(stats.contactDamage, stats.knockBackVal, this.transform, KillSources.SpikedSlime);
 
 				if (inflictChance == 1)
-					FindObjectOfType<DebuffManager>().ApplyDebuff(Instantiate(poisoned));
+					DebuffManager.instance.ApplyDebuff(Instantiate(poisoned));
 			}
 		}
 	}
@@ -125,7 +125,7 @@ public class SpikedSlimeBehaviour : EnemyBehaviour
 				Debuff heavyPoisoned = Instantiate(poisoned);
 				heavyPoisoned.duration *= 3f;
 
-				FindObjectOfType<DebuffManager>().ApplyDebuff(heavyPoisoned);
+				DebuffManager.instance.ApplyDebuff(heavyPoisoned);
 			}
 
 			Color popupTextColor = new Color(1f, .76f, 0f);

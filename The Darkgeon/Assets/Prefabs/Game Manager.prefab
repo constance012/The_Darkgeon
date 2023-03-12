@@ -10,6 +10,8 @@ GameObject:
   m_Component:
   - component: {fileID: 2154883089402170278}
   - component: {fileID: 2154883089402170273}
+  - component: {fileID: 8472680148117000137}
+  - component: {fileID: 5748814745713272073}
   m_Layer: 0
   m_Name: Game Manager
   m_TagString: Untagged
@@ -57,3 +59,31 @@ MonoBehaviour:
   playerUI: {fileID: 0}
   inventory: {fileID: 0}
   m_RespawnTimer: 5.5
+--- !u!114 &8472680148117000137
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2154883089402170272}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 256c4aa19cae6b7449786e5fd7b895c3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  player: {fileID: 0}
+  playerAnim: {fileID: 0}
+  debuffPanel: {fileID: 0}
+  debuffUIPrefab: {fileID: 2474297046706981571, guid: d9d68277ca0c70345969ef5f5e381987, type: 3}
+--- !u!114 &5748814745713272073
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2154883089402170272}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cb78a827a0f28e54cb5c401730ee2233, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

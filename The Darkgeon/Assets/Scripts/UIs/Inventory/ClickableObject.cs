@@ -6,11 +6,11 @@ using TMPro;
 
 public class ClickableObject : MonoBehaviour, IPointerClickHandler, IPointerDownHandler
 {
-	[Header("References")]
+	[Header("Slot Type")]
 	[Space]
-
 	public bool isChestSlot;
 
+	[Header("References")]
 	[Space]
 
 	public Item dragItem;

@@ -140,10 +140,7 @@ public class ChestSlot : MonoBehaviour
 
 			// If this is the original item that we had dragged.
 			else if (currentItem.id.Equals(droppedItem.id) && !ClickableObject.splittingItem)
-			{
-				ClickableObject.ClearSingleton();
 				return;
-			}
 
 			// If this is an item with the same name, check if it can be stacked together.
 			else if (currentItem.itemName.Equals(droppedItem.itemName))

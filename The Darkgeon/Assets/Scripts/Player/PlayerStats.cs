@@ -44,21 +44,22 @@ public class PlayerStats : MonoBehaviour
 	public int armor = 5;
 	public float damageRecFactor = .5f;
 	[Range(0f, 1f)] public float knockBackRes = .2f;
+	public float m_RegenDelay = 2f;
 
 	[Header("Timers")]
 	[Space]
-	public float m_InvincibilityTime = .5f;
 	public float timeBeforeRegen = 5f;
-	private float invincibilityTime = .5f;
+	public float m_InvincibilityTime = .5f;
 
 	[HideInInspector] public float lastDamagedTime = 0f;
 	[HideInInspector] public KillSources killSource = KillSources.Unknown;
 	[HideInInspector] public Vector3 respawnPos;
 	[HideInInspector] public Transform attacker = null;  // Position of the attacker.
 
-	// Regenerate health stats.
+	// Private fields
+	private float invincibilityTime = .5f;
 	private int regenRate = 1;
-	private float regenDelay = 2f;
+	private float regenDelay;
 	[HideInInspector] public bool canRegen = true;
 
 	//private LocalKeyword isOutlineOn;
@@ -77,6 +78,9 @@ public class PlayerStats : MonoBehaviour
 		currentHP = maxHP;
 		hpBar.SetMaxHealth(maxHP);
 		respawnPos = transform.position;
+		
+		regenDelay = m_RegenDelay;
+		invincibilityTime = m_InvincibilityTime;
 
 		//var shader = playerMat.shader;
 		//isOutlineOn = new LocalKeyword(shader, "_IS_OUTLINE_ON");

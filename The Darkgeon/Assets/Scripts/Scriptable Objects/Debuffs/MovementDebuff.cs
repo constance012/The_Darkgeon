@@ -24,7 +24,7 @@ public class MovementDebuff : Debuff
 
 		if (duration <= 0f || player.currentHP <= 0)
 		{
-			FindObjectOfType<DebuffManager>().RemoveDebuff(this);
+			DebuffManager.instance.RemoveDebuff(this);
 			controller.m_MoveSpeed *= 1 / (1 - speedReduceFactor);  // Reverse the speed nerf.
 			return;
 		}

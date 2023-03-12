@@ -16,7 +16,7 @@ MonoBehaviour:
   slotIndex: -1
   itemName: Coin
   description: A currency used for trading with merchants and other purposes.
-  icon: {fileID: 21300000, guid: 3ca2d1c3dcb826b41971b899db33d889, type: 3}
+  icon: {fileID: 21300000, guid: 2d5c1cf2af90cd045a88dc62e2917108, type: 3}
   rarity:
     title: Special
     color: {r: 0.745283, g: 0.63669354, b: 0.25663045, a: 1}

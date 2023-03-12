@@ -88,6 +88,13 @@ public class InventorySlot : MonoBehaviour
 			ClickableObject cloneData = shipper.GetComponent<ClickableObject>();
 			Item droppedItem = cloneData.dragItem;
 
+			if (droppedItem.itemName.Equals("Coin"))
+			{
+				Inventory.instance.Add(droppedItem, true);
+				ChestStorage.instance.Remove(droppedItem);
+				return;
+			}
+
 			// Local function.
 			void SwapSlotIndexes()
 			{
@@ -156,10 +163,7 @@ public class InventorySlot : MonoBehaviour
 
 			// If this is the original item that we had dragged.
 			else if (currentItem.id.Equals(droppedItem.id) && !ClickableObject.splittingItem)
-			{
-				ClickableObject.ClearSingleton();
 				return;
-			}
 
 			// If this is an item with the same name, check if it can be stacked together.
 			else if (currentItem.itemName.Equals(droppedItem.itemName))

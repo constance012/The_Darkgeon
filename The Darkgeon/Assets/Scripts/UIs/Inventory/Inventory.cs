@@ -56,7 +56,7 @@ public class Inventory : MonoBehaviour
 
 	private void Start()
 	{
-		instance.onItemChanged += ReloadUI;
+		onItemChanged += ReloadUI;
 	}
 
 	private void Update()
