@@ -14939,7 +14939,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b55ed53ef118fd6489140290ee0cc921, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_MoveSpeed: 5
   m_Acceleration: 7
   m_Deceleration: 2
   m_VelPower: 0.9
@@ -14956,6 +14955,7 @@ MonoBehaviour:
   m_GroundCheck: {fileID: 8545219307455233613}
   m_CeilingCheck: {fileID: 8545219309251609121}
   m_CrouchDisableCollider: {fileID: 0}
+  m_Stats: {fileID: 0}
   m_Animator: {fileID: 0}
   m_TrailRenderer: {fileID: 0}
   slippery: {fileID: 6200000, guid: d618ebc0e80100d45b4e6bafb232e7fb, type: 2}
@@ -15047,17 +15047,38 @@ MonoBehaviour:
   animator: {fileID: 0}
   rb2d: {fileID: 0}
   hpBar: {fileID: 0}
-  maxHP: 100
-  atkDamage: 20
-  currentHP: 0
-  criticalChance: 20
-  criticalDamage: 50
-  knockBackVal: 5
-  armor: 5
+  maxHP:
+    modifierType: 0
+    <BaseValue>k__BackingField: 100
+  atkDamage:
+    modifierType: 1
+    <BaseValue>k__BackingField: 20
+  criticalChance:
+    modifierType: 0
+    <BaseValue>k__BackingField: 10
+  criticalDamage:
+    modifierType: 0
+    <BaseValue>k__BackingField: 50
+  knockBackVal:
+    modifierType: 1
+    <BaseValue>k__BackingField: 5
+  armor:
+    modifierType: 0
+    <BaseValue>k__BackingField: 5
+  knockBackRes:
+    modifierType: 0
+    <BaseValue>k__BackingField: 0.3
+  m_RegenRate:
+    modifierType: 0
+    <BaseValue>k__BackingField: 0.5
+  m_MoveSpeed:
+    modifierType: 1
+    <BaseValue>k__BackingField: 5
   damageRecFactor: 0.5
-  knockBackRes: 0.2
-  m_InvincibilityTime: 0.67
   timeBeforeRegen: 5
+  m_InvincibilityTime:
+    modifierType: 0
+    <BaseValue>k__BackingField: 0.67
   lastDamagedTime: 0
   killSource: 0
   respawnPos: {x: 0, y: 0, z: 0}

@@ -65,7 +65,7 @@ public class ItemPickup : Interactable
 	private void Pickup()
 	{
 		currentItem.name = itemPrefab.name;
-		Debug.Log("You're picking up a(an) " + currentItem.name);
+		Debug.Log("You're picking up a(an) " + currentItem.itemName);
 
 		// Destroy the popup label.
 		Destroy(clone);

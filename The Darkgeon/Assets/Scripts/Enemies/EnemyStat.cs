@@ -71,7 +71,7 @@ public class EnemyStat : MonoBehaviour
 		hpBar = transform.Find("Enemy Health Bar").GetComponent<EnemyHPBar>();
 		dmgTextPos = transform.Find("Damage Text Pos").transform;
 
-		worldCanvas = GameObject.FindWithTag("World Canvas").transform;
+		worldCanvas = GameObject.FindWithTag("Enemies World Canvas").transform;
 		animator = GetComponent<Animator>();
 		enemyMat = GetComponent<SpriteRenderer>().material;
 		deathFx = transform.Find("Soul Release Effect").GetComponent<ParticleSystem>();
@@ -281,7 +281,7 @@ public class EnemyStat : MonoBehaviour
 public struct DeathLoot
 {
 	public Item loot;
-	public TreasureType type;
+	public Chest.TreasureType type;
 
 	[Space]
 	public int quantity;

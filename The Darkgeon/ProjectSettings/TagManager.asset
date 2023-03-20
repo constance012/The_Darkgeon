@@ -10,6 +10,7 @@ TagManager:
   - Inventory Canvas
   - UI Canvas
   - World Canvas
+  - Enemies World Canvas
   layers:
   - Default
   - TransparentFX

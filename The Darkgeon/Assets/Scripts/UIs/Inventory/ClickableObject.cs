@@ -246,6 +246,9 @@ public class ClickableObject : MonoBehaviour, IPointerClickHandler, IPointerDown
 
 	private void QuickDeposit()
 	{
+		if (dragItem.isFavorite)
+			return;
+
 		dragItem.slotIndex = -1;
 
 		holdingItem = true;
@@ -253,13 +256,13 @@ public class ClickableObject : MonoBehaviour, IPointerClickHandler, IPointerDown
 
 		if (!sender.isChestSlot)
 		{
-			Inventory.instance.Remove(sender.dragItem);
 			ChestStorage.instance.Add(sender.dragItem);
+			Inventory.instance.Remove(sender.dragItem);
 		}
 		else
 		{
-			ChestStorage.instance.Remove(sender.dragItem);
 			Inventory.instance.Add(sender.dragItem);
+			ChestStorage.instance.Remove(sender.dragItem);
 		}
 
 		holdingItem = false;

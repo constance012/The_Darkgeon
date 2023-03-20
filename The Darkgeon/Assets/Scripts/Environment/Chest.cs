@@ -5,6 +5,23 @@ using TMPro;
 
 public class Chest : Interactable
 {
+	/// <summary>
+	/// Represent every type of chest.
+	/// </summary>
+	public enum ChestType { Wooden, Iron, Silver, Golden }
+
+	/// <summary>
+	/// Represents types of treasure and the thier maximum quantity when generated in a chest.
+	/// </summary>
+	public enum TreasureType
+	{
+		Null = 0,
+		Primary = 1,
+		Food = 2,
+		Potion = 3,
+		Material = 4
+	}
+
 	[Space]
 	[Header("General Info")]
 	public ChestType type;
@@ -176,21 +193,4 @@ public class Chest : Interactable
 
 		treasures.Clear();
 	}
-}
-
-/// <summary>
-/// Represent every type of chest.
-/// </summary>
-public enum ChestType { Wooden, Iron, Silver, Golden }
-
-/// <summary>
-/// Represents types of treasure and the thier maximum quantity when generated in a chest.
-/// </summary>
-public enum TreasureType
-{
-	Null = 0,
-	Primary = 1,
-	Food = 2,
-	Potion = 3,
-	Material = 4
 }

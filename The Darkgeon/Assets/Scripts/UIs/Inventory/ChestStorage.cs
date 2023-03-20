@@ -14,15 +14,14 @@ public class ChestStorage : MonoBehaviour
 	public int space = 10;
 
 	// Delegate.
-	public delegate void OnItemChanged();
-	public OnItemChanged onItemChanged;
+	public Action onItemChanged;
 
 	private ChestSlot[] slots;
 	private TextMeshProUGUI uiTitle;
 
 	private void OnEnable()
 	{
-		ReloadUI();
+		onItemChanged?.Invoke();
 		uiTitle.text = openedChest?.type.ToString().ToUpper() + " CHEST";
 	}
 
@@ -41,10 +40,7 @@ public class ChestStorage : MonoBehaviour
 		uiTitle = transform.Find("Title/Text").GetComponent<TextMeshProUGUI>();
 
 		gameObject.SetActive(false);
-	}
-
-	private void Start()
-	{
+		
 		onItemChanged += ReloadUI;
 	}
 

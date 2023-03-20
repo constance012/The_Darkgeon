@@ -26,5 +26,5 @@ MonoBehaviour:
   quantity: 1
   isFavorite: 0
   isDefaultItem: 0
-  canbeUsed: 1
+  canBeUsed: 1
   health: 15

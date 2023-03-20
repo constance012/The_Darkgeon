@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -8,8 +7,7 @@ public class Inventory : MonoBehaviour
 {
 	public static Inventory instance { get; private set; }
 
-	public delegate void OnItemChanged();
-	public OnItemChanged onItemChanged;
+	public Action onItemChanged;
 
 	[Header("Items List")]
 	[Space]
@@ -23,7 +21,7 @@ public class Inventory : MonoBehaviour
 
 	private void OnEnable()
 	{
-		ReloadUI();
+		onItemChanged?.Invoke();
 	}
 
 	private void OnDisable()
@@ -52,10 +50,7 @@ public class Inventory : MonoBehaviour
 		slots = transform.Find("Slots").GetComponentsInChildren<InventorySlot>();
 		coinSlot = transform.Find("Coin Slot").GetComponent<CoinSlot>();
 		outsideZone = transform.root.Find("Outside Zone").GetComponent<Image>();
-	}
-
-	private void Start()
-	{
+		
 		onItemChanged += ReloadUI;
 	}
 
@@ -70,12 +65,14 @@ public class Inventory : MonoBehaviour
 		{
 			coins += target.quantity;
 			coinSlot.AddCoin(coins);
+
+			onItemChanged?.Invoke();
 			return true;
 		}
 		
 		if (items.Count >= space)
 		{
-			Debug.Log("Inventory Full.");
+			Debug.LogWarning("Inventory Full.");
 			return false;
 		}
 
@@ -168,15 +165,11 @@ public class Inventory : MonoBehaviour
 		}
 	}
 
-	public Item GetItem(string targetID)
-	{
-		return items.Find(item => item.id.Equals(targetID));
-	}
+	public Item GetItem(string targetID) => items.Find(item => item.id.Equals(targetID));
 
-	public bool IsExisting(string targetID)
-	{
-		return items.Exists(item => item.id == targetID);
-	}
+	public List<Item> GetItemsByName(string name) => items.FindAll(item => item.itemName.Equals(name));
+
+	public bool IsExisting(string targetID) => items.Exists(item => item.id == targetID);
 
 	public void SetFavorite(string targetID, bool state)
 	{
@@ -223,8 +216,7 @@ public class Inventory : MonoBehaviour
 		//Debug.Log("Indexed items count : " + indexedItems.Count);
 
 		// Clear all the slots.
-		Action<InventorySlot> ClearAllSlots = (slot) => slot.ClearItem();
-		Array.ForEach(slots, ClearAllSlots);
+		Array.ForEach(slots, (slot) => slot.ClearItem());
 
 		// Load the indexed items first.
 		if (indexedItems.Count != 0)
@@ -236,16 +228,22 @@ public class Inventory : MonoBehaviour
 		// Secondly, load the unindexes items to the leftover empty slots.
 		if (unindexedItems.Count != 0)
 		{
-			for (int i = 0; i < unindexedItems.Count; i++)
-				for (int j = 0; j < slots.Length; j++)
-					if (slots[j].currentItem == null)
-					{
-						unindexedItems[i].slotIndex = slots[j].transform.GetSiblingIndex();
+			int i = 0;
 
-						slots[j].AddItem(unindexedItems[i]);
+			foreach (InventorySlot slot in slots)
+			{
+				if (i == unindexedItems.Count)
+					break;
 
-						break;
-					}
+				if (slot.currentItem == null)
+				{
+					unindexedItems[i].slotIndex = slot.transform.GetSiblingIndex();
+
+					slot.AddItem(unindexedItems[i]);
+
+					i++;
+				}
+			}
 		}
 
 		// Update the master list.

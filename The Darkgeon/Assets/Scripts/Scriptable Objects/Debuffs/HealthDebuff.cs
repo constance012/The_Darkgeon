@@ -1,5 +1,6 @@
 using System.Reflection;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "New Health Debuff", menuName = "Debuffs/Health Debuff")]
@@ -52,7 +53,7 @@ public class HealthDebuff : Debuff
 		if (playerAnim.GetFloat("Speed") > .01f && player.currentHP > 0 && hpLossDelay <= 0f)
 		{
 			player.currentHP -= healthLossRate;
-			player.currentHP = Mathf.Clamp(player.currentHP, 0, player.maxHP);
+			player.currentHP = Mathf.Clamp(player.currentHP, 0f, player.maxHP.Value);
 
 			player.hpBar.SetCurrentHealth(player.currentHP);
 
@@ -83,7 +84,7 @@ public class HealthDebuff : Debuff
 		if (player.currentHP > 0 && hpLossDelay <= 0f)
 		{
 			player.currentHP -= healthLossRate;
-			player.currentHP = Mathf.Clamp(player.currentHP, 0, player.maxHP);
+			player.currentHP = Mathf.Clamp(player.currentHP, 0f, player.maxHP.Value);
 
 			player.hpBar.SetCurrentHealth(player.currentHP);
 

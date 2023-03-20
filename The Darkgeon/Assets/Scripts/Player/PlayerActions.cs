@@ -39,7 +39,7 @@ public class PlayerActions : MonoBehaviour
 	{
 		if (!canAttack)
 		{
-			Debug.Log("Can not attack.");
+			//Debug.Log("Can not attack.");
 			return;
 		}
 		

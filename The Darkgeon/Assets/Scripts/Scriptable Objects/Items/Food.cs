@@ -13,11 +13,14 @@ public class Food : Item
 		base.Use();
 
 		GameObject.FindWithTag("Player").GetComponent<PlayerStats>().Heal(health);
+
+		Inventory.instance.UpdateQuantity(id, -1);
 	}
 
 	public override string ToString()
 	{
-		return $"Rarity: {rarity.title}.\n\n" +
+		return $"Right Click to consume.\n\n" +
+				$"Rarity: {rarity.title}.\n\n" +
 				$"+{health} HP.\n\n" +
 				$"{description}";
 	}

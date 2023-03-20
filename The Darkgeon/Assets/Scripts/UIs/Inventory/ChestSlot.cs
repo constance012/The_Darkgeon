@@ -42,7 +42,7 @@ public class ChestSlot : MonoBehaviour
 		}
 
 		tooltip.header = currentItem.itemName;
-		tooltip.content = currentItem.description;
+		tooltip.content = currentItem.ToString();
 		tooltip.popupDelay = .5f;
 	}
 

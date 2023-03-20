@@ -3053,10 +3053,10 @@ TextureImporter:
       name: TX Village Props Cloth A
       rect:
         serializedVersion: 2
-        x: 680
-        y: 644
-        width: 15
-        height: 21
+        x: 677
+        y: 641
+        width: 21
+        height: 27
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -3074,10 +3074,10 @@ TextureImporter:
       name: TX Village Props Cloth B
       rect:
         serializedVersion: 2
-        x: 713
-        y: 612
-        width: 15
-        height: 25
+        x: 710
+        y: 609
+        width: 21
+        height: 31
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -3095,10 +3095,10 @@ TextureImporter:
       name: TX Village Props Cloth C
       rect:
         serializedVersion: 2
-        x: 680
-        y: 610
-        width: 18
-        height: 23
+        x: 677
+        y: 607
+        width: 24
+        height: 29
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -3116,10 +3116,10 @@ TextureImporter:
       name: TX Village Props Cloth D
       rect:
         serializedVersion: 2
-        x: 748
-        y: 647
-        width: 8
-        height: 16
+        x: 745
+        y: 645
+        width: 14
+        height: 22
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -3179,10 +3179,10 @@ TextureImporter:
       name: TX Village Props Cloth E
       rect:
         serializedVersion: 2
-        x: 680
-        y: 582
-        width: 18
-        height: 18
+        x: 677
+        y: 579
+        width: 24
+        height: 24
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -3200,10 +3200,10 @@ TextureImporter:
       name: TX Village Props Cloth F
       rect:
         serializedVersion: 2
-        x: 713
-        y: 580
-        width: 17
-        height: 23
+        x: 710
+        y: 577
+        width: 23
+        height: 29
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -3221,10 +3221,10 @@ TextureImporter:
       name: TX Village Props Cloth G
       rect:
         serializedVersion: 2
-        x: 713
-        y: 649
-        width: 14
-        height: 10
+        x: 710
+        y: 646
+        width: 20
+        height: 16
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -3606,14 +3606,14 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      TX Village Props Platform S: 21300216
+      TX Village Props Barrel: 21300008
       TX Village Props Spike: 21300228
       TX Village Props Clother Hanger Rope A: 21300234
       TX Village Props Fence B Rail: 21300040
       TX Village Props Well: 21300066
       TX Village Props Statue Bouquet: 21300152
       TX Village Props Chest Silver: -8851566310641887263
-      TX Village Props Road Sign Text C: 21300050
+      TX Village Props Flower A: 21300100
       TX Village Props Clother Hanger Pillar B: 21300232
       TX Village Props Bush A: 21300110
       TX Village Props Bucket: 21300068
@@ -3748,9 +3748,9 @@ TextureImporter:
       TX Village Props Heavy Sword: 21300168
       TX Village Props Archert Target: 21300154
       TX Village Props Grass E: 21300104
-      TX Village Props Barrel: 21300008
       TX Village Props Fence A Pillar A: 21300024
-      TX Village Props Flower A: 21300100
+      TX Village Props Road Sign Text C: 21300050
+      TX Village Props Platform S: 21300216
   spritePackingTag: 
   pSDRemoveMatte: 0
   pSDShowRemoveMatteOption: 0

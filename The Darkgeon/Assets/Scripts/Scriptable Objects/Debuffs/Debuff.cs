@@ -17,7 +17,6 @@ public class Debuff : ScriptableObject
 
 	protected PlayerStats player;
 	protected Animator playerAnim;
-	protected CharacterController2D controller;
 	protected TextMeshProUGUI durationUI;
 
 	public virtual void TakeEffect()
@@ -27,7 +26,6 @@ public class Debuff : ScriptableObject
 			player = GameObject.FindWithTag("Player").GetComponent<PlayerStats>();
 			
 			playerAnim = player.GetComponent<Animator>();
-			controller = player.GetComponent<CharacterController2D>();
 			
 			durationUI = GameObject.FindWithTag("UI Canvas").transform.
 									Find($"Player UI/Debuff Panel/{debuffName}/Duration").GetComponent<TextMeshProUGUI>();

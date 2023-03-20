@@ -1,0 +1,39 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0d3f763e501118948a7a1daf80a51e2c, type: 3}
+  m_Name: Leather Pants
+  m_EditorClassIdentifier: 
+  id: 
+  slotIndex: -1
+  itemName: Leather Pants
+  description: 'A pants made from deer leather, it''s tougher than its appearance. '
+  icon: {fileID: 21300238, guid: 7810966f0f690954c87305933cabf2b0, type: 3}
+  rarity:
+    title: Common
+    color: {r: 0.7372549, g: 0.7372549, b: 0.7372549, a: 1}
+  stackable: 0
+  maxPerStack: 1
+  quantity: 1
+  isFavorite: 0
+  isDefaultItem: 0
+  canBeUsed: 1
+  type: 4
+  armor: 3
+  maxHP: 5
+  regenerateDelay: 0
+  invincibilityTime: 0
+  damagePerc: 0
+  criticalChancePerc: 0
+  criticalDamagePerc: 0
+  movementSpeedPerc: 0
+  knockbackPerc: 0
+  knockbackResistancePerc: 0.025

@@ -28,7 +28,8 @@ public class NewItemUI : MonoBehaviour
 
 	private void Update()
 	{
-		if (aliveTime <= 0f)
+		// Begin disposing, one after another.
+		if (aliveTime <= 0f && transform.GetSiblingIndex() == 0)
 		{
 			if (displayText.fontSize >= 10f)
 				displayText.GetComponent<Animator>().SetTrigger("Disappear");
@@ -50,7 +51,7 @@ public class NewItemUI : MonoBehaviour
 			return;
 		}
 
-		if (transform.GetSiblingIndex() < 4)
+		if (transform.GetSiblingIndex() < 4 && aliveTime > 0f)
 			aliveTime -= Time.deltaTime;
 	}
 

@@ -70,11 +70,8 @@ public class InventorySlot : MonoBehaviour
 	public void UseItem()
 	{
 		// Use the item if it's not null and be used.
-		if (currentItem != null && currentItem.canbeUsed)
-		{
+		if (currentItem != null && currentItem.canBeUsed)
 			currentItem.Use();
-			Inventory.instance.UpdateQuantity(currentItem.id, -1);
-		}
 	}
 
 	/// <summary>

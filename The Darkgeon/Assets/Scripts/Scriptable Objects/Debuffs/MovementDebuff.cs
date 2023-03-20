@@ -25,14 +25,14 @@ public class MovementDebuff : Debuff
 		if (duration <= 0f || player.currentHP <= 0)
 		{
 			DebuffManager.instance.RemoveDebuff(this);
-			controller.m_MoveSpeed *= 1 / (1 - speedReduceFactor);  // Reverse the speed nerf.
+			player.m_MoveSpeed.BaseValue *= 1 / (1 - speedReduceFactor);  // Reverse the speed nerf.
 			return;
 		}
 
 		// The player's movement speed is reduced.
 		if (!isSpeedReduced)
 		{
-			controller.m_MoveSpeed *= (1 - speedReduceFactor);
+			player.m_MoveSpeed.BaseValue *= (1 - speedReduceFactor);
 			isSpeedReduced = true;
 		}
 

@@ -36,7 +36,7 @@ public class Item : ScriptableObject
 
 	public bool isFavorite;
 	public bool isDefaultItem;
-	public bool canbeUsed;
+	public bool canBeUsed;
 
 	public virtual void Use()
 	{

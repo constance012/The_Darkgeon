@@ -25,10 +25,7 @@ public class TooltipHandler : MonoBehaviour
 	{
 		instance.tooltip.SetText(contentText, headerText);
 
-		if (delay < .2f)
-			yield return new WaitForSeconds(.2f);
-		else
-			yield return new WaitForSeconds(delay);
+		yield return new WaitForSeconds(Mathf.Clamp(delay, .2f, delay));
 
 		instance.tooltip.gameObject.SetActive(true);
 	}

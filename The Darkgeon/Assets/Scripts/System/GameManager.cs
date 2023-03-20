@@ -111,6 +111,9 @@ public class GameManager : MonoBehaviour
 			if (playerAnim.GetBool("Grounded") && !rb2d.simulated)
 				rb2d.simulated = false;
 
+			if (!Physics2D.GetIgnoreLayerCollision(3, 8))
+				Physics2D.IgnoreLayerCollision(3, 8, true);
+
 			countdownText.text = respawnTimer.ToString("0");
 
 			if (respawnTimer <= 0f)
@@ -125,11 +128,13 @@ public class GameManager : MonoBehaviour
 	public void Respawn()
 	{
 		deathPanel.SetActive(false);
-		playerStats.currentHP = playerStats.maxHP;
-		playerStats.hpBar.SetMaxHealth(playerStats.maxHP);
+		playerStats.currentHP = playerStats.maxHP.Value;
+		playerStats.hpBar.SetMaxHealth(playerStats.maxHP.Value);
 
 		moveScript.enabled = actionsScript.enabled = true;
 		rb2d.simulated = true;
+
+		Physics2D.IgnoreLayerCollision(3, 8, false);
 
 		playerAnim.SetTrigger("Respawn");
 		playerAnim.SetBool("IsDeath", false);

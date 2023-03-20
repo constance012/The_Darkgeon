@@ -2,7 +2,6 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using System.Collections;
-using UnityEditor.Rendering;
 
 /// <summary>
 /// Represents the player's health bar.
@@ -50,35 +49,40 @@ public class HealthBar : MonoBehaviour
 		fillRect.color = gradient.Evaluate(hpSlider.normalizedValue);  // Return the value between 0f and 1f.
 	}
 
-	public void SetMaxHealth(int maxHP)
+	public void SetMaxHealth(float maxHP, bool initialize = true)
 	{
 		hpSlider.maxValue = maxHP;
-		hpSlider.value = maxHP;
-
 		fxSlider.maxValue = maxHP;
-		fxSlider.value = maxHP;
-		
-		fillRect.color = gradient.Evaluate(1f);
-		healthText.text = maxHP + " / " + hpSlider.maxValue;
+
+		if (initialize)
+		{
+			hpSlider.value = maxHP;
+			fxSlider.value = maxHP;
+			fillRect.color = gradient.Evaluate(1f);
+			healthText.text = Mathf.Round(maxHP) + " / " + hpSlider.maxValue;
+		}		
 	}
 
-	public void SetCurrentHealth(int currentHP)
+	public void SetCurrentHealth(float currentHP)
 	{
 		StopAllCoroutines();
 
+		// If health is decreasing.
 		if (hpSlider.value >= currentHP)
 		{
 			fxFillRect.color = decreaseColor;
 
 			hpSlider.value = currentHP;
-			healthText.text = Mathf.RoundToInt(hpSlider.value) + " / " + hpSlider.maxValue;
+			healthText.text = Mathf.Round(hpSlider.value) + " / " + hpSlider.maxValue;
 		}
+
+		// If health is increasing.
 		else
 		{
 			fxFillRect.color = increaseColor;
 
 			fxSlider.value = currentHP;
-			healthText.text = Mathf.RoundToInt(fxSlider.value) + " / " + hpSlider.maxValue;
+			healthText.text = Mathf.Round(fxSlider.value) + " / " + hpSlider.maxValue;
 		}
 
 		StartCoroutine(PerformEffect());
@@ -86,8 +90,8 @@ public class HealthBar : MonoBehaviour
 
 	private IEnumerator PerformEffect()
 	{
-		yield return new WaitForSeconds(.5f);
-
+		yield return new WaitForSeconds(.2f);
+		
 		if (fxFillRect.color == decreaseColor)
 			while (fxSlider.value != hpSlider.value)
 			{

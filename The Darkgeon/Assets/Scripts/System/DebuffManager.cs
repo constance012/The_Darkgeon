@@ -1,9 +1,8 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
-using System.Reflection;
-using System;
 
 /// <summary>
 /// A manager for the debuff system.
@@ -28,9 +27,7 @@ public class DebuffManager : MonoBehaviour
 	// Private fields.
 	private List<Debuff> debuffList = new List<Debuff>();
 
-	private delegate void DebuffDelegate();
-
-	private DebuffDelegate handler = null;
+	private Action debuffHandler = null;
 
 	public static bool deathByDebuff { get; set; }
 
@@ -62,14 +59,11 @@ public class DebuffManager : MonoBehaviour
 		}
 
 		// Invoke the debuff handler if not null.
-		handler?.Invoke();
+		debuffHandler?.Invoke();
 	}
 
 	#region Handling debuff.
-	public Debuff GetDebuff(string nameLowered)
-	{
-		return debuffList.Find(debuff => debuff.name.ToLower().Equals(nameLowered));
-	}
+	public Debuff GetDebuff(string nameLowered)  => debuffList.Find(debuff => debuff.name.ToLower().Equals(nameLowered));
 
 	public void ApplyDebuff(Debuff target)
 	{
@@ -78,7 +72,7 @@ public class DebuffManager : MonoBehaviour
 		{
 			debuffList.Add(target);
 
-			ManageHandler(target.TakeEffect, DebuffManageAction.Add);
+			ManageHandler(target.TakeEffect);
 
 			GameObject debuffUIObj = Instantiate(debuffUIPrefab, debuffPanel);
 
@@ -106,7 +100,7 @@ public class DebuffManager : MonoBehaviour
 		// Remove debuff from the list.
 		debuffList.Remove(target);
 
-		ManageHandler(target.TakeEffect, DebuffManageAction.Remove);
+		ManageHandler(target.TakeEffect, false);
 
 		// Hide the tooltip and destroy the UI Game Object.
 		Transform targetUI = debuffPanel.Find(target.debuffName);
@@ -118,27 +112,21 @@ public class DebuffManager : MonoBehaviour
 	public void ClearAllDebuff()
 	{
 		debuffList.Clear();
-		handler = null;
+		debuffHandler = null;
 		foreach (Transform debuff in debuffPanel)
 			Destroy(debuff.gameObject);
 	}
 
-	private void ManageHandler(DebuffDelegate method, DebuffManageAction action)
+	private void ManageHandler(Action method, bool subscribe = true)
 	{
-		if (action == DebuffManageAction.Add)
+		if (subscribe)
 		{
-			handler -= method;  // Remove first to ensure no duplication.
-			handler += method;
+			debuffHandler -= method;  // Remove first to ensure no duplication.
+			debuffHandler += method;
+			return;
 		}
-
-		else
-			handler -= method;
+		
+		debuffHandler -= method;
 	}
 	#endregion
-}
-
-public enum DebuffManageAction
-{
-	Add,
-	Remove
 }

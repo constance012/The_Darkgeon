@@ -11,7 +11,6 @@ public class CharacterController2D : MonoBehaviour
 	// References.
 	[Header("Movement")]
 	[Space]
-	public float m_MoveSpeed = 10f;
 	[SerializeField] [Range(.1f, 10f)] private float m_Acceleration = 7f;
 	[SerializeField] [Range(.1f, 10f)] private float m_Deceleration = 7f;
 	[SerializeField] private float m_VelPower = .9f;
@@ -36,6 +35,7 @@ public class CharacterController2D : MonoBehaviour
 
 	[Header("References")]
 	[Space]
+	[SerializeField] private PlayerStats m_Stats;
 	[SerializeField] private Animator m_Animator;
 	[SerializeField] private TrailRenderer m_TrailRenderer;
 
@@ -81,6 +81,7 @@ public class CharacterController2D : MonoBehaviour
 	private void Awake()
 	{
 		m_Rigidbody2D = GetComponent<Rigidbody2D>();
+		m_Stats = GetComponent<PlayerStats>();
 		m_Animator = GetComponent<Animator>();
 		m_TrailRenderer = GetComponent<TrailRenderer>();
 		m_CrouchDisableCollider = GetComponent<BoxCollider2D>();
@@ -149,7 +150,7 @@ public class CharacterController2D : MonoBehaviour
 
 
 			// Calculate the speed at the direction we want to move.
-			float targetSpeed = moveInput * m_MoveSpeed;
+			float targetSpeed = moveInput * m_Stats.m_MoveSpeed.Value;
 
 			// Calculate the difference between current velocity and desired velocity.
 			float speedDiff = targetSpeed - m_Rigidbody2D.velocity.x;

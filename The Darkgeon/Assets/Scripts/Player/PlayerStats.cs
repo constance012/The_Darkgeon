@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Diagnostics.CodeAnalysis;
+using System.Runtime.CompilerServices;
 using UnityEngine;
 
 /// <summary>
@@ -26,30 +27,31 @@ public class PlayerStats : MonoBehaviour
 
 	[Header("Offensive")]
 	[Space]
-	public int maxHP = 100;
-	public float atkDamage = 10f;
-	[HideInInspector] public int currentHP;
+	public Stat maxHP;
+	public Stat atkDamage;
+	public float currentHP { get; set; }
 
 	[Space]
-	[Range(0f, 100f)] public float criticalChance;
+	public Stat criticalChance;
 
 	/// <summary>
 	/// The bonus damage for crtical hit, in percentage.
 	/// </summary>
-	public float criticalDamage;
-	public float knockBackVal;
+	public Stat criticalDamage;
+	public Stat knockBackVal;
 
 	[Header("Defensive")]
 	[Space]
-	public int armor = 5;
+	public Stat armor;
+	public Stat knockBackRes;
+	public Stat m_RegenRate;  // Health/sec.
+	public Stat m_MoveSpeed;
 	public float damageRecFactor = .5f;
-	[Range(0f, 1f)] public float knockBackRes = .2f;
-	public float m_RegenDelay = 2f;
 
 	[Header("Timers")]
 	[Space]
 	public float timeBeforeRegen = 5f;
-	public float m_InvincibilityTime = .5f;
+	public Stat m_InvincibilityTime;
 
 	[HideInInspector] public float lastDamagedTime = 0f;
 	[HideInInspector] public KillSources killSource = KillSources.Unknown;
@@ -58,7 +60,6 @@ public class PlayerStats : MonoBehaviour
 
 	// Private fields
 	private float invincibilityTime = .5f;
-	private int regenRate = 1;
 	private float regenDelay;
 	[HideInInspector] public bool canRegen = true;
 
@@ -75,12 +76,14 @@ public class PlayerStats : MonoBehaviour
 
 	private void Start()
 	{
-		currentHP = maxHP;
-		hpBar.SetMaxHealth(maxHP);
+		currentHP = maxHP.Value;
+		hpBar.SetMaxHealth(maxHP.Value);
 		respawnPos = transform.position;
 		
-		regenDelay = m_RegenDelay;
-		invincibilityTime = m_InvincibilityTime;
+		invincibilityTime = m_InvincibilityTime.Value;
+		regenDelay = 1 / m_RegenRate.Value;
+
+		EquipmentManager.instance.onEquipmentChanged += OnEquipmentChanged;
 
 		//var shader = playerMat.shader;
 		//isOutlineOn = new LocalKeyword(shader, "_IS_OUTLINE_ON");
@@ -106,9 +109,9 @@ public class PlayerStats : MonoBehaviour
 		// Only receive damage if the player is alive and runs out of invincibily time.
 		if (currentHP > 0 && invincibilityTime <= 0f)
 		{
-			int finalDmg = Mathf.RoundToInt(dmg - armor * damageRecFactor);
+			int finalDmg = Mathf.RoundToInt(dmg - armor.Value * damageRecFactor);
 			currentHP -= finalDmg;
-			currentHP = Mathf.Clamp(currentHP, 0, maxHP);
+			currentHP = Mathf.Clamp(currentHP, 0f, maxHP.Value);
 			
 			hpBar.SetCurrentHealth(currentHP);
 
@@ -119,7 +122,7 @@ public class PlayerStats : MonoBehaviour
 			Physics2D.IgnoreLayerCollision(3, 8, true);
 			
 			lastDamagedTime = Time.time;
-			invincibilityTime = m_InvincibilityTime;
+			invincibilityTime = m_InvincibilityTime.Value;
 		}
 	}
 
@@ -128,7 +131,7 @@ public class PlayerStats : MonoBehaviour
 		if (currentHP > 0)
 		{
 			currentHP += amount;
-			currentHP = Mathf.Clamp(currentHP, 0, maxHP);
+			currentHP = Mathf.Clamp(currentHP, 0f, maxHP.Value);
 			
 			hpBar.SetCurrentHealth(currentHP);
 
@@ -140,7 +143,7 @@ public class PlayerStats : MonoBehaviour
 	/// Decide whether or not this attack is a critical hit.
 	/// </summary>
 	/// <returns></returns>
-	public bool IsCriticalStrike() => Random.Range(0f, 100f) <= criticalChance;
+	public bool IsCriticalStrike() => Random.Range(0f, 100f) <= criticalChance.Value;
 	
 	private void Regenerate()
 	{
@@ -148,11 +151,11 @@ public class PlayerStats : MonoBehaviour
 
 		if (currentHP > 0 && regenDelay < 0f && canRegen)
 		{
-			currentHP += regenRate;
-			currentHP = Mathf.Clamp(currentHP, 0, maxHP);
+			currentHP += 1f;
+			currentHP = Mathf.Clamp(currentHP, 0f, maxHP.Value);
 			hpBar.SetCurrentHealth(currentHP);
 
-			regenDelay = 2f;
+			regenDelay = 1 / m_RegenRate.Value;
 		}
 	}
 
@@ -165,7 +168,7 @@ public class PlayerStats : MonoBehaviour
 			transform.GetComponent<PlayerMovement>().enabled = false;
 
 			Vector2 knockbackDir = transform.position - attacker.position;  // The direction of the knock back.
-			float knockbackForce = knockBackValue * (1f - knockBackRes);  // Calculate the actual knock back value.
+			float knockbackForce = knockBackValue * (1f - knockBackRes.Value);  // Calculate the actual knock back value.
 			
 			rb2d.AddForce(knockbackForce * knockbackDir.normalized, ForceMode2D.Impulse);
 
@@ -173,5 +176,46 @@ public class PlayerStats : MonoBehaviour
 
 			transform.GetComponent<PlayerMovement>().enabled = true;
 		}
+	}
+
+	private void OnEquipmentChanged(Equipment newEquipment, Equipment oldEquipment)
+	{
+		if (newEquipment != null)
+		{
+			Debug.Log("New armor got equiped.");
+			armor.AddModifier(newEquipment.armor);
+			maxHP.AddModifier(newEquipment.maxHP);
+			m_RegenRate.AddModifier(newEquipment.regenerateRate);
+			m_InvincibilityTime.AddModifier(newEquipment.invincibilityTime);
+
+			atkDamage.AddModifier(newEquipment.damagePerc);
+			criticalChance.AddModifier(newEquipment.criticalChancePerc);
+			criticalDamage.AddModifier(newEquipment.criticalDamagePerc);
+
+			m_MoveSpeed.AddModifier(newEquipment.movementSpeedPerc);
+			knockBackVal.AddModifier(newEquipment.knockbackPerc);
+			knockBackRes.AddModifier(newEquipment.knockbackResistancePerc);
+		}
+
+		if (oldEquipment != null)
+		{
+			Debug.Log("Old armor got unequiped.");
+			armor.RemoveModifier(oldEquipment.armor);
+			maxHP.RemoveModifier(oldEquipment.maxHP);
+			m_RegenRate.RemoveModifier(oldEquipment.regenerateRate);
+			m_InvincibilityTime.RemoveModifier(oldEquipment.invincibilityTime);
+
+			atkDamage.RemoveModifier(oldEquipment.damagePerc);
+			criticalChance.RemoveModifier(oldEquipment.criticalChancePerc);
+			criticalDamage.RemoveModifier(oldEquipment.criticalDamagePerc);
+
+			m_MoveSpeed.RemoveModifier(oldEquipment.movementSpeedPerc);
+			knockBackVal.RemoveModifier(oldEquipment.knockbackPerc);
+			knockBackRes.RemoveModifier(oldEquipment.knockbackResistancePerc);
+		}
+
+		// Update the health bar limit.
+		hpBar.SetMaxHealth(maxHP.Value, false);
+		regenDelay = 1 / m_RegenRate.Value;
 	}
 }

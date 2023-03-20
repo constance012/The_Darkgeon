@@ -31,12 +31,12 @@ public class Attack1 : StateMachineBehaviour
 		if (!dmgDealt && stateInfo.normalizedTime > .7f)
 		{
 			Collider2D[] hitList = Physics2D.OverlapCircleAll(action.atkPoint.position, action.atkRange, action.enemyLayers);
-			float baseDmg = stats.atkDamage * dmgScale;
-			float critDmg = canCrit ? 1f + stats.criticalDamage / 100f : 1f;
+			float baseDmg = stats.atkDamage.Value * dmgScale;
+			float critDmgMul = canCrit ? 1f + stats.criticalDamage.Value / 100f : 1f;
 			
 			foreach (Collider2D enemy in hitList)
 			{
-				enemy.GetComponent<EnemyStat>().TakeDamage(baseDmg, critDmg, stats.knockBackVal);
+				enemy.GetComponent<EnemyStat>().TakeDamage(baseDmg, critDmgMul, stats.knockBackVal.Value);
 			}
 
 			dmgDealt = true;
