@@ -14,9 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: 
   slotIndex: -1
+  category: 1
   itemName: Leather Vest
   description: A vest made from deer leather.
-  icon: {fileID: 21300250, guid: 7810966f0f690954c87305933cabf2b0, type: 3}
+  icon: {fileID: 21300000, guid: e37ee0b1cbe20c5458102626b95a6b7c, type: 3}
   rarity:
     title: Common
     color: {r: 0.7372549, g: 0.7372549, b: 0.7372549, a: 1}
@@ -29,7 +30,7 @@ MonoBehaviour:
   type: 3
   armor: 2
   maxHP: 5
-  regenerateDelay: 0
+  regenerateRate: 0
   invincibilityTime: 0
   damagePerc: 0
   criticalChancePerc: 0

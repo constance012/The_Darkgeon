@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: 
   slotIndex: -1
+  category: 1
   itemName: Leather Pants
   description: 'A pants made from deer leather, it''s tougher than its appearance. '
   icon: {fileID: 21300238, guid: 7810966f0f690954c87305933cabf2b0, type: 3}
@@ -29,7 +30,7 @@ MonoBehaviour:
   type: 4
   armor: 3
   maxHP: 5
-  regenerateDelay: 0
+  regenerateRate: 0
   invincibilityTime: 0
   damagePerc: 0
   criticalChancePerc: 0

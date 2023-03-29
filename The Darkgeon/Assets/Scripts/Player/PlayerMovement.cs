@@ -1,6 +1,5 @@
-using JetBrains.Annotations;
 using UnityEngine;
-using UnityEngine.EventSystems;
+using CSTGames.CommonEnums;
 
 /// <summary>
 /// Manages the player's movement inputs and events.

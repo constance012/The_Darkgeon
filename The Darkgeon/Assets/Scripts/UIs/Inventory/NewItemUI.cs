@@ -12,7 +12,7 @@ public class NewItemUI : MonoBehaviour
 	private RectTransform rTransform;
 	private TextMeshProUGUI displayText;
 
-	private float disappearSpeed = 50f;
+	private float disappearSpeed = 70f;
 
 	private void Awake()
 	{

@@ -1,7 +1,6 @@
 using System.Collections;
-using System.Diagnostics.CodeAnalysis;
-using System.Runtime.CompilerServices;
 using UnityEngine;
+using CSTGames.CommonEnums;
 
 /// <summary>
 /// Manages all the player's stats.

@@ -6,7 +6,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Events;
 using TMPro;
-using System.Runtime.CompilerServices;
+using CSTGames.CommonEnums;
 
 public class ControlsOptionPage : MonoBehaviour
 {
@@ -147,7 +147,7 @@ public class ControlsOptionPage : MonoBehaviour
 		isRegistering = true;
 
 		// Set the current action.
-		Enum.TryParse<KeybindingActions>(ClearWhitespaces(action), true, out currentAction);
+		Enum.TryParse<KeybindingActions>(StringUtility.ClearWhitespaces(action), true, out currentAction);
 
 		originalButtonText = currentButtonTextUI.text;
 		currentButtonTextUI.color = new Color(1f, .76f, 0f);  // Change the text's color to pressed color.
@@ -188,8 +188,8 @@ public class ControlsOptionPage : MonoBehaviour
 		Debug.Log("Released key: " + keyCode);
 		
 		// Add a whitespace character between each capital letter, and trim out the leading whitespace.
-		string buttonText = AddWhitespaceBeforeCapital(keyCode.ToString());
-		buttonText = AddHyphenBeforeNumber(buttonText);
+		string buttonText = StringUtility.AddWhitespaceBeforeCapital(keyCode.ToString());
+		buttonText = StringUtility.AddHyphenBeforeNumber(buttonText);
 		
 		CancelBinding(buttonText);
 	}
@@ -314,13 +314,13 @@ public class ControlsOptionPage : MonoBehaviour
 		foreach (Keyset.Key key in keySet.keyList)
 		{
 			// Get each button and edit its text.
-			string buttonName = AddWhitespaceBeforeCapital(key.action.ToString());
+			string buttonName = StringUtility.AddWhitespaceBeforeCapital(key.action.ToString());
 
 			TextMeshProUGUI buttonTextUI = transform.Find("Scroll View/Viewport/Content/" + buttonName + " Button/Text").GetComponent<TextMeshProUGUI>();
 			
-			string keyName = AddWhitespaceBeforeCapital(key.keyCode.ToString()).ToUpper();
+			string keyName = StringUtility.AddWhitespaceBeforeCapital(key.keyCode.ToString()).ToUpper();
 
-			buttonTextUI.text = AddHyphenBeforeNumber(keyName);
+			buttonTextUI.text = StringUtility.AddHyphenBeforeNumber(keyName);
 		}
 	}
 
@@ -340,24 +340,5 @@ public class ControlsOptionPage : MonoBehaviour
 		originalButtonText = "";
 
 		transform.Find("Wait For Input Page").gameObject.SetActive(false);
-	}
-
-	public static string AddWhitespaceBeforeCapital(string str)
-	{
-		return String.Concat(str.Select(x => Char.IsUpper(x) ? " " + x : x.ToString()))
-								.TrimStart(' ');
-	}
-
-	public static string AddHyphenBeforeNumber(string str)
-	{
-		return String.Concat(str.Select(x => Char.IsDigit(x) ? "-" + x : x.ToString()))
-								.TrimStart('-');
-	}
-
-	public static string ClearWhitespaces(string str)
-	{
-		return new string(str.ToCharArray()
-			.Where(c => !Char.IsWhiteSpace(c))
-			.ToArray());
 	}
 }

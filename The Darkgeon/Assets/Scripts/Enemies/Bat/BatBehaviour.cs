@@ -1,5 +1,6 @@
 using UnityEngine;
 using Pathfinding;
+using CSTGames.CommonEnums;
 
 public class BatBehaviour : EnemyBehaviour
 {

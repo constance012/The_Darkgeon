@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using CSTGames.CommonEnums;
 
 public class Chest : Interactable
 {
@@ -10,24 +11,24 @@ public class Chest : Interactable
 	/// </summary>
 	public enum ChestType { Wooden, Iron, Silver, Golden }
 
-	/// <summary>
-	/// Represents types of treasure and the thier maximum quantity when generated in a chest.
-	/// </summary>
-	public enum TreasureType
-	{
-		Null = 0,
-		Primary = 1,
-		Food = 2,
-		Potion = 3,
-		Material = 4
-	}
-
 	[Space]
 	[Header("General Info")]
 	public ChestType type;
 	public float distanceBeforeClosed;
 
 	[Space]
+	[SerializeField] private static Dictionary<ItemCategory, int> treasureAmount = new Dictionary<ItemCategory, int>
+	{
+		[ItemCategory.Null] = 0,
+		[ItemCategory.Coin] = 1,
+		[ItemCategory.Equipment] = 2,
+		[ItemCategory.Weapon] = 1,
+		[ItemCategory.Food] = 3,
+		[ItemCategory.Potion] = 2,
+		[ItemCategory.Material] = 3,
+		[ItemCategory.Mineral] = 3
+	};
+
 	[SerializeField] private List<DeathLoot> treasures = new List<DeathLoot>();
 
 	[Space]
@@ -139,7 +140,7 @@ public class Chest : Interactable
 			return;
 
 		// Essential local variables.
-		TreasureType currentType = TreasureType.Null;
+		ItemCategory currentType = ItemCategory.Null;
 		List<DeathLoot> itemsOfCurrentType = new List<DeathLoot>();
 
 		int numberOfItemsRemaining = 0;
@@ -147,30 +148,30 @@ public class Chest : Interactable
 		// Explicit writing of int.CompareTo(int value) method.
 		treasures.Sort((x, y) =>
 		{
-			if ((int)x.type < (int)y.type) return -1;
-			else if ((int)x.type > (int)y.type) return 1;
+			if ((int)x.loot.category < (int)y.loot.category) return -1;
+			else if ((int)x.loot.category > (int)y.loot.category) return 1;
 			else return 0;
 		});
 
 		foreach (DeathLoot target in treasures)
 		{
-			if (target.isGuaranteed || target.type == TreasureType.Primary)
+			if (target.isGuaranteed)
 			{
-				Item primaryItem = Instantiate(target.loot);
-				primaryItem.quantity = target.quantity;
-				primaryItem.id = Guid.NewGuid().ToString();
+				Item guaranteedItem = Instantiate(target.loot);
+				guaranteedItem.quantity = target.quantity;
+				guaranteedItem.id = Guid.NewGuid().ToString();
 
-				storedItem.Add(primaryItem);
+				storedItem.Add(guaranteedItem);
 				continue;
 			}
 
 			// If the target treasure type is changed, than update these locals.
-			else if (target.type != currentType) 
+			else if (target.loot.category != currentType)
 			{
-				currentType = target.type;
-				itemsOfCurrentType = treasures.FindAll(loot => loot.type == currentType);
+				currentType = target.loot.category;
+				itemsOfCurrentType = treasures.FindAll(loot => loot.loot.category == currentType);
 
-				numberOfItemsRemaining = (int)currentType;
+				numberOfItemsRemaining = treasureAmount[currentType];
 			}
 
 			// Skip this iteration if items of the current type are fully added.

@@ -1,4 +1,5 @@
 using UnityEngine;
+using CSTGames.CommonEnums;
 
 /// <summary>
 /// This class is responsible for spike collision affects.

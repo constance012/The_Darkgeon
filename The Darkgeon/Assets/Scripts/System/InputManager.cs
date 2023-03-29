@@ -1,6 +1,5 @@
-using System;
-using System.Runtime.InteropServices.WindowsRuntime;
 using UnityEngine;
+using CSTGames.CommonEnums;
 
 /// <summary>
 /// Manages all the keyboard input for the game.

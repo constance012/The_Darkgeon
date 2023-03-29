@@ -1,0 +1,31 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9182ed007a2251947a1f9efa7602608e, type: 3}
+  m_Name: Cheese
+  m_EditorClassIdentifier: 
+  id: 
+  slotIndex: -1
+  category: 3
+  itemName: Cheese
+  description: A product made by curdling or coagulating mammals milk. It's rich
+    in protein, calcium and fat.
+  icon: {fileID: 21300000, guid: 988aad686dc1fec48bbc0dee20cead64, type: 3}
+  rarity:
+    title: Uncommon
+    color: {r: 0.19607843, g: 0.6431373, b: 0, a: 1}
+  stackable: 1
+  maxPerStack: 16
+  quantity: 1
+  isFavorite: 0
+  isDefaultItem: 0
+  canBeUsed: 1
+  health: 45

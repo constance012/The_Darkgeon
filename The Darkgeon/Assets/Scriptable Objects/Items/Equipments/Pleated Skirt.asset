@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: 
   slotIndex: -1
+  category: 1
   itemName: Pleated Skirt
   description: A red, long pleated skirt with white trim.
   icon: {fileID: 21300248, guid: 7810966f0f690954c87305933cabf2b0, type: 3}

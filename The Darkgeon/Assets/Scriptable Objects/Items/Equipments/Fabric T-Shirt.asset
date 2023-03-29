@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: 
   slotIndex: -1
+  category: 1
   itemName: Fabric T-Shirt
   description: A plain T-Shirt made from thin fabric.
   icon: {fileID: 21300240, guid: 7810966f0f690954c87305933cabf2b0, type: 3}
@@ -29,7 +30,7 @@ MonoBehaviour:
   type: 3
   armor: 1
   maxHP: 0
-  regenerateDelay: 0
+  regenerateRate: 0
   invincibilityTime: 0
   damagePerc: 0
   criticalChancePerc: 0

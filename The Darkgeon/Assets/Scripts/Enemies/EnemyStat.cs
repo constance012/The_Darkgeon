@@ -1,8 +1,5 @@
-using Pathfinding;
 using System;
 using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting.Antlr3.Runtime.Misc;
 using UnityEngine;
 
 /// <summary>
@@ -281,7 +278,6 @@ public class EnemyStat : MonoBehaviour
 public struct DeathLoot
 {
 	public Item loot;
-	public Chest.TreasureType type;
 
 	[Space]
 	public int quantity;

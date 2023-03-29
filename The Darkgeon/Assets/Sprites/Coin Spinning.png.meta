@@ -44,10 +44,10 @@ TextureImporter:
   compressionQuality: 50
   spriteMode: 2
   spriteExtrude: 1
-  spriteMeshType: 0
+  spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 72
+  spritePixelsToUnits: 48
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -145,8 +145,8 @@ TextureImporter:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 50
-        height: 50
+        width: 25
+        height: 25
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -154,8 +154,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 7c338c370770f8d4895a63ebb522c6d3
-      internalID: 418982480
+      spriteID: b2b72f2a64a3bb44eb4ee9d000e38c0e
+      internalID: -211536273
       vertices: []
       indices: 
       edges: []
@@ -164,10 +164,10 @@ TextureImporter:
       name: Coin Spinning_1
       rect:
         serializedVersion: 2
-        x: 50
+        x: 25
         y: 0
-        width: 50
-        height: 50
+        width: 25
+        height: 25
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -175,8 +175,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 9d43e149ad1bdca44a15733f800095d1
-      internalID: -211025917
+      spriteID: e58cec977e2b46242882b8a79e48ba4b
+      internalID: -687540854
       vertices: []
       indices: 
       edges: []
@@ -185,10 +185,10 @@ TextureImporter:
       name: Coin Spinning_2
       rect:
         serializedVersion: 2
-        x: 100
+        x: 50
         y: 0
-        width: 50
-        height: 50
+        width: 25
+        height: 25
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -196,8 +196,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: a34455f7f40181d48a4225761045892d
-      internalID: 1056149628
+      spriteID: c68695c10dfad344cafdc429e7060798
+      internalID: -1344648786
       vertices: []
       indices: 
       edges: []
@@ -206,10 +206,10 @@ TextureImporter:
       name: Coin Spinning_3
       rect:
         serializedVersion: 2
-        x: 150
+        x: 75
         y: 0
-        width: 50
-        height: 50
+        width: 25
+        height: 25
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -217,8 +217,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 5bb175dd96b453c4f826b4ee3310d90d
-      internalID: -1367600712
+      spriteID: 29e93bf7e8ae1ce4f9ad04b89f241e40
+      internalID: 254016758
       vertices: []
       indices: 
       edges: []
@@ -227,10 +227,10 @@ TextureImporter:
       name: Coin Spinning_4
       rect:
         serializedVersion: 2
-        x: 200
+        x: 100
         y: 0
-        width: 50
-        height: 50
+        width: 25
+        height: 25
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -238,8 +238,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: de8160e7f2cc8884ca56426d0cb11a27
-      internalID: 954672666
+      spriteID: 63c404eb227f6694abf286b9d8f65772
+      internalID: 1938554067
       vertices: []
       indices: 
       edges: []
@@ -248,10 +248,10 @@ TextureImporter:
       name: Coin Spinning_5
       rect:
         serializedVersion: 2
-        x: 250
+        x: 125
         y: 0
-        width: 50
-        height: 50
+        width: 25
+        height: 25
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -259,8 +259,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: ab9f76e1eb5e599429efac8d24f28a75
-      internalID: 551441972
+      spriteID: d7c9d28fbe162984f828c7d34bad8a50
+      internalID: 371420277
       vertices: []
       indices: 
       edges: []
@@ -276,12 +276,12 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      Coin Spinning_2: 1056149628
-      Coin Spinning_1: -211025917
-      Coin Spinning_5: 551441972
-      Coin Spinning_4: 954672666
-      Coin Spinning_0: 418982480
-      Coin Spinning_3: -1367600712
+      Coin Spinning_2: -1344648786
+      Coin Spinning_1: -687540854
+      Coin Spinning_5: 371420277
+      Coin Spinning_4: 1938554067
+      Coin Spinning_0: -211536273
+      Coin Spinning_3: 254016758
   spritePackingTag: 
   pSDRemoveMatte: 0
   pSDShowRemoveMatteOption: 0

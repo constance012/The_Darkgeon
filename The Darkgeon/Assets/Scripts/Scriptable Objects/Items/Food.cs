@@ -19,9 +19,8 @@ public class Food : Item
 
 	public override string ToString()
 	{
-		return $"Right Click to consume.\n\n" +
-				$"Rarity: {rarity.title}.\n\n" +
-				$"+{health} HP.\n\n" +
-				$"{description}";
+		return base.ToString() +
+				$"\n+{health} HP.\n\n" +
+				$"Right Click to consume.";
 	}
 }

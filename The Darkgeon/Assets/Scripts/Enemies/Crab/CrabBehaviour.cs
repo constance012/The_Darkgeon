@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using CSTGames.CommonEnums;
 
 /// <summary>
 /// Manages the Crab's behaviours and targeting AI.

@@ -1,4 +1,5 @@
 using UnityEngine;
+using CSTGames.CommonEnums;
 
 /// <summary>
 /// Manages the Spiked Slime's behaviours and targeting AI.

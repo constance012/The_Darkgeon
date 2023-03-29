@@ -53,9 +53,7 @@ public class Equipment : Item
 
 	public override string ToString()
 	{
-		string str = $"Right Click to equip/unequip.\n" +
-				$"Type: {type}.\n\n" +
-				$"Rarity: {rarity.title}.\n\n";
+		string str = base.ToString();
 
 		str += damagePerc != 0 ? $"+{damagePerc}% Damage.\n" : "";
 		str += criticalChancePerc != 0 ? $"+{criticalChancePerc}% Critical Chance.\n" : "";
@@ -71,7 +69,7 @@ public class Equipment : Item
 		str += armor != 0 ? $"+{armor} Armor.\n" : "";
 		str += maxHP != 0 ? $"+{maxHP} Max Health.\n" : "";
 		str += "\n";
-		str += description;
+		str += "Right click to equip/unequip.";
 
 		return str;
 	}

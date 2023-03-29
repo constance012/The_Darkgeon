@@ -1,4 +1,5 @@
 using UnityEngine;
+using CSTGames.CommonEnums;
 
 public class CrabNormalAtk : StateMachineBehaviour
 {

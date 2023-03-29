@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using TMPro;
-using System.Threading;
+using CSTGames.CommonEnums;
 
 /// <summary>
 /// A core manager for the current game's session.
@@ -171,7 +171,7 @@ public class GameManager : MonoBehaviour
 		int randomIndex = Random.Range(0, deathMessages.Length);
 		deathMessageText.text = deathMessages[randomIndex];
 
-		killSourceText.text = "KILL BY: " + ControlsOptionPage.AddWhitespaceBeforeCapital(sources.ToString()).ToUpper();
+		killSourceText.text = "KILL BY: " + StringUtility.AddWhitespaceBeforeCapital(sources.ToString()).ToUpper();
 	}
 
 	private void Pause()

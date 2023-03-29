@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using CSTGames.CommonEnums;
 
 [CreateAssetMenu(fileName = "New Item", menuName = "Inventory/New Base Item")]
 public class Item : ScriptableObject
@@ -17,6 +18,7 @@ public class Item : ScriptableObject
 	[Space]
 
 	public int slotIndex = -1;
+	public ItemCategory category;
 
 	public string itemName;
 	[TextArea(5, 10)] public string description;
@@ -46,6 +48,7 @@ public class Item : ScriptableObject
 	public override string ToString()
 	{
 		return $"Rarity: {rarity.title}.\n\n" +
+				$"{category}.\n\n" +
 				$"{description}";
 	}
 }
