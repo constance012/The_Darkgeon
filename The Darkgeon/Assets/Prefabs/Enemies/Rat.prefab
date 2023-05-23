@@ -196,7 +196,6 @@ MonoBehaviour:
   droppedCoinPrefab: {fileID: 3580224330702370156, guid: 8284806231246b443b91a626b4ecf4d8, type: 3}
   loots:
   - loot: {fileID: 11400000, guid: 58f8c5aac4c879247a788b2917bdde98, type: 2}
-    type: 1
     quantity: 30
     dropChance: 100
     isGuaranteed: 1
@@ -259,8 +258,8 @@ MonoBehaviour:
   m_SpottingTimer: 0.5
   m_AbandonTimer: 10
   timeBetweenAtk: 1
-  bleeding: {fileID: 11400000, guid: eaf178f04c9f9d041868043b3711d82d, type: 2}
-  slowness: {fileID: 11400000, guid: 9398fc4cf6458ad4989ec1850e8d14ae, type: 2}
+  bleeding: {fileID: 11400000, guid: 599b0372134627c4d9fdc8d962cb4c05, type: 2}
+  slowness: {fileID: 11400000, guid: ec6f875a06a657b4bb02332f3cc1253a, type: 2}
   atkAnimDone: 1
 --- !u!1 &1906861128848420086
 GameObject:

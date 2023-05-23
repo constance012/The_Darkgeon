@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: -7266759770676894200}
   - component: {fileID: -5492756389481054167}
   m_Layer: 3
-  m_Name: Blood Dropping
+  m_Name: Blood Dripping
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

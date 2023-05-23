@@ -1,8 +1,5 @@
-using System.Reflection;
-using TMPro;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "New Movement Debuff", menuName = "Debuffs/Movement Debuff")]
 public class MovementDebuff : Debuff
 {
 	[Header("Movement Related Debuff")]
@@ -13,30 +10,5 @@ public class MovementDebuff : Debuff
 	public override void TakeEffect()
 	{
 		base.TakeEffect();
-
-		MethodInfo methodName = this.GetType().GetMethod(debuffName, BindingFlags.NonPublic | BindingFlags.Instance);
-		methodName.Invoke(this, null);
-	}
-
-	private void Slowness()
-	{
-		duration -= Time.deltaTime;
-
-		if (duration <= 0f || player.currentHP <= 0)
-		{
-			DebuffManager.instance.RemoveDebuff(this);
-			player.m_MoveSpeed.BaseValue *= 1 / (1 - speedReduceFactor);  // Reverse the speed nerf.
-			return;
-		}
-
-		// The player's movement speed is reduced.
-		if (!isSpeedReduced)
-		{
-			player.m_MoveSpeed.BaseValue *= (1 - speedReduceFactor);
-			isSpeedReduced = true;
-		}
-
-		// Update the UI.
-		durationUI.text = duration.ToString("0");
 	}
 }

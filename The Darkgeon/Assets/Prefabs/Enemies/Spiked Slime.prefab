@@ -198,17 +198,14 @@ MonoBehaviour:
   droppedCoinPrefab: {fileID: 3580224330702370156, guid: 8284806231246b443b91a626b4ecf4d8, type: 3}
   loots:
   - loot: {fileID: 11400000, guid: 58f8c5aac4c879247a788b2917bdde98, type: 2}
-    type: 1
     quantity: 50
     dropChance: 100
     isGuaranteed: 1
   - loot: {fileID: 11400000, guid: 6c8ac6b5c48eb1d40baee656e2148f50, type: 2}
-    type: 2
     quantity: 2
     dropChance: 100
     isGuaranteed: 1
   - loot: {fileID: 11400000, guid: 2a4e842369014604287ab6d92fac5a59, type: 2}
-    type: 4
     quantity: 1
     dropChance: 50
     isGuaranteed: 0
@@ -271,7 +268,7 @@ MonoBehaviour:
   m_SpottingTimer: 1
   m_AbandonTimer: 10
   timeBetweenAtk: 1.7
-  poisoned: {fileID: 11400000, guid: 84e3734e525198b4699910788acfb4c6, type: 2}
+  poisoned: {fileID: 11400000, guid: edb71fa323a40b744b3f2d1d9c095f7c, type: 2}
   abilityFx: {fileID: 0}
   abilityDuration: 10
   atkAnimDone: 1

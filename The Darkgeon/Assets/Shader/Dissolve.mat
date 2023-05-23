@@ -41,5 +41,5 @@ Material:
     - _Fade: 1
     - _Scale: 20
     m_Colors:
-    - _Color: {r: 3.2941177, g: 0.047058824, b: 0, a: 0}
+    - _Color: {r: 4, g: 0.06282722, b: 0, a: 0}
   m_BuildTextureStacks: []

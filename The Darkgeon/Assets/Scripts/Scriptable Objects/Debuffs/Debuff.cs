@@ -4,6 +4,7 @@ using UnityEngine;
 /// <summary>
 /// A base scriptable object to create a debuff.
 /// </summary>
+[CreateAssetMenu(fileName = "New Base Debuff", menuName = "Debuffs/Base Debuff")]
 public class Debuff : ScriptableObject
 {
 	[Header("Base Info")]

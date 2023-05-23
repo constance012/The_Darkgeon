@@ -51,7 +51,6 @@ public class Chest : Interactable
 		hasInteracted = true;
 	}
 
-	// Use this Update instead of the parent's one.
 	protected override void Update()
 	{
 		Vector2 worldMousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);

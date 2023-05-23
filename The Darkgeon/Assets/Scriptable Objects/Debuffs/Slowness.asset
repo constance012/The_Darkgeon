@@ -9,7 +9,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 82e144d75cd2242499e27fd248737cbc, type: 3}
+  m_Script: {fileID: 11500000, guid: 015f3c64d2443104ab6aeca3320b842e, type: 3}
   m_Name: Slowness
   m_EditorClassIdentifier: 
   debuffName: Slowness

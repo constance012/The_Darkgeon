@@ -49,5 +49,5 @@ Material:
     - _IS_OUTLINE: 0
     - _Thickness: 0
     m_Colors:
-    - _Color: {r: 0.8018868, g: 0.4607456, b: 0.14751692, a: 1}
+    - _Color: {r: 2.1185474, g: 1.1868302, b: 0.35493988, a: 1}
   m_BuildTextureStacks: []
