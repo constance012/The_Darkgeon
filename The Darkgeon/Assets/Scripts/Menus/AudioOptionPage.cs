@@ -24,6 +24,7 @@ public class AudioOptionPage : MonoBehaviour
 
 	private void Awake()
 	{
+		Debug.Log("Audio Page awoke.");
 		masterSlider = transform.Find("Master Slider").GetComponent<Slider>();
 		musicSlider = transform.Find("Music Slider").GetComponent<Slider>();
 		soundsSlider = transform.Find("Sounds Slider").GetComponent<Slider>();
@@ -43,7 +44,7 @@ public class AudioOptionPage : MonoBehaviour
 		mixer.SetFloat("masterVol", amount);
 
 		masterAmountUI.text = GetVolumeAmount(amount);
-		PlayerPrefs.SetFloat("MasterVolume", amount);
+		UserSettings.MasterVolume = amount;
 	}
 
 	public void SetMusicVolume(float amount)
@@ -51,7 +52,7 @@ public class AudioOptionPage : MonoBehaviour
 		mixer.SetFloat("musicVol", amount);
 
 		musicAmountUI.text = GetVolumeAmount(amount);
-		PlayerPrefs.SetFloat("MusicVolume", amount);
+		UserSettings.MusicVolume = amount;
 	}
 
 	public void SetSoundsVolume(float amount)
@@ -59,29 +60,27 @@ public class AudioOptionPage : MonoBehaviour
 		mixer.SetFloat("soundsVol", amount);
 
 		soundsAmountUI.text = GetVolumeAmount(amount);
-		PlayerPrefs.SetFloat("SoundsVolume", amount);
+		UserSettings.SoundsVolume = amount;
 	}
 
 	public void ResetToDefault()
 	{
-		PlayerPrefs.SetFloat("MasterVolume", 0f);
-		PlayerPrefs.SetFloat("MusicVolume", 0f);
-		PlayerPrefs.SetFloat("SoundsVolume", 0f);
+		UserSettings.ResetToDefault(UserSettings.SettingSection.Audio);
 
 		ReloadUI();
 	}
 
 	private string GetVolumeAmount(float amount)
 	{
-		float invertedPercent = Mathf.Abs(amount) / 80f;
-		return ((1f - invertedPercent) * 100f).ToString("0");
+		float percent01 = 1f - (Mathf.Abs(amount) / 80f);
+		return (percent01 * 100f).ToString("0");
 	}
 
 	private void ReloadUI()
 	{
-		float masterVol = PlayerPrefs.GetFloat("MasterVolume", 0f);
-		float musicVol = PlayerPrefs.GetFloat("MusicVolume", 0f);
-		float soundsVol = PlayerPrefs.GetFloat("SoundsVolume", 0f);
+		float masterVol = UserSettings.MasterVolume;
+		float musicVol = UserSettings.MusicVolume;
+		float soundsVol = UserSettings.SoundsVolume;
 
 		masterSlider.value = masterVol;
 		musicSlider.value = musicVol;

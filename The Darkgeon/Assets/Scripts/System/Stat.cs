@@ -1,11 +1,11 @@
 using System;
 using UnityEngine;
 
-[System.Serializable]
+[Serializable]
 public class Stat
 {
-	public enum StatType { Flat, Percentage }
-	public StatType modifierType;
+	private enum StatType { Flat, Percentage }
+	[SerializeField] private StatType modifierType;
 
 	[field: SerializeField]
 	public float BaseValue { get; set; }

@@ -11,6 +11,7 @@ TagManager:
   - UI Canvas
   - World Canvas
   - Enemies World Canvas
+  - Health Bar
   layers:
   - Default
   - TransparentFX

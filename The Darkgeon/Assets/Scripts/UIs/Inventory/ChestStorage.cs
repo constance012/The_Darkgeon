@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class ChestStorage : MonoBehaviour
 {
@@ -14,7 +15,7 @@ public class ChestStorage : MonoBehaviour
 	public int space = 10;
 
 	// Delegate.
-	public Action onItemChanged;
+	public UnityEvent onItemChanged { get; private set; } = new UnityEvent();
 
 	private ChestSlot[] slots;
 	private TextMeshProUGUI uiTitle;
@@ -41,7 +42,7 @@ public class ChestStorage : MonoBehaviour
 
 		gameObject.SetActive(false);
 		
-		onItemChanged += ReloadUI;
+		onItemChanged.AddListener(ReloadUI);
 	}
 
 	public bool Add(Item target, bool forcedSplit = false)

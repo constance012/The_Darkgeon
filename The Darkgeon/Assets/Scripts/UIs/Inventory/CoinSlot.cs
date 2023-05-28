@@ -2,6 +2,7 @@ using System;
 using TMPro;
 using UnityEngine;
 
+[RequireComponent(typeof(TooltipTrigger))]
 public class CoinSlot : MonoBehaviour
 {
 	private TooltipTrigger tooltipTrigger;
@@ -9,6 +10,7 @@ public class CoinSlot : MonoBehaviour
 
 	private void Awake()
 	{
+		Debug.Log("CoinSlot awoke.", this);
 		tooltipTrigger = GetComponent<TooltipTrigger>();
 		quantityText = transform.Find("Quantity").GetComponent<TextMeshProUGUI>();
 	}
@@ -20,9 +22,6 @@ public class CoinSlot : MonoBehaviour
 
 	public void AddCoin(int quantity)
 	{
-		if (tooltipTrigger == null)
-			return;
-
 		tooltipTrigger.content = "Quantity: " + quantity + "\n\nA currency used for trading with merchants and other purposes.";
 		quantityText.text = quantity.ToString();
 

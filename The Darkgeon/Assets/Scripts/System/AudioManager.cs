@@ -24,26 +24,52 @@ public class AudioManager : MonoBehaviour
 			return;
 		}
 
+		GameObject audioSourceHolder = new GameObject("Audio Source Holder");
+		audioSourceHolder.transform.parent = this.transform;
+
 		foreach (var sound in sounds)
 		{
-			sound.source = gameObject.AddComponent<AudioSource>();
-			sound.source.clip = sound.clip;
+			sound.source = audioSourceHolder.AddComponent<AudioSource>();
 			sound.source.outputAudioMixerGroup = sound.mixerGroup;
 			sound.source.volume = sound.volume;
 			sound.source.pitch = sound.pitch;
 		}
 	}
 
-	public void Play(string name)
+	public void Play(string soundName)
 	{
-		Sound s = Array.Find(sounds, sound => sound.name == name);
+		Sound chosenSound = GetSound(soundName);
 
-		if (s == null)
+		if (chosenSound == null)
 		{
-			Debug.LogWarning("Audio Clip: " + name + " not found!!");
+			Debug.LogWarning("Audio Clip: " + soundName + " not found!!");
 			return;
 		}
 
-		s.source.Play();
+		chosenSound.source.clip = GetRandomClip(chosenSound);
+
+		chosenSound.source.Play();
+	}
+
+	public void SetVolume(string soundName, float newVolume, bool resetToDefault = false)
+	{
+		Sound chosenSound = GetSound(soundName);
+
+		if (!resetToDefault)
+			chosenSound.source.volume = newVolume;
+		else
+			chosenSound.source.volume = chosenSound.volume;
+	}
+
+	private Sound GetSound(string soundName)
+	{
+		soundName = soundName.ToLower().Trim();
+		return Array.Find(sounds, sound => sound.name.ToLower().Equals(soundName));
+	}
+
+	private AudioClip GetRandomClip(Sound sound)
+	{
+		int index = UnityEngine.Random.Range(0, sound.clips.Length);
+		return sound.clips[index];
 	}
 }

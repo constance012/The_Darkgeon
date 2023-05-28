@@ -67,7 +67,7 @@ public class CharacterController2D : MonoBehaviour
 	private bool canWalkOnSlope;
 	public bool onSlope { get; private set; }
 
-	private const float k_GroundedRadius = .2f; // Radius of the overlap circle to determine if grounded.
+	private const float k_GroundedRadius = .1f; // Radius of the overlap circle to determine if grounded.
 	private const float k_CeilingRadius = .2f; // Radius of the overlap circle to determine if the player can stand up.
 	private float m_DashingTime = .2f;
 
@@ -86,8 +86,8 @@ public class CharacterController2D : MonoBehaviour
 		m_TrailRenderer = GetComponent<TrailRenderer>();
 		m_CrouchDisableCollider = GetComponent<BoxCollider2D>();
 
-		runningDust = transform.Find("Running Dust").GetComponent<ParticleSystem>();
-		jumpingDust = transform.Find("Jumping Dust").GetComponent<ParticleSystem>();
+		runningDust = transform.Find("Effects/Running Dust").GetComponent<ParticleSystem>();
+		jumpingDust = transform.Find("Effects/Jumping Dust").GetComponent<ParticleSystem>();
 
 		if (OnLandEvent == null)
 			OnLandEvent = new UnityEvent();
@@ -162,14 +162,9 @@ public class CharacterController2D : MonoBehaviour
 			// And multiplies by the sign to reaplly direction.
 			float moveForce = Mathf.Pow(Mathf.Abs(speedDiff) * accelRate, m_VelPower) * Mathf.Sign(speedDiff);
 
-
 			// Play the dust effect when running.
-			if (Mathf.Abs(moveInput) > 0f && m_Grounded && runningDust.isStopped)
-				runningDust.Play();
-			
-			else if ((moveInput == 0f && runningDust.isPlaying) || !m_Grounded)
-				runningDust.Stop();
-
+			if (m_Rigidbody2D.velocity.magnitude > .05f && m_Grounded)
+				runningDust.Emit(1);
 
 			// Applies the force to the rigidbody, respectively when on slope or not.
 			if (onSlope && canWalkOnSlope)

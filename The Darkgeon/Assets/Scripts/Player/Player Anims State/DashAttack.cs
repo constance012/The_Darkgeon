@@ -19,9 +19,8 @@ public class DashAttack : StateMachineBehaviour
 	{
 		action = animator.GetComponent<PlayerActions>();
 		stats = animator.GetComponent<PlayerStats>();
-		dustFx = animator.transform.Find("Sword Dust Effect").GetComponent<ParticleSystem>();
+		dustFx = animator.transform.Find("Effects/Sword Dust Effect").GetComponent<ParticleSystem>();
 		animator.GetComponent<Rigidbody2D>().velocity = Vector3.zero;
-		FindObjectOfType<AudioManager>().Play("Dash Attack " + Random.Range(1, 3));
 
 		canCrit = stats.IsCriticalStrike();
 
@@ -61,16 +60,4 @@ public class DashAttack : StateMachineBehaviour
 		PlayerActions.canFaceTowardsCursor = false;
 		PlayerMovement.canMove = false;  // The player can move again as soon as the animation is completed.
 	}
-
-	// OnStateMove is called right after Animator.OnAnimatorMove()
-	//override public void OnStateMove(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
-	//{
-	//    // Implement code that processes and affects root motion
-	//}
-
-	// OnStateIK is called right after Animator.OnAnimatorIK()
-	//override public void OnStateIK(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
-	//{
-	//    // Implement code that sets up animation IK (inverse kinematics)
-	//}
 }

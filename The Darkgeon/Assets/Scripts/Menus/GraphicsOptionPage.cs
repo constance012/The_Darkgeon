@@ -55,7 +55,7 @@ public class GraphicsOptionPage : MonoBehaviour
 	public void SetQuality(int index)
 	{
 		QualitySettings.SetQualityLevel(index);
-		PlayerPrefs.SetInt("QualityLevel", index);
+		UserSettings.QualityLevel = index;
 	}
 
 	public void SetFramerateLimit(float value)
@@ -65,7 +65,7 @@ public class GraphicsOptionPage : MonoBehaviour
 		Application.targetFrameRate = fps;
 		framerateNumber.text = fps.ToString();
 
-		PlayerPrefs.SetFloat("TargetFramerate", value);
+		UserSettings.TargetFramerate = value;
 	}
 
 	public void SetVsync(bool useVsync)
@@ -81,28 +81,29 @@ public class GraphicsOptionPage : MonoBehaviour
 		}
 		else
 		{
-			framerateSlider.value = PlayerPrefs.GetFloat("TargetFramerate", 120f);
+			framerateSlider.value = UserSettings.TargetFramerate;
 			framerateSlider.interactable = true;
 			framerateNumber.color = Color.white;
 		}
 
 		QualitySettings.vSyncCount = useVsync ? 1 : 0;
-		PlayerPrefs.SetInt("UseVsync", useVsync ? 1 : 0);
+		UserSettings.UseVsync = useVsync;
 	}
 
 	public void SetFullscreen(bool isFullsreen)
 	{
+		Screen.fullScreenMode = isFullsreen ? FullScreenMode.FullScreenWindow : FullScreenMode.Windowed;
+		Debug.Log("Fullscreen: " + Screen.fullScreen);
+
 		if (isFullsreen)
 			resolutionDropdown.value = fullscreenIndex;
 
 		else if (!resolutionDropdown.interactable)
-			resolutionDropdown.value = PlayerPrefs.GetInt("ResolutionIndex", 7); ;  // Return to previous resolution only once time.
-
-		Screen.fullScreen = isFullsreen;
+			resolutionDropdown.value = UserSettings.ResolutionIndex;  // Return to previous resolution only once time.
 		
 		resolutionDropdown.interactable = !isFullsreen;  // The user can't change to other resolutions if the game is fullscreen.
 
-		PlayerPrefs.SetInt("IsFullscreen", isFullsreen ? 1 : 0);  // If true then return 1, else 0.
+		UserSettings.IsFullscreen = isFullsreen;  // If true then return 1, else 0.
 	}
 
 	public void SetResolution(int index)
@@ -111,17 +112,13 @@ public class GraphicsOptionPage : MonoBehaviour
 		Screen.SetResolution(selectedResolution.width, selectedResolution.height, Screen.fullScreen);
 
 		if (index != fullscreenIndex)
-			PlayerPrefs.SetInt("ResolutionIndex", index);
+			UserSettings.ResolutionIndex = index;
 	}
 
 	public void ResetToDefault()
 	{
 		// Perform reset.
-		PlayerPrefs.SetInt("QualityLevel", 3);
-		PlayerPrefs.SetInt("ResolutionIndex", 7);
-		PlayerPrefs.SetInt("IsFullscreen", 0);
-		PlayerPrefs.SetFloat("TargetFramerate", 120f);
-		PlayerPrefs.SetInt("UseVsync", 0);
+		UserSettings.ResetToDefault(UserSettings.SettingSection.Graphics);
 
 		ReloadUI();
 	}
@@ -149,14 +146,22 @@ public class GraphicsOptionPage : MonoBehaviour
 
 	private void ReloadUI()
 	{
-		qualityDropdown.value = PlayerPrefs.GetInt("QualityLevel", 3);
+		// Set the values without notify.
+		qualityDropdown.SetValueWithoutNotify(UserSettings.QualityLevel);
 
-		resolutionDropdown.value = PlayerPrefs.GetInt("ResolutionIndex", 7);
+		resolutionDropdown.SetValueWithoutNotify(UserSettings.ResolutionIndex);
 
-		fullscreenToggle.isOn = PlayerPrefs.GetInt("IsFullscreen", 0) == 1;
+		fullscreenToggle.SetIsOnWithoutNotify(UserSettings.IsFullscreen);
 
-		framerateSlider.value = PlayerPrefs.GetFloat("TargetFramerate", 120f);
+		framerateSlider.SetValueWithoutNotify(UserSettings.ResolutionIndex);
 
-		vsyncToggle.isOn = PlayerPrefs.GetInt("UseVsync", 0) == 1;
+		vsyncToggle.SetIsOnWithoutNotify(UserSettings.UseVsync);
+
+		// Invoke the events manually.
+		qualityDropdown.onValueChanged?.Invoke(qualityDropdown.value);
+		resolutionDropdown.onValueChanged?.Invoke(resolutionDropdown.value);
+		fullscreenToggle.onValueChanged?.Invoke(fullscreenToggle.isOn);
+		framerateSlider.onValueChanged?.Invoke(framerateSlider.value);
+		vsyncToggle.onValueChanged?.Invoke(vsyncToggle.isOn);
 	}
 }

@@ -22,6 +22,8 @@ public class Options : MonoBehaviour
 	[SerializeField] private Animator fadeoutPanel;
 	[SerializeField] private Animator mainCamera;
 
+	private bool backToMenu;
+
 	private void Awake()
 	{
 		optionsPanel = transform.Find("Options Panel").gameObject;
@@ -53,23 +55,30 @@ public class Options : MonoBehaviour
 
 	public void Back()
 	{
-		StartCoroutine(LoadMainMenu());
+		if (!backToMenu)
+		{
+			StartCoroutine(LoadMainMenu());
+			backToMenu = true;
+		}
 	}
 
 	private IEnumerator LoadMainMenu()
 	{
-		AsyncOperation loadSceneOp = SceneManager.LoadSceneAsync("Scenes/Menu");
+		AsyncOperation loadSceneOp = SceneManager.LoadSceneAsync("Scenes/Main Menu");
 		loadSceneOp.allowSceneActivation = false;
 
 		optionsPanel.GetComponent<Animator>().SetTrigger("Fade Out");
 
-		yield return new WaitUntil(() => optionsPanel.GetComponent<CanvasGroup>().alpha == 0f);
+		CanvasGroup canvasGroup = optionsPanel.GetComponent<CanvasGroup>();
+		Image fadeoutImage = fadeoutPanel.GetComponent<Image>();
+
+		yield return new WaitUntil(() => canvasGroup.alpha == 0f);
 
 		mainCamera.SetTrigger("Pan Up");
 		fadeoutPanel.SetTrigger("Fade Out");
 
 		// Activate the scene when the fading process is completed.
-		yield return new WaitUntil(() => fadeoutPanel.GetComponent<Image>().color.a == 1f);
+		yield return new WaitUntil(() => fadeoutImage.color.a == 1f);
 
 		loadSceneOp.allowSceneActivation = true;
 	}

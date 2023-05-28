@@ -112,9 +112,9 @@ public class MainMenu : MonoBehaviour
 	{
 		Time.timeScale = 1f;
 		// Audio.
-		float masterVol = PlayerPrefs.GetFloat("MasterVolume", 0f);
-		float musicVol = PlayerPrefs.GetFloat("MusicVolume", 0f);
-		float soundsVol = PlayerPrefs.GetFloat("SoundsVolume", 0f);
+		float masterVol = UserSettings.MasterVolume;
+		float musicVol = UserSettings.MusicVolume;
+		float soundsVol = UserSettings.SoundsVolume;
 
 		mixer.SetFloat("masterVol", masterVol);
 		mixer.SetFloat("musicVol", musicVol);
@@ -122,12 +122,12 @@ public class MainMenu : MonoBehaviour
 
 		// Graphics.
 		GraphicsOptionPage.resoArr = Screen.resolutions;
-		QualitySettings.SetQualityLevel(PlayerPrefs.GetInt("QualityLevel", 3));
-		Application.targetFrameRate = Convert.ToInt32(PlayerPrefs.GetFloat("TargetFramerate", 60f));
-		QualitySettings.vSyncCount = PlayerPrefs.GetInt("UseVsync", 0);
+		QualitySettings.SetQualityLevel(UserSettings.QualityLevel);
+		Application.targetFrameRate = Convert.ToInt32(UserSettings.TargetFramerate);
+		QualitySettings.vSyncCount = UserSettings.UseVsync ? 1 : 0;
 
 		// Controls
-		string keysetFile = PlayerPrefs.GetString("SelectedKeyset", "Keyset_Default");
+		string keysetFile = UserSettings.SelectedKeyset;
 		Debug.Log("Load keyset from file: " + keysetFile);
 		keySet.LoadKeysetFromJson(keysetFile);
 

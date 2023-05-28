@@ -20,7 +20,6 @@ public class Attack1 : StateMachineBehaviour
 	{
 		action = animator.GetComponent<PlayerActions>();
 		stats = animator.GetComponent<PlayerStats>();
-		FindObjectOfType<AudioManager>().Play("Normal Attack 1");
 
 		canCrit = stats.IsCriticalStrike();
 	}
@@ -62,16 +61,4 @@ public class Attack1 : StateMachineBehaviour
 
 		dmgDealt = isAtk2Triggered = false;
 	}
-
-	// OnStateMove is called right after Animator.OnAnimatorMove()
-	//override public void OnStateMove(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
-	//{
-	//    // Implement code that processes and affects root motion
-	//}
-
-	// OnStateIK is called right after Animator.OnAnimatorIK()
-	//override public void OnStateIK(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
-	//{
-	//    // Implement code that sets up animation IK (inverse kinematics)
-	//}
 }

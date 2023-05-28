@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using System.Collections;
+using CSTGames.Utility;
 
 /// <summary>
 /// Represents the player's health bar.
@@ -20,13 +21,15 @@ public class HealthBar : MonoBehaviour
 	[Space]
 	public Gradient gradient;
 
-	[Header("Fields")]
+	[Header("Effects")]
 	[Space]
 	public float fxTime = .2f;
+	public float fxDelay;
 	
 	// Private fields
 	private Image fillRect;
 	private Image fxFillRect;
+	private Image screenBloodBorder;
 
 	private Color decreaseColor = new Color(.78f, 0f, 0f);
 	private Color increaseColor = new Color(.2f, .81f, .15f, .39f);
@@ -40,6 +43,7 @@ public class HealthBar : MonoBehaviour
 
 		fillRect = transform.Find("Fill").GetComponent<Image>();
 		fxFillRect = transform.Find("Deplete Effect/Effect Fill").GetComponent<Image>();
+		screenBloodBorder = transform.root.Find("Screen Blood").GetComponent<Image>();
 
 		healthText = transform.Find("Text Display/Health Text").GetComponent<TextMeshProUGUI>();
 	}
@@ -47,6 +51,9 @@ public class HealthBar : MonoBehaviour
 	public void OnHealthChanged()
 	{
 		fillRect.color = gradient.Evaluate(hpSlider.normalizedValue);  // Return the value between 0f and 1f.
+
+		float alpha = 1f - hpSlider.normalizedValue;
+		screenBloodBorder.color = new Color(1f, 1f, 1f, alpha);
 	}
 
 	public void SetMaxHealth(float maxHP, bool initialize = true)
@@ -58,7 +65,6 @@ public class HealthBar : MonoBehaviour
 		{
 			hpSlider.value = maxHP;
 			fxSlider.value = maxHP;
-			fillRect.color = gradient.Evaluate(1f);
 			healthText.text = Mathf.Round(maxHP) + " / " + hpSlider.maxValue;
 		}		
 	}
@@ -90,12 +96,12 @@ public class HealthBar : MonoBehaviour
 
 	private IEnumerator PerformEffect()
 	{
-		yield return new WaitForSeconds(.2f);
+		yield return new WaitForSeconds(fxDelay);
 		
 		if (fxFillRect.color == decreaseColor)
 			while (fxSlider.value != hpSlider.value)
 			{
-				yield return new WaitForEndOfFrame();
+				yield return null;
 
 				fxSlider.value = Mathf.SmoothDamp(fxSlider.value, hpSlider.value, ref smoothVel, fxTime);
 			}
@@ -103,7 +109,7 @@ public class HealthBar : MonoBehaviour
 		else if (fxFillRect.color == increaseColor)
 			while (fxSlider.value != hpSlider.value)
 			{
-				yield return new WaitForEndOfFrame();
+				yield return null;
 
 				hpSlider.value = Mathf.SmoothDamp(hpSlider.value, fxSlider.value, ref smoothVel, fxTime);
 			}

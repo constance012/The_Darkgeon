@@ -16,8 +16,9 @@ public class LadderClimbing : MonoBehaviour
 	
 	private float verticalMove;
 	private float originalGravity;
-	private bool useLadder;
 	private bool isClimbing;
+
+	private int useLadderHash, verticalInputHash, groundedHash;
 
 	private void Awake()
 	{
@@ -26,54 +27,53 @@ public class LadderClimbing : MonoBehaviour
 		originalGravity = rb2d.gravityScale;
 	}
 
-	private void Update()
+	private void Start()
 	{
-		verticalMove = InputManager.instance.GetAxisRaw("vertical");
-
-		if (useLadder)
-		{
-			if (verticalMove != 0f)
-				isClimbing = true;
-
-			if (verticalMove == 0f || !animator.GetBool("Grounded"))
-			{
-				if (animator.GetCurrentAnimatorStateInfo(0).IsName("LadderUp") ||
-					animator.GetCurrentAnimatorStateInfo(0).IsName("LadderDown"))
-					animator.speed = 0f;
-			}
-
-			if (verticalMove > 0f)
-			{
-				animator.SetBool("LadderUp", true);
-				animator.SetBool("LadderDown", false);
-				animator.speed = 1f;
-			}
-
-			else if (verticalMove < 0f)
-			{
-				animator.SetBool("LadderDown", true);
-				animator.SetBool("LadderUp", false);
-				animator.speed = 1f;
-			}
-		}
+		useLadderHash = Animator.StringToHash("UseLadder");
+		verticalInputHash = Animator.StringToHash("VerticalInput");
+		groundedHash = Animator.StringToHash("Grounded");
 	}
 
 	private void FixedUpdate()
 	{
 		if (isClimbing)
-		{
-			rb2d.gravityScale = 0f;
 			rb2d.velocity = new Vector2(rb2d.velocity.x, verticalMove * speed);
-		}
-		else
-			rb2d.gravityScale = originalGravity;
 	}
 
-	private void OnTriggerEnter2D(Collider2D collision)
+	private void OnTriggerStay2D(Collider2D collision)
 	{
-		if (collision.CompareTag("Ladder"))
+		verticalMove = InputManager.instance.GetAxisRaw("vertical");
+		animator.SetFloat(verticalInputHash, verticalMove);
+
+		bool wasClimbing = isClimbing;
+
+		isClimbing = false;
+
+		if (verticalMove != 0f)
+			isClimbing = true;
+
+		if (animator.GetBool(groundedHash) && animator.GetBool(useLadderHash))
 		{
-			useLadder = true;
+			animator.SetBool(useLadderHash, false);
+			animator.speed = 1f;
+		}
+		else if (isClimbing && !animator.GetBool(useLadderHash))
+			animator.SetBool(useLadderHash, true);
+
+		if (wasClimbing != isClimbing)
+		{
+			if (isClimbing)
+			{
+				rb2d.gravityScale = originalGravity;
+				animator.speed = 1f;
+			}
+
+			else
+			{
+				rb2d.velocity = new Vector2(rb2d.velocity.x, 0f);
+				rb2d.gravityScale = 0f;
+				animator.speed = 0f;
+			}
 		}
 	}
 
@@ -81,10 +81,10 @@ public class LadderClimbing : MonoBehaviour
 	{
 		if (collision.CompareTag("Ladder"))
 		{
-			useLadder = isClimbing = false;
+			isClimbing = false;
+			rb2d.gravityScale = originalGravity;
 
-			animator.SetBool("LadderUp", false);
-			animator.SetBool("LadderDown", false);
+			animator.SetBool(useLadderHash, false);
 			animator.speed = 1f;
 		}
 	}

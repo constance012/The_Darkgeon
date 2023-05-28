@@ -1,13 +1,14 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 
 public class Inventory : MonoBehaviour
 {
 	public static Inventory instance { get; private set; }
 
-	public Action onItemChanged;
+	public UnityEvent onItemChanged { get; private set; } = new UnityEvent();
 
 	[Header("Items List")]
 	[Space]
@@ -51,7 +52,7 @@ public class Inventory : MonoBehaviour
 		coinSlot = transform.Find("Coin Slot").GetComponent<CoinSlot>();
 		outsideZone = transform.root.Find("Outside Zone").GetComponent<Image>();
 		
-		onItemChanged += ReloadUI;
+		onItemChanged.AddListener(ReloadUI);
 	}
 
 	private void Update()

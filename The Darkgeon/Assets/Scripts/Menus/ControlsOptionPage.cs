@@ -7,6 +7,7 @@ using UnityEngine.UI;
 using UnityEngine.Events;
 using TMPro;
 using CSTGames.CommonEnums;
+using CSTGames.Utility;
 
 public class ControlsOptionPage : MonoBehaviour
 {
@@ -137,17 +138,13 @@ public class ControlsOptionPage : MonoBehaviour
 	{
 		TextMeshProUGUI clickedButtonTextUI = transform.Find("Scroll View/Viewport/Content/" + action + " Button/Text")
 														.GetComponent<TextMeshProUGUI>();
-		
-		// If click on another action while currently binding this action, cancel the binding process first.
-		//if (currentButtonTextUI != null && currentButtonTextUI != clickedButtonTextUI)
-		//	CancelBinding(originalButtonText);
 
 		currentButtonTextUI = clickedButtonTextUI;
 
 		isRegistering = true;
 
 		// Set the current action.
-		Enum.TryParse<KeybindingActions>(StringUtility.ClearWhitespaces(action), true, out currentAction);
+		Enum.TryParse<KeybindingActions>(StringManipulator.ClearWhitespaces(action), true, out currentAction);
 
 		originalButtonText = currentButtonTextUI.text;
 		currentButtonTextUI.color = new Color(1f, .76f, 0f);  // Change the text's color to pressed color.
@@ -171,10 +168,10 @@ public class ControlsOptionPage : MonoBehaviour
 		Debug.Log("Pressed key: " + keyCode);
 		//Debug.Log("Current key action: " + currentAction);
 
-		foreach (Keyset.Key key in keySet.keyList)
-			if (key.action == currentAction && key.keyCode != keyCode)
+		for (int i = 0; i < keySet.keyList.Length; i++)
+			if (keySet.keyList[i].action == currentAction && keySet.keyList[i].keyCode != keyCode)
 			{
-				key.keyCode = keyCode;
+				keySet.keyList[i].keyCode = keyCode;
 
 				string selectedFile = keySetDropdown.options[keySetDropdown.value].text;
 				keySet.SaveKeysetToJson(selectedFile);
@@ -188,8 +185,8 @@ public class ControlsOptionPage : MonoBehaviour
 		Debug.Log("Released key: " + keyCode);
 		
 		// Add a whitespace character between each capital letter, and trim out the leading whitespace.
-		string buttonText = StringUtility.AddWhitespaceBeforeCapital(keyCode.ToString());
-		buttonText = StringUtility.AddHyphenBeforeNumber(buttonText);
+		string buttonText = StringManipulator.AddWhitespaceBeforeCapital(keyCode.ToString());
+		buttonText = StringManipulator.AddHyphenBeforeNumber(buttonText);
 		
 		CancelBinding(buttonText);
 	}
@@ -204,12 +201,12 @@ public class ControlsOptionPage : MonoBehaviour
 	{
 		Debug.Log(index);
 
-		string[] splitPath = jsonFiles[index].Split('/', '.');
+		string[] splitPath = jsonFiles[index].Split(Path.DirectorySeparatorChar, '.');
 		string fileName = splitPath[splitPath.Length - 2];
 		
 		keySet.LoadKeysetFromJson(fileName);
 
-		PlayerPrefs.SetString("SelectedKeyset", fileName);
+		UserSettings.SelectedKeyset = fileName;
 
 		ReloadUI();
 	}
@@ -268,16 +265,14 @@ public class ControlsOptionPage : MonoBehaviour
 
 	private void FetchJsonFiles()
 	{
-		string path = Application.streamingAssetsPath + "/Keyset Data/";
-		//string persistentPath = Application.persistentDataPath + "/Keyset Data/";
-
+		string path = Path.Combine(Application.persistentDataPath, "Keyset Data" + Path.DirectorySeparatorChar);
 		keySetDropdown.ClearOptions();
 		
 		jsonFiles = Directory.GetFiles(path, "*.json");
 		
 		for (int i = 0; i < jsonFiles.Length; i++)
 		{
-			string[] splitPath = jsonFiles[i].Split('/', '.');
+			string[] splitPath = jsonFiles[i].Split(Path.DirectorySeparatorChar, '.');
 
 			// Get the file name, excluding the extension and add it to the dropdown.
 			TMP_Dropdown.OptionData optionData = new TMP_Dropdown.OptionData(splitPath[splitPath.Length - 2]);
@@ -289,19 +284,18 @@ public class ControlsOptionPage : MonoBehaviour
 		if (keySetDropdown.options.Count < 6)
 		{
 			addButton.interactable = true;
-			Destroy(addButton.GetComponent<TooltipTrigger>());
+			addButton.GetComponent<TooltipTrigger>().content = "";
 		}
 		else
 		{
 			addButton.interactable = false;
 			
-			if (addButton.gameObject.GetComponent<TooltipTrigger>() == null)
-				addButton.gameObject.AddComponent<TooltipTrigger>().content =
-				"You've reached the maximum amount of 5 custom keysets, delete some of them or edit the existng ones.";
+			addButton.GetComponent<TooltipTrigger>().content =
+			"You've reached the maximum amount of 5 custom keysets, delete some of them or edit the existng ones.";
 		}
 
 		// Set the value of the dropdown to the previously chosen Keyset, without notify.
-		string keySetName = PlayerPrefs.GetString("SelectedKeyset", "Keyset_Default");
+		string keySetName = UserSettings.SelectedKeyset;
 		int index = keySetDropdown.options.FindIndex(keySet => keySet.text == keySetName);
 
 		keySetDropdown.SetValueWithoutNotify(index);
@@ -314,13 +308,13 @@ public class ControlsOptionPage : MonoBehaviour
 		foreach (Keyset.Key key in keySet.keyList)
 		{
 			// Get each button and edit its text.
-			string buttonName = StringUtility.AddWhitespaceBeforeCapital(key.action.ToString());
+			string buttonName = StringManipulator.AddWhitespaceBeforeCapital(key.action.ToString());
 
 			TextMeshProUGUI buttonTextUI = transform.Find("Scroll View/Viewport/Content/" + buttonName + " Button/Text").GetComponent<TextMeshProUGUI>();
 			
-			string keyName = StringUtility.AddWhitespaceBeforeCapital(key.keyCode.ToString()).ToUpper();
+			string keyName = StringManipulator.AddWhitespaceBeforeCapital(key.keyCode.ToString()).ToUpper();
 
-			buttonTextUI.text = StringUtility.AddHyphenBeforeNumber(keyName);
+			buttonTextUI.text = StringManipulator.AddHyphenBeforeNumber(keyName);
 		}
 	}
 

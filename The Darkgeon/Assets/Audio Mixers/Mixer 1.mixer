@@ -51,15 +51,15 @@ AudioMixerController:
   m_ExposedParameters:
   - guid: 494959064776c7d4988492af50dc6327
     name: masterVol
-  - guid: 51c428c4e08e74a45aca3c55be79a37c
-    name: soundsVol
   - guid: ce3c74d076e4235419153aeab386aea0
     name: musicVol
+  - guid: 51c428c4e08e74a45aca3c55be79a37c
+    name: soundsVol
   m_AudioMixerGroupViews:
   - guids:
     - 2bd818dcd6b7d28468bda6405b1f0d29
-    - 60ec2273b8aff6b4c904327f6a2da01e
     - 0ddea43d895886340871b0ef013b0986
+    - 60ec2273b8aff6b4c904327f6a2da01e
     name: View
   m_CurrentViewIndex: 0
   m_TargetSnapshot: {fileID: 24500006}

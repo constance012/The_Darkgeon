@@ -32,7 +32,7 @@ public class ClickableObject : MonoBehaviour, IPointerClickHandler, IPointerDown
 
 	private bool isCoroutineRunning;
 
-	// Static fields.
+	// Static properties.
 
 	// A clone that "ships" the current item in this slot.
 	public static GameObject clone { get; set; }
@@ -56,7 +56,7 @@ public class ClickableObject : MonoBehaviour, IPointerClickHandler, IPointerDown
 	private void Update()
 	{
 		if (isCoroutineRunning)
-			Debug.Log("Coroutine is running.");
+			Debug.Log("Coroutine is running.", this);
 
 		isLeftAltHeld = Input.GetKey(KeyCode.LeftAlt);
 		isLeftShiftHeld = Input.GetKey(KeyCode.LeftShift);

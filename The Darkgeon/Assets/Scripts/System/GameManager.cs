@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using TMPro;
 using CSTGames.CommonEnums;
+using CSTGames.Utility;
 
 /// <summary>
 /// A core manager for the current game's session.
@@ -100,7 +101,6 @@ public class GameManager : MonoBehaviour
 		{
 			SetDeathMessage(playerStats.killSource);
 			Die();
-			isPlayerDeath = true;
 		}
 
 		// If the player is death and grounded, then disable the physics simulation.
@@ -139,7 +139,7 @@ public class GameManager : MonoBehaviour
 		playerAnim.SetTrigger("Respawn");
 		playerAnim.SetBool("IsDeath", false);
 
-		playerStats.transform.position = playerStats.respawnPos;
+		playerStats.transform.position = playerStats.respawnPosition;
 		isPlayerDeath = false;
 		DebuffManager.deathByDebuff = false;
 	}
@@ -151,13 +151,15 @@ public class GameManager : MonoBehaviour
 		deathPanel.SetActive(true);
 
 		moveScript.enabled = actionsScript.enabled = false;
+
+		isPlayerDeath = true;
 	}
 	#endregion
 
 	#region UI Controls
 	public void ReturnToMenu()
 	{
-		AsyncOperation op = SceneManager.LoadSceneAsync("Scenes/Menu");
+		AsyncOperation op = SceneManager.LoadSceneAsync("Scenes/Main Menu");
 		op.allowSceneActivation = false;
 
 		Time.timeScale = 1f;
@@ -171,7 +173,7 @@ public class GameManager : MonoBehaviour
 		int randomIndex = Random.Range(0, deathMessages.Length);
 		deathMessageText.text = deathMessages[randomIndex];
 
-		killSourceText.text = "KILL BY: " + StringUtility.AddWhitespaceBeforeCapital(sources.ToString()).ToUpper();
+		killSourceText.text = "KILL BY: " + StringManipulator.AddWhitespaceBeforeCapital(sources.ToString()).ToUpper();
 	}
 
 	private void Pause()

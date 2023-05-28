@@ -54,7 +54,7 @@ public class PlayerStats : MonoBehaviour
 
 	[HideInInspector] public float lastDamagedTime = 0f;
 	[HideInInspector] public KillSources killSource = KillSources.Unknown;
-	[HideInInspector] public Vector3 respawnPos;
+	public Vector3 respawnPosition;
 	[HideInInspector] public Transform attacker = null;  // Position of the attacker.
 
 	// Private fields
@@ -77,7 +77,7 @@ public class PlayerStats : MonoBehaviour
 	{
 		currentHP = maxHP.Value;
 		hpBar.SetMaxHealth(maxHP.Value);
-		respawnPos = transform.position;
+		respawnPosition = transform.position;
 		
 		invincibilityTime = m_InvincibilityTime.Value;
 		regenDelay = 1 / m_RegenRate.Value;
@@ -181,7 +181,8 @@ public class PlayerStats : MonoBehaviour
 	{
 		if (newEquipment != null)
 		{
-			Debug.Log("New armor got equiped.");
+			Debug.Log($"Equip: {newEquipment.itemName}.");
+
 			armor.AddModifier(newEquipment.armor);
 			maxHP.AddModifier(newEquipment.maxHP);
 			m_RegenRate.AddModifier(newEquipment.regenerateRate);
@@ -198,7 +199,8 @@ public class PlayerStats : MonoBehaviour
 
 		if (oldEquipment != null)
 		{
-			Debug.Log("Old armor got unequiped.");
+			Debug.Log($"Unequip: {oldEquipment.itemName}.");
+
 			armor.RemoveModifier(oldEquipment.armor);
 			maxHP.RemoveModifier(oldEquipment.maxHP);
 			m_RegenRate.RemoveModifier(oldEquipment.regenerateRate);

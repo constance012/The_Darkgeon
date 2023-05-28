@@ -9,7 +9,7 @@ using CSTGames.CommonEnums;
 public class Keyset : ScriptableObject
 {
 	[System.Serializable]
-	public class Key
+	public struct Key
 	{
 		public KeybindingActions action;
 		public KeyCode keyCode;
@@ -23,28 +23,25 @@ public class Keyset : ScriptableObject
 	/// <param name="fileName"></param>
 	public void SaveKeysetToJson(string fileName)
 	{
-		string path = Application.streamingAssetsPath + "/Keyset Data/";
-		string persistentPath = Application.persistentDataPath + "/Keyset Data/";
+		string persistentPath = Path.Combine(Application.persistentDataPath, "Keyset Data" + Path.DirectorySeparatorChar);
+
+		Debug.Log(persistentPath);
 
 		// Create directories if they're not currently existed.
-		if (!Directory.Exists(path) || !Directory.Exists(persistentPath))
+		if (!Directory.Exists(persistentPath))
 		{
-			Directory.CreateDirectory(path);
 			Directory.CreateDirectory(persistentPath);
 		}
 
-		path += fileName + ".json";
 		persistentPath += fileName + ".json";
 
-		Debug.Log("Saving data to " + path);
-		//Debug.Log("Saving persistent data at " + persistentPath);
+		Debug.Log("Saving data to " + persistentPath);
+		
 		string json = JsonUtility.ToJson(this, true);
-		//Debug.Log(json);
 
-		File.WriteAllText(path, json);
 		File.WriteAllText(persistentPath, json);
 
-		PlayerPrefs.SetString("SelectedKeyset", fileName);
+		UserSettings.SelectedKeyset = fileName;
 	}
 
 	/// <summary>
@@ -53,14 +50,14 @@ public class Keyset : ScriptableObject
 	/// <param name="fileName"></param>
 	public void LoadKeysetFromJson(string fileName)
 	{
-		string path = Application.streamingAssetsPath + "/Keyset Data/" + fileName + ".json";
-		string persistentPath = Application.persistentDataPath + "/Keyset Data/" + fileName + ".json";
+		string persistentPath = Path.Combine(Application.persistentDataPath, "Keyset Data", fileName + ".json");
 
+		Debug.Log("Reading data at " + persistentPath);
+		
 		// If the custom keyset file exists.
-		if (File.Exists(path) && File.Exists(persistentPath))
+		if (File.Exists(persistentPath))
 		{
-			Debug.Log("Reading data at " + path);
-			string json = File.ReadAllText(path);
+			string json = File.ReadAllText(persistentPath);
 			
 			JsonUtility.FromJsonOverwrite(json, this);
 		}
@@ -70,15 +67,13 @@ public class Keyset : ScriptableObject
 		{
 			fileName = "Default";
 
-			path = Application.streamingAssetsPath + "/Keyset Data/" + fileName + ".json";
-			persistentPath = Application.persistentDataPath + "/Keyset Data/" + fileName + ".json";
+			persistentPath = Path.Combine(Application.persistentDataPath, "Keyset Data", fileName + ".json");
 
 			// If the default file doesn't exist, create one.
-			if (!File.Exists(path) || !File.Exists(persistentPath))
+			if (!File.Exists(persistentPath))
 				SaveKeysetToJson(fileName);
 
-			Debug.Log("Reading data at " + path);
-			string json = File.ReadAllText(path);
+			string json = File.ReadAllText(persistentPath);
 			
 			JsonUtility.FromJsonOverwrite(json, this);
 		}
