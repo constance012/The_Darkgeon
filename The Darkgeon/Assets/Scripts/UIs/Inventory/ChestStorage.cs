@@ -10,7 +10,6 @@ public class ChestStorage : MonoBehaviour
 
 	[Header("References")]
 	[Space]
-
 	public Chest openedChest;
 	public int space = 10;
 

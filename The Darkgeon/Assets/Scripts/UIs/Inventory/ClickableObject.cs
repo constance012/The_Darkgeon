@@ -417,6 +417,7 @@ public class ClickableObject : MonoBehaviour, IPointerClickHandler, IPointerDown
 	{
 		isCoroutineRunning = true;
 
+		// Wait for a second, continue splitting if the user holds down the mouse button.
 		yield return new WaitForSeconds(1f);
 
 		if (!isMouseButtonHeld || !isLeftShiftHeld)
@@ -425,8 +426,8 @@ public class ClickableObject : MonoBehaviour, IPointerClickHandler, IPointerDown
 			yield break;
 		}
 
-		Debug.Log("Continue splitting");
-		
+		float delayedTime = .5f;
+
 		while (isMouseButtonHeld && isLeftShiftHeld)
 		{
 			if (!isChestSlot && !Inventory.instance.IsExisting(dragItem.id))
@@ -454,7 +455,10 @@ public class ClickableObject : MonoBehaviour, IPointerClickHandler, IPointerDown
 					break;
 			}
 
-			yield return new WaitForSeconds(.5f);
+			yield return new WaitForSeconds(delayedTime);
+			
+			delayedTime -= Time.deltaTime;
+			delayedTime = Mathf.Max(.1f, delayedTime);  // Clamp the delayed time above 0.1 secs.
 		}
 
 		isCoroutineRunning = false;

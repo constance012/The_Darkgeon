@@ -8,11 +8,14 @@ public class CoinSlot : MonoBehaviour
 	private TooltipTrigger tooltipTrigger;
 	private TextMeshProUGUI quantityText;
 
+	private bool isAwoken;
+
 	private void Awake()
 	{
-		Debug.Log("CoinSlot awoke.", this);
 		tooltipTrigger = GetComponent<TooltipTrigger>();
 		quantityText = transform.Find("Quantity").GetComponent<TextMeshProUGUI>();
+
+		isAwoken = true;
 	}
 
 	private void Start()
@@ -22,6 +25,9 @@ public class CoinSlot : MonoBehaviour
 
 	public void AddCoin(int quantity)
 	{
+		if (!isAwoken)
+			return;
+
 		tooltipTrigger.content = "Quantity: " + quantity + "\n\nA currency used for trading with merchants and other purposes.";
 		quantityText.text = quantity.ToString();
 

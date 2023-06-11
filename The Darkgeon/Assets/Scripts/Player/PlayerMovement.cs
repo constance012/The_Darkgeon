@@ -14,7 +14,11 @@ public class PlayerMovement : MonoBehaviour
 
 	[Header("Fields")]
 	[Space]
+	[Tooltip("The time (s) required to achieve a full height jump.")]
+	public float baseJumpTime;
 
+	// Private fields.
+	private float jumpTime;
 	private float horizontalMove;
 	private float dashAllowTime = 0f;
 
@@ -51,8 +55,24 @@ public class PlayerMovement : MonoBehaviour
 		if (InputManager.instance.GetKeyDown(KeybindingActions.Jump) && animator.GetBool("Grounded"))
 		{
 			jump = true;
+			jumpTime = baseJumpTime;
 			animator.SetBool("IsJumping", true);
 		}
+
+		if (InputManager.instance.GetKey(KeybindingActions.Jump) && animator.GetBool("IsJumping"))
+		{
+			if (jumpTime <= 0f)
+			{
+				OnLanding();
+				return;
+			}
+
+			jump = true;
+			jumpTime -= Time.deltaTime;
+		}
+
+		if (InputManager.instance.GetKeyUp(KeybindingActions.Jump))
+			OnLanding();
 
 		if (isModifierKeysOccupied)
 			return;
@@ -71,18 +91,19 @@ public class PlayerMovement : MonoBehaviour
 
 	private void FixedUpdate()
 	{
-		controller.Move(horizontalMove, crouch, ref jump, ref dash);
+		controller.Move(horizontalMove, crouch, jump, ref dash);
 	}
 
 	public void OnLanding()
 	{
 		animator.SetBool("IsJumping", false);
-		Debug.Log("Jump: " + jump, this);
+		jump = false;
+		//Debug.Log("Jump: " + jump, this);
 	}
 
 	public void OnCrouching(bool isCrouching)
 	{
 		animator.SetBool("IsCrouching", isCrouching);
-		Debug.Log("Crouching: " + animator.GetBool("IsCrouching"), this);
+		//Debug.Log("Crouching: " + animator.GetBool("IsCrouching"), this);
 	}
 }

@@ -15,7 +15,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 5
   m_IsActive: 1
 --- !u!4 &3615272710834565069
 Transform:
@@ -202,7 +202,8 @@ MonoBehaviour:
   player: {fileID: 0}
   popupLabelPrefab: {fileID: 8135185957320462521, guid: ca4be55abf8b73d4a99492bb73ba7595, type: 3}
   radius: 0.3
+  id: 
   type: 2
   distanceBeforeClosed: 1.5
   storedItem: []
-  animator: {fileID: 0}
+  treasures: []

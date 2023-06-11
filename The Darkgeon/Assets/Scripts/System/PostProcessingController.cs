@@ -28,11 +28,7 @@ public class PostProcessingController : MonoBehaviour
 	{
 		ppVolume = GetComponent<Volume>();
 		hpSlider = GameObject.FindWithTag("Health Bar").transform.GetComponent<Slider>();
-	}
-
-	private void Start()
-	{
-		// Get the override from the instance of the attached profile.
+		
 		ppVolume.profile.TryGet(out _vignette);
 	}
 

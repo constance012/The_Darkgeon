@@ -1,18 +1,23 @@
 using System;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
+using CSTGames.DataPersistence;
+using System.Linq;
 
-public class EquipmentManager : MonoBehaviour
+public class EquipmentManager : MonoBehaviour, ISaveDataTransceiver
 {
+	[Serializable]
+	public class EquipmentEvent : UnityEvent<Equipment, Equipment> { }
+
 	public static EquipmentManager instance { get; private set; }
 
 	[Header("Current Equipments")]
 	[Space]
 	[SerializeField] private Equipment[] currentEquipments;
 
-	public delegate void OnEquipmentChanged(Equipment newEquipment, Equipment oldEquipment);
-	public OnEquipmentChanged onEquipmentChanged;
+	public EquipmentEvent onEquipmentChanged { get; private set; } = new EquipmentEvent();
 
 	// Private fields.
 	private EquipmentSlot[] slots;
@@ -23,7 +28,7 @@ public class EquipmentManager : MonoBehaviour
 	private PlayerStats playerStats;
 
 	private TextMeshProUGUI toggleText;
-	private TextMeshProUGUI title;
+	private TextMeshProUGUI titleText;
 	private GameObject statsPanel;
 	private Button unequipAllButton;
 
@@ -38,9 +43,8 @@ public class EquipmentManager : MonoBehaviour
 			instance = this;
 		else
 		{
-			Debug.LogWarning("More than one instance of Equipment Manager found!!");
-			instance = null;
-			this.enabled = false;
+			Debug.LogWarning("More than one instance of Equipment Manager found!! Destroy the newest one.");
+			Destroy(gameObject);
 			return;
 		}
 
@@ -52,13 +56,10 @@ public class EquipmentManager : MonoBehaviour
 		portrait = transform.Find("Portrait/Player Sprite").GetComponent<Image>();
 
 		toggleText = transform.Find("Stats Toggle/Text").GetComponent<TextMeshProUGUI>();
-		title = transform.Find("Title/Text").GetComponent<TextMeshProUGUI>();
+		titleText = transform.Find("Title/Text").GetComponent<TextMeshProUGUI>();
 		statsPanel = transform.Find("Stats Panel").gameObject;
 		unequipAllButton = transform.Find("Unequip All Button").GetComponent<Button>();
-	}
-
-	private void Start()
-	{
+		
 		int numberOfSlots = Enum.GetNames(typeof(Equipment.EquipmentType)).Length;
 		currentEquipments = new Equipment[numberOfSlots];
 	}
@@ -112,7 +113,10 @@ public class EquipmentManager : MonoBehaviour
 				Unequip(equipment);
 	}
 
-	// Method for the stats toggle.
+	/// <summary>
+	/// Callback method for the display stat toggle's event.
+	/// </summary>
+	/// <param name="state"></param>
 	public void OnStatsToggled(bool state)
 	{
 		statsPanel.SetActive(state);
@@ -120,16 +124,41 @@ public class EquipmentManager : MonoBehaviour
 
 		if (!state)
 		{
-			title.text = "EQUIPMENTS";
+			titleText.text = "EQUIPMENTS";
 			toggleText.text = "STATS";
 		}
 		else
 		{
-			title.text = "STATS";
+			titleText.text = "STATS";
 			toggleText.text = "EQUIPMENTS";
 		}
 	}
 
+	public void LoadData(GameData gameData)
+	{
+		ContainerSaveData loadedEquipments = gameData.playerData.equipmentData;
+
+		if (loadedEquipments.storedItem != null && loadedEquipments.storedItem.Any())
+		{
+			ItemDatabase database = Inventory.instance.database;
+
+			foreach (ItemSaveData equipmentData in loadedEquipments.storedItem)
+			{
+				Equipment equipment = database.GetItem(equipmentData) as Equipment;
+
+				int index = (int)equipment.type;
+				currentEquipments[index] = equipment;
+
+				onEquipmentChanged?.Invoke(equipment, null);
+			}
+		}
+	}
+
+	public void SaveData(GameData gameData)
+	{
+		gameData.playerData.equipmentData = new ContainerSaveData(currentEquipments);
+	}
+	
 	private void ReloadUI()
 	{
 		// Clear all the slots first.

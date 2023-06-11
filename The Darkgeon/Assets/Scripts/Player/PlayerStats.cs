@@ -1,11 +1,12 @@
 using System.Collections;
 using UnityEngine;
 using CSTGames.CommonEnums;
+using CSTGames.DataPersistence;
 
 /// <summary>
 /// Manages all the player's stats.
 /// </summary>
-public class PlayerStats : MonoBehaviour
+public class PlayerStats : MonoBehaviour, ISaveDataTransceiver
 {
 	// References.
 	[Header("References")]
@@ -54,7 +55,7 @@ public class PlayerStats : MonoBehaviour
 
 	[HideInInspector] public float lastDamagedTime = 0f;
 	[HideInInspector] public KillSources killSource = KillSources.Unknown;
-	public Vector3 respawnPosition;
+	[HideInInspector] public Vector3 respawnPosition;
 	[HideInInspector] public Transform attacker = null;  // Position of the attacker.
 
 	// Private fields
@@ -77,12 +78,12 @@ public class PlayerStats : MonoBehaviour
 	{
 		currentHP = maxHP.Value;
 		hpBar.SetMaxHealth(maxHP.Value);
-		respawnPosition = transform.position;
+		respawnPosition = new Vector3(transform.position.x, transform.position.y, transform.position.z);
 		
 		invincibilityTime = m_InvincibilityTime.Value;
 		regenDelay = 1 / m_RegenRate.Value;
 
-		EquipmentManager.instance.onEquipmentChanged += OnEquipmentChanged;
+		EquipmentManager.instance.onEquipmentChanged.AddListener(OnEquipmentChanged);
 
 		//var shader = playerMat.shader;
 		//isOutlineOn = new LocalKeyword(shader, "_IS_OUTLINE_ON");
@@ -143,7 +144,17 @@ public class PlayerStats : MonoBehaviour
 	/// </summary>
 	/// <returns></returns>
 	public bool IsCriticalStrike() => Random.Range(0f, 100f) <= criticalChance.Value;
-	
+
+	public void LoadData(GameData gameData)
+	{
+		transform.position = gameData.playerData.playerPosition;
+	}
+
+	public void SaveData(GameData gameData)
+	{
+		gameData.playerData.playerPosition = transform.position;
+	}
+
 	private void Regenerate()
 	{
 		regenDelay -= Time.deltaTime;

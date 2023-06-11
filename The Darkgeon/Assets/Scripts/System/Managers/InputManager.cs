@@ -18,7 +18,7 @@ public class InputManager : MonoBehaviour
 			instance = this;
 		else
 		{
-			Debug.LogWarning("More than one instance of Input Manager found!!");
+			Debug.LogWarning("More than one instance of Input Manager found!! Destroy the newest one.");
 			Destroy(gameObject);
 			return;
 		}
@@ -40,11 +40,10 @@ public class InputManager : MonoBehaviour
 	/// <returns></returns>
 	public bool GetKey(KeybindingActions action)
 	{
-		foreach (Keyset.Key key in keySet.keyList)
-			if (key.action == action)
-				return Input.GetKey(key.keyCode);
+		KeyCode keyCode = GetKeyForAction(action);
+		bool result = Input.GetKey(keyCode);
 
-		return false;
+		return result;
 	}
 
 	/// <summary>
@@ -54,11 +53,10 @@ public class InputManager : MonoBehaviour
 	/// <returns></returns>
 	public bool GetKeyDown(KeybindingActions action)
 	{
-		foreach (Keyset.Key key in keySet.keyList)
-			if (key.action == action)
-				return Input.GetKeyDown(key.keyCode);
+		KeyCode keyCode = GetKeyForAction(action);
+		bool result = Input.GetKeyDown(keyCode);
 
-		return false;
+		return result;
 	}
 
 	/// <summary>
@@ -68,11 +66,10 @@ public class InputManager : MonoBehaviour
 	/// <returns></returns>
 	public bool GetKeyUp(KeybindingActions action)
 	{
-		foreach (Keyset.Key key in keySet.keyList)
-			if (key.action == action)
-				return Input.GetKeyUp(key.keyCode);
+		KeyCode keyCode = GetKeyForAction(action);
+		bool result = Input.GetKeyUp(keyCode);
 
-		return false;
+		return result;
 	}
 
 	/// <summary>

@@ -1,14 +1,21 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
+using CSTGames.DataPersistence;
+using CSTGames.CommonEnums;
 
-public class Inventory : MonoBehaviour
+public class Inventory : MonoBehaviour, ISaveDataTransceiver
 {
 	public static Inventory instance { get; private set; }
 
 	public UnityEvent onItemChanged { get; private set; } = new UnityEvent();
+
+	[Header("Item Database")]
+	[Space]
+	public ItemDatabase database;
 
 	[Header("Items List")]
 	[Space]
@@ -34,7 +41,6 @@ public class Inventory : MonoBehaviour
 		}
 
 		PlayerActions.canAttack = true;
-		PlayerMovement.isModifierKeysOccupied = false;
 	}
 
 	private void Awake()
@@ -203,6 +209,48 @@ public class Inventory : MonoBehaviour
 		}
 
 		onItemChanged?.Invoke();
+	}
+
+	public void LoadData(GameData gameData)
+	{
+		this.coins = gameData.playerData.coinsCollected;
+
+		ContainerSaveData loadedInventory = gameData.playerData.inventoryData;
+
+		if (loadedInventory.storedItem != null && loadedInventory.storedItem.Any())
+		{
+			foreach(ItemSaveData item in loadedInventory.storedItem)
+			{
+				switch (item.category)
+				{
+					case ItemCategory.Equipment:
+						var equipment = database.GetItem(item) as Equipment;
+						
+						this.items.Add(equipment);
+						break;
+
+					case ItemCategory.Food:
+						var food = database.GetItem(item) as Food;
+
+						this.items.Add(food);
+						break;
+
+					default:
+						var baseItem = database.GetItem(item);
+
+						this.items.Add(baseItem);
+						break;
+				}
+			}
+		}
+	}
+
+	public void SaveData(GameData gameData)
+	{
+		PlayerData playerData = gameData.playerData;
+
+		playerData.coinsCollected = this.coins;
+		playerData.inventoryData = new ContainerSaveData(items);
 	}
 
 	private void ReloadUI()

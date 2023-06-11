@@ -102,7 +102,7 @@ public class CharacterController2D : MonoBehaviour
 		CheckSlope();
 	}
 
-	public void Move(float moveInput, bool crouch, ref bool jump, ref bool dash)
+	public void Move(float moveInput, bool crouch, bool jump, ref bool dash)
 	{
 		// If crouching, check to see if the character can stand up
 		if (!crouch)
@@ -177,15 +177,7 @@ public class CharacterController2D : MonoBehaviour
 
 		// If the player should jump.
 		if (jump && canWalkOnSlope)
-		{
-			// Add a vertical force to the player.
-			m_Grounded = false;
-			m_Rigidbody2D.AddForce(new Vector2(0f, m_JumpForce));
-			jumpingDust.Play();
-
-			jump = false;
-			m_Animator.SetBool("IsJumping", false);
-		}
+			Jump();
 
 		// If the player should dash.
 		if (dash)
@@ -322,6 +314,16 @@ public class CharacterController2D : MonoBehaviour
 			scale.x *= -1f;
 			runningDust.transform.localScale = scale;
 		}
+	}
+
+	private void Jump()
+	{
+		if (m_Grounded)
+			jumpingDust.Play();
+
+		// Add a vertical force to the player.
+		m_Grounded = false;
+		m_Rigidbody2D.velocity += Vector2.up * m_JumpForce;
 	}
 
 	private IEnumerator Dash()

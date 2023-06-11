@@ -74,7 +74,7 @@ public class Interactable : MonoBehaviour
 		clone.transform.position = transform.position;
 	}
 
-	private void OnDrawGizmosSelected()
+	protected virtual void OnDrawGizmosSelected()
 	{
 		Gizmos.color = Color.yellow;
 		Gizmos.DrawWireSphere(transform.position, radius);

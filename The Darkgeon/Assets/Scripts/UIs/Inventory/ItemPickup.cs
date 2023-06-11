@@ -1,4 +1,3 @@
-using System.Security;
 using TMPro;
 using UnityEngine;
 
@@ -16,6 +15,7 @@ public class ItemPickup : Interactable
 	private void Start()
 	{
 		currentItem = Instantiate(itemPrefab);
+		currentItem.name = itemPrefab.name;
 
 		spriteRenderer = GetComponent<SpriteRenderer>();
 		spriteRenderer.sprite = currentItem.icon;
@@ -64,7 +64,6 @@ public class ItemPickup : Interactable
 
 	private void Pickup()
 	{
-		currentItem.name = itemPrefab.name;
 		Debug.Log("You're picking up a(an) " + currentItem.itemName);
 
 		// Destroy the popup label.

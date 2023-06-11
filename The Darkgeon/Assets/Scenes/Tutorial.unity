@@ -377,9 +377,9 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 838943559}
     m_Modifications:
-    - target: {fileID: 1671459498715919559, guid: f98d0f39fcc67a34f844abd8a50f2c03, type: 3}
-      propertyPath: m_StaticEditorFlags
-      value: 5
+    - target: {fileID: 6494476773277796588, guid: f98d0f39fcc67a34f844abd8a50f2c03, type: 3}
+      propertyPath: id
+      value: 40124e98-275c-4767-ae25-07c39388ba16
       objectReference: {fileID: 0}
     - target: {fileID: 6494476773277796588, guid: f98d0f39fcc67a34f844abd8a50f2c03, type: 3}
       propertyPath: treasures.Array.size
@@ -1423,9 +1423,9 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 838943559}
     m_Modifications:
-    - target: {fileID: 1671459498715919559, guid: 5abf20f0457997348bd80242fe916388, type: 3}
-      propertyPath: m_StaticEditorFlags
-      value: 5
+    - target: {fileID: 2398322929918326664, guid: 5abf20f0457997348bd80242fe916388, type: 3}
+      propertyPath: id
+      value: 911c927a-616b-435d-9369-94677f69ca27
       objectReference: {fileID: 0}
     - target: {fileID: 2398322929918326664, guid: 5abf20f0457997348bd80242fe916388, type: 3}
       propertyPath: treasures.Array.size
@@ -2271,9 +2271,9 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 838943559}
     m_Modifications:
-    - target: {fileID: 1671459498715919559, guid: 7f2681b23c23afc4fbb43c6dca9f41f9, type: 3}
-      propertyPath: m_StaticEditorFlags
-      value: 5
+    - target: {fileID: 5698711720401505205, guid: 7f2681b23c23afc4fbb43c6dca9f41f9, type: 3}
+      propertyPath: id
+      value: 0359799b-bc6c-4bac-bd5f-5864cdf02511
       objectReference: {fileID: 0}
     - target: {fileID: 6930122694965717508, guid: 7f2681b23c23afc4fbb43c6dca9f41f9, type: 3}
       propertyPath: m_Name
@@ -17731,9 +17731,9 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 838943559}
     m_Modifications:
-    - target: {fileID: 1671459498715919559, guid: cea950ff3b9b0804f967eaec919f19f7, type: 3}
-      propertyPath: m_StaticEditorFlags
-      value: 5
+    - target: {fileID: 3594263081580666933, guid: cea950ff3b9b0804f967eaec919f19f7, type: 3}
+      propertyPath: id
+      value: a8a8bec2-95f8-4add-8b74-baad8ada8402
       objectReference: {fileID: 0}
     - target: {fileID: 6930122694965717508, guid: cea950ff3b9b0804f967eaec919f19f7, type: 3}
       propertyPath: m_Name
@@ -19056,7 +19056,6 @@ GameObject:
   - component: {fileID: 1958975122}
   - component: {fileID: 1958975126}
   - component: {fileID: 1958975125}
-  - component: {fileID: 1958975124}
   m_Layer: 6
   m_Name: Tilemap_Ground
   m_TagString: Ground
@@ -21766,28 +21765,6 @@ Tilemap:
     e31: 0
     e32: 0
     e33: 1
---- !u!66 &1958975124
-CompositeCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1958975120}
-  m_Enabled: 1
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_UsedByEffector: 0
-  m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
-  m_GeometryType: 0
-  m_GenerationType: 0
-  m_EdgeRadius: 0
-  m_ColliderPaths: []
-  m_CompositePaths:
-    m_Paths: []
-  m_VertexDistance: 0.0005
-  m_OffsetDistance: 0.00005
 --- !u!50 &1958975125
 Rigidbody2D:
   serializedVersion: 4
@@ -22419,9 +22396,8 @@ GameObject:
   - component: {fileID: 2022527088}
   - component: {fileID: 2022527090}
   - component: {fileID: 2022527089}
-  - component: {fileID: 2022527094}
   - component: {fileID: 2022527093}
-  - component: {fileID: 2022527092}
+  - component: {fileID: 2022527094}
   - component: {fileID: 2022527091}
   - component: {fileID: 2022527095}
   m_Layer: 6
@@ -22640,86 +22616,6 @@ PlatformEffector2D:
   m_UseSideFriction: 0
   m_UseSideBounce: 0
   m_SideArc: 1
---- !u!66 &2022527092
-CompositeCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2022527087}
-  m_Enabled: 1
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_UsedByEffector: 1
-  m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
-  m_GeometryType: 0
-  m_GenerationType: 0
-  m_EdgeRadius: 0
-  m_ColliderPaths:
-  - m_Collider: {fileID: 2022527094}
-    m_ColliderPaths:
-    - - X: 45005968
-        Y: 59994091
-      - X: 45005968
-        Y: 62341589
-      - X: 45005909
-        Y: 62341648
-      - X: 37494091
-        Y: 62341648
-      - X: 37494032
-        Y: 62341589
-      - X: 37494032
-        Y: 62341648
-      - X: 29994089
-        Y: 62341648
-      - X: 29994030
-        Y: 62341589
-      - X: 29994030
-        Y: 59994091
-      - X: 29994089
-        Y: 59994032
-      - X: 45005909
-        Y: 59994032
-    - - X: 127505864
-        Y: 38120112
-      - X: 127505864
-        Y: 40467528
-      - X: 119994136
-        Y: 40467528
-      - X: 119994136
-        Y: 38120112
-      - X: 120776608
-        Y: 37494132
-      - X: 126723392
-        Y: 37494132
-    - - X: 75005872
-        Y: -5158450
-      - X: 52494132
-        Y: -5158450
-      - X: 52494132
-        Y: -7505868
-      - X: 75005872
-        Y: -7505868
-  m_CompositePaths:
-    m_Paths:
-    - - {x: 4.5005617, y: 5.9994035}
-      - {x: 4.5005617, y: 6.2341647}
-      - {x: 2.999403, y: 6.23413}
-      - {x: 2.9994383, y: 5.9994035}
-    - - {x: 12.672331, y: 3.7494133}
-      - {x: 12.7505865, y: 3.812024}
-      - {x: 12.750557, y: 4.046753}
-      - {x: 11.9994135, y: 4.046724}
-      - {x: 11.999423, y: 3.8120031}
-      - {x: 12.07767, y: 3.7494133}
-    - - {x: 7.500558, y: -0.7505868}
-      - {x: 7.500558, y: -0.515845}
-      - {x: 5.2494135, y: -0.5158743}
-      - {x: 5.2494426, y: -0.7505868}
-  m_VertexDistance: 0.0005
-  m_OffsetDistance: 0.00005
 --- !u!50 &2022527093
 Rigidbody2D:
   serializedVersion: 4
@@ -22752,8 +22648,8 @@ TilemapCollider2D:
   m_Density: 1
   m_Material: {fileID: 0}
   m_IsTrigger: 0
-  m_UsedByEffector: 0
-  m_UsedByComposite: 1
+  m_UsedByEffector: 1
+  m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
   m_MaximumTileChangeCount: 1000
   m_ExtrusionFactor: 0.00001

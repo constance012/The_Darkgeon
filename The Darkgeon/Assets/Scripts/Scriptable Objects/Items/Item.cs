@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
 using CSTGames.CommonEnums;
+using CSTGames.DataPersistence;
 
 [CreateAssetMenu(fileName = "New Item", menuName = "Inventory/New Base Item")]
 public class Item : ScriptableObject
@@ -50,5 +51,16 @@ public class Item : ScriptableObject
 		return $"Rarity: {rarity.title}.\n\n" +
 				$"{category}.\n\n" +
 				$"{description}";
+	}
+
+	public virtual void InitializeSaveData(ItemSaveData saveData)
+	{
+		this.id = saveData.id;
+		this.itemName = saveData.itemName;
+		this.category = saveData.category;
+
+		this.slotIndex = saveData.slotIndex;
+		this.quantity = saveData.quantity;
+		this.isFavorite = saveData.isFavorite;
 	}
 }

@@ -37,9 +37,8 @@ public class DebuffManager : MonoBehaviour
 			instance = this;
 		else
 		{
-			Debug.LogWarning("More than one instance of Debuff Manager found!!");
-			instance = null;
-			this.enabled = false;
+			Debug.LogWarning("More than one instance of Debuff Manager found!! Destroy the newest one.");
+			Destroy(gameObject);
 			return;
 		}
 

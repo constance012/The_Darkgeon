@@ -1,10 +1,12 @@
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using CSTGames.CommonEnums;
+using CSTGames.DataPersistence;
 
-public class Chest : Interactable
+public class Chest : Interactable, ISaveDataTransceiver
 {
 	/// <summary>
 	/// Represent every type of chest.
@@ -13,11 +15,19 @@ public class Chest : Interactable
 
 	[Space]
 	[Header("General Info")]
+	[SerializeField] private string id;
+
+	[ContextMenu("Generate Chest ID")]
+	private void GenerateChestID()
+	{
+		id = Guid.NewGuid().ToString();
+	}
+
 	public ChestType type;
 	public float distanceBeforeClosed;
 
 	[Space]
-	[SerializeField] private static Dictionary<ItemCategory, int> treasureAmount = new Dictionary<ItemCategory, int>
+	private static Dictionary<ItemCategory, int> treasureAmount = new Dictionary<ItemCategory, int>
 	{
 		[ItemCategory.Null] = 0,
 		[ItemCategory.Coin] = 1,
@@ -29,24 +39,24 @@ public class Chest : Interactable
 		[ItemCategory.Mineral] = 3
 	};
 
-	[SerializeField] private List<DeathLoot> treasures = new List<DeathLoot>();
+	public List<Item> storedItem = new List<Item>();
 
 	[Space]
 	// Special items list for each chest.
-	public List<Item> storedItem = new List<Item>();
+	[SerializeField] private List<DeathLoot> treasures = new List<DeathLoot>();
 
 	[Header("References")]
 	[Space]
-	[SerializeField] private Animator animator;
+	private Animator animator;
 
 	// Private fields.
+	private bool firstTimeOpen;
 
 	private void Start()
 	{
 		animator = GetComponent<Animator>();
 		mat = GetComponentInChildren<SpriteRenderer>().material;
 
-		InitializeTreasures();
 		// Use this to check if the chest is opened or not. True if the chest is closed.
 		hasInteracted = true;
 	}
@@ -55,10 +65,10 @@ public class Chest : Interactable
 	{
 		Vector2 worldMousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
 
-		float interactDistance = Vector2.Distance(worldMousePos, transform.position);
-		float forcedCloseDistance = Vector2.Distance(player.position, transform.position);
+		float mouseDistance = Vector2.Distance(worldMousePos, transform.position);
+		float playerDistance = Vector2.Distance(player.position, transform.position);
 
-		if (interactDistance <= radius)
+		if (mouseDistance <= radius)
 		{
 			if (clone == null)
 				CreatePopupLabel();
@@ -67,11 +77,11 @@ public class Chest : Interactable
 
 			mat.SetFloat("_Thickness", .002f);
 
-			if (Input.GetMouseButtonDown(1))
+			if (Input.GetMouseButtonDown(1) && playerDistance <= distanceBeforeClosed)
 			{
 				Chest target = ChestStorage.instance.openedChest;
 
-				// Close any currently opening chest before opening the other one.
+				// Close any currently opening chest before opening the new one.
 				if (target != null && target != this)
 					target.Interact();
 				
@@ -79,14 +89,14 @@ public class Chest : Interactable
 			}
 		}
 
-		else if (interactDistance > radius)
+		else
 		{
 			Destroy(clone);
 
 			mat.SetFloat("_Thickness", 0f);
 
 			// Close the chest when out of range.
-			if (!hasInteracted && forcedCloseDistance > distanceBeforeClosed)
+			if (!hasInteracted && playerDistance > distanceBeforeClosed)
 			{
 				hasInteracted = true;
 				OpenAndClose();
@@ -103,6 +113,68 @@ public class Chest : Interactable
 		OpenAndClose();
 	}
 
+	public void LoadData(GameData gameData)
+	{
+		ContainerSaveData loadedData;
+
+		gameData.levelData.chestsData.TryGetValue(id, out loadedData);
+
+		// If the saved list is not null and not empty.
+		if (loadedData.storedItem != null && loadedData.storedItem.Any())
+		{
+			ItemDatabase database = Inventory.instance.database;
+
+			foreach (ItemSaveData item in loadedData.storedItem)
+			{
+				switch (item.category)
+				{
+					case ItemCategory.Equipment:
+						var equipment = database.GetItem(item) as Equipment;
+
+						this.storedItem.Add(equipment);
+						break;
+
+					case ItemCategory.Food:
+						var food = database.GetItem(item) as Food;
+
+						this.storedItem.Add(food);
+						break;
+
+					default:
+						var baseItem = database.GetItem(item);
+
+						this.storedItem.Add(baseItem);
+						break;
+				}
+
+			}
+		}
+
+		firstTimeOpen = loadedData.firstTimeOpen;
+
+		if (!firstTimeOpen)
+		{
+			InitializeTreasures();
+			return;
+		}
+
+		treasures.Clear();
+	}
+
+	public void SaveData(GameData gameData)
+	{
+		LevelData levelData = gameData.levelData;
+
+		if (levelData.chestsData.ContainsKey(id))
+		{
+			levelData.chestsData.Remove(id);
+		}
+
+		ContainerSaveData dataToSave = new ContainerSaveData(storedItem, firstTimeOpen);
+
+		levelData.chestsData.Add(id, dataToSave);
+	}
+
 	protected override void CreatePopupLabel()
 	{
 		base.CreatePopupLabel();
@@ -115,6 +187,7 @@ public class Chest : Interactable
 		if (!hasInteracted)
 		{
 			animator.SetTrigger("Open");
+			firstTimeOpen = true;
 			
 			// Activate the Inventory canvas if it hasn't already open yet.
 			if (!Inventory.instance.transform.parent.gameObject.activeInHierarchy)
@@ -157,8 +230,10 @@ public class Chest : Interactable
 			if (target.isGuaranteed)
 			{
 				Item guaranteedItem = Instantiate(target.loot);
-				guaranteedItem.quantity = target.quantity;
+				
 				guaranteedItem.id = Guid.NewGuid().ToString();
+				guaranteedItem.name = target.loot.name;
+				guaranteedItem.quantity = target.quantity;
 
 				storedItem.Add(guaranteedItem);
 				continue;
@@ -182,8 +257,10 @@ public class Chest : Interactable
 			DeathLoot selectedLoot = itemsOfCurrentType[randomIndex];
 
 			Item otherItem = Instantiate(selectedLoot.loot);
-			otherItem.quantity = selectedLoot.quantity;
+
 			otherItem.id = Guid.NewGuid().ToString();
+			otherItem.name = selectedLoot.loot.name;
+			otherItem.quantity = selectedLoot.quantity;
 
 			storedItem.Add(otherItem);
 			itemsOfCurrentType.Remove(itemsOfCurrentType[randomIndex]);
@@ -192,5 +269,13 @@ public class Chest : Interactable
 		}
 
 		treasures.Clear();
+	}
+
+	protected override void OnDrawGizmosSelected()
+	{
+		base.OnDrawGizmosSelected();
+
+		Gizmos.color = Color.blue;
+		Gizmos.DrawWireSphere(transform.position, distanceBeforeClosed);
 	}
 }

@@ -12,7 +12,6 @@ public class PlayerActions : MonoBehaviour
 	[Space]
 	[SerializeField] private Animator animator;
 	[SerializeField] private CharacterController2D controller;
-	[SerializeField] private Rigidbody2D rb2d;
 
 	// Fields.
 	[Header("Player Attack")]
@@ -33,7 +32,6 @@ public class PlayerActions : MonoBehaviour
 	{
 		animator = GetComponent<Animator>();
 		controller = GetComponent<CharacterController2D>();
-		rb2d = GetComponent<Rigidbody2D>();
 	}
 
 	private void Update()

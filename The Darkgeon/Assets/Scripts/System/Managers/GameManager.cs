@@ -159,6 +159,8 @@ public class GameManager : MonoBehaviour
 	#region UI Controls
 	public void ReturnToMenu()
 	{
+		GameDataManager.instance.SaveGame();
+
 		AsyncOperation op = SceneManager.LoadSceneAsync("Scenes/Main Menu");
 		op.allowSceneActivation = false;
 
