@@ -10,8 +10,8 @@ public class PlayerActions : MonoBehaviour
 	// References.
 	[Header("References")]
 	[Space]
-	[SerializeField] private Animator animator;
-	[SerializeField] private CharacterController2D controller;
+	private Animator animator;
+	private CharacterController2D controller;
 
 	// Fields.
 	[Header("Player Attack")]
@@ -25,8 +25,9 @@ public class PlayerActions : MonoBehaviour
 	[HideInInspector] public float comboDelay;
 
 	public static bool isComboDone { get; set; } = true;
-	public static bool canFaceTowardsCursor { get; set; }
 	public static bool canAttack { get; set; } = true;
+
+	private bool canFaceTowardsCursor;
 
 	private void Awake()
 	{
@@ -38,6 +39,8 @@ public class PlayerActions : MonoBehaviour
 	{
 		if (!canAttack)
 			return;
+
+		canFaceTowardsCursor = Mathf.Round(animator.GetFloat("Speed")) == 0f;
 		
 		// Check if there is enough time for the next combo to begin.
 		if (InputManager.instance.GetKeyDown(KeybindingActions.PrimaryAttack) && !GameManager.isPause && isComboDone)
@@ -77,6 +80,14 @@ public class PlayerActions : MonoBehaviour
 			
 			isComboDone = false;
 		}
+	}
+
+	public void CancelAttacking()
+	{
+		animator.SetBool("IsAttacking", false);
+		animator.SetBool("DashAtk", false);
+		animator.ResetTrigger("Atk1");
+		animator.ResetTrigger("Atk2");
 	}
 
 	private void OnDrawGizmosSelected()

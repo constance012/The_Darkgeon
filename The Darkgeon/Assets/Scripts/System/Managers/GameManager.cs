@@ -27,10 +27,10 @@ public class GameManager : MonoBehaviour
 	[SerializeField] private TextMeshProUGUI killSourceText;
 	[SerializeField] private TextMeshProUGUI countdownText;
 
-	[SerializeField] private GameObject deathPanel;
+	[SerializeField] private Animator deathPanel;
 	[SerializeField] private GameObject pauseMenu;
 	[SerializeField] private GameObject playerUI;
-	[SerializeField] private GameObject inventory;
+	[SerializeField] private GameObject inventoryCanvas;
 
 	public static bool isPlayerDeath { get; private set; } = false;
 	public static bool isPause { get; private set; }
@@ -50,9 +50,8 @@ public class GameManager : MonoBehaviour
 			instance = this;
 		else
 		{
-			Debug.LogWarning("More than one instance of Game Manager found!!");
-			instance = null;
-			this.enabled = false;
+			Debug.LogWarning("More than one instance of Game Manager found!! Destroy the newest one.");
+			Destroy(gameObject);
 			return;
 		}
 
@@ -63,24 +62,25 @@ public class GameManager : MonoBehaviour
 		moveScript = playerAnim.GetComponent<PlayerMovement>();
 		actionsScript = playerAnim.GetComponent<PlayerActions>();
 
-		deathPanel = GameObject.FindWithTag("UI Canvas").transform.Find("Death Message").gameObject;
+		deathPanel = GameObject.FindWithTag("UI Canvas").transform.Find("Death Message").GetComponent<Animator>();
 		deathMessageText = deathPanel.transform.Find("Message").GetComponent<TextMeshProUGUI>();
 		killSourceText = deathPanel.transform.Find("Kill Source").GetComponent<TextMeshProUGUI>();
 		countdownText = deathPanel.transform.Find("Countdown").GetComponent<TextMeshProUGUI>();
 
 		pauseMenu = GameObject.FindWithTag("UI Canvas").transform.Find("Pause Menu").gameObject;
 		playerUI = GameObject.FindWithTag("UI Canvas").transform.Find("Player UI").gameObject;
-		inventory = GameObject.FindWithTag("Inventory Canvas");
+		inventoryCanvas = GameObject.FindWithTag("Inventory Canvas");
 	}
 
 	private void Start()
 	{
-		deathPanel.SetActive(false);
 		pauseMenu.SetActive(false);
-		inventory.SetActive(false);
+		inventoryCanvas.SetActive(false);
 
 		playerUI.SetActive(true);
 		respawnTimer = m_RespawnTimer;
+
+		FadeOutPanel.FadeIn();
 	}
 
 	private void Update()
@@ -91,7 +91,7 @@ public class GameManager : MonoBehaviour
 				Invoke(!isPause ? nameof(Pause) : nameof(Unpause), 0f);
 
 			if (InputManager.instance.GetKeyDown(KeybindingActions.Inventory))
-				inventory.SetActive(!inventory.activeInHierarchy);
+				inventoryCanvas.SetActive(!inventoryCanvas.activeInHierarchy);
 		}
 
 		if (Input.GetKeyDown(KeyCode.R))
@@ -127,7 +127,8 @@ public class GameManager : MonoBehaviour
 	#region Player States
 	public void Respawn()
 	{
-		deathPanel.SetActive(false);
+		deathPanel.Play("Stand By");
+
 		playerStats.currentHP = playerStats.maxHP.Value;
 		playerStats.hpBar.SetMaxHealth(playerStats.maxHP.Value);
 
@@ -148,7 +149,7 @@ public class GameManager : MonoBehaviour
 	{
 		playerAnim.SetBool("IsDeath", true);
 
-		deathPanel.SetActive(true);
+		deathPanel.Play("Increase Alpha");
 
 		moveScript.enabled = actionsScript.enabled = false;
 

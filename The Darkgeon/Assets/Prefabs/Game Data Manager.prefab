@@ -44,8 +44,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 964eae4078bdab14db54b95133ad5895, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  enableManager: 0
   initializeDataIfNull: 1
   saveDataOnExit: 0
+  <SelectedSaveSlotID>k__BackingField: 
   playerSubFolders: Player Data
   playerSaveFileName: persistence.cst
   levelSubFolders: Levels Data

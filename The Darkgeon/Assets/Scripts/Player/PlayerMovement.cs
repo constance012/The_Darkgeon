@@ -4,13 +4,14 @@ using CSTGames.CommonEnums;
 /// <summary>
 /// Manages the player's movement inputs and events.
 /// </summary>
+[RequireComponent(typeof(CharacterController2D))]
 public class PlayerMovement : MonoBehaviour
 {
 	[Header("References")]
 	[Space]
-	[SerializeField] private CharacterController2D controller;
-	[SerializeField] private Animator animator;
-	[SerializeField] private Rigidbody2D rb2D;
+	private CharacterController2D controller;
+	private Animator animator;
+	private Rigidbody2D rb2D;
 
 	[Header("Fields")]
 	[Space]

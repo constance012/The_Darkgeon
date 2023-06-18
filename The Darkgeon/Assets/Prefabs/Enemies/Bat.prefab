@@ -474,7 +474,7 @@ CircleCollider2D:
   m_GameObject: {fileID: 6531788301741081901}
   m_Enabled: 1
   m_Density: 1
-  m_Material: {fileID: 6200000, guid: 1227cca4748deb8498b35f9ac540e053, type: 2}
+  m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
@@ -587,9 +587,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4748a947234734f4294484de3514f5f1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rb2d: {fileID: 0}
-  animator: {fileID: 0}
-  physicMat: {fileID: 0}
   edgeCheck: {fileID: 0}
   centerPoint: {fileID: 6531788301741081879}
   whatIsPlayer:
@@ -598,8 +595,6 @@ MonoBehaviour:
   whatIsGround:
     serializedVersion: 2
     m_Bits: 64
-  player: {fileID: 0}
-  stats: {fileID: 0}
   walkSpeed: 5
   checkRadius: 2
   attackRange: 1.2

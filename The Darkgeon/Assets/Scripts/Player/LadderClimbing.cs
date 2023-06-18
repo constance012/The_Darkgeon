@@ -7,8 +7,8 @@ public class LadderClimbing : MonoBehaviour
 {
 	[Header("Reference")]
 	[Space]
-	[SerializeField] private Rigidbody2D rb2d;
-	[SerializeField] private Animator animator;
+	private Rigidbody2D rb2d;
+	private Animator animator;
 
 	[Header("Fields")]
 	[Space]

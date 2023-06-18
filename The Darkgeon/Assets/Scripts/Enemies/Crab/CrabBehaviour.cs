@@ -5,6 +5,7 @@ using CSTGames.CommonEnums;
 /// <summary>
 /// Manages the Crab's behaviours and targeting AI.
 /// </summary>
+[RequireComponent(typeof(EnemyStat))]
 public class CrabBehaviour : EnemyBehaviour
 {
 	[Header("Derived Class Section")]

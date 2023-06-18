@@ -4,6 +4,9 @@ using UnityRandom = UnityEngine.Random;
 using CSTGames.DataPersistence;
 using TMPro;
 using System;
+using UnityEngine.UI;
+using System.Collections;
+using Mono.Cecil;
 
 public class SaveSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
@@ -18,13 +21,15 @@ public class SaveSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 	[SerializeField] private TextMeshProUGUI levelText;
 	[SerializeField] private TextMeshProUGUI playedTimeText;
 	
+	public bool HasData { get; private set; }
+	public static DeleteSaveSlotButton DeleteButton { get; set; }
+
 	private const string charsList = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-	public bool hasData { get; private set; }
 
 	[ContextMenu("Generate Slot ID")]
 	private void GenerateSlotID()
 	{
-		// abcdefgh-abcd-a0cdef - the '0' is the slot index in the hierarchy.
+		// abcdefgh-abcd-ab0def - the '0' is the slot index in the hierarchy.
 		char[] stringOfChars = new char[20];
 
 		for (int i = 0; i < stringOfChars.Length; i++)
@@ -35,7 +40,7 @@ public class SaveSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 				continue;
 			}
 			
-			if (i == 15)
+			if (i == 16)
 			{
 				stringOfChars[i] = (char)('0' | transform.GetSiblingIndex());
 				continue;
@@ -55,6 +60,8 @@ public class SaveSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 		emptyText = noDataContent.transform.Find("Empty Text").GetComponent<TextMeshProUGUI>();
 		levelText = hasDataContent.transform.Find("Level Text").GetComponent<TextMeshProUGUI>();
 		playedTimeText = hasDataContent.transform.Find("Played Time Text").GetComponent<TextMeshProUGUI>();
+
+		DeleteButton = transform.parent.Find("Delete Button").GetComponent<DeleteSaveSlotButton>();
 	}
 
 	private void Start()
@@ -66,13 +73,13 @@ public class SaveSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 	{
 		if (gameData == null || !gameData.allDataLoadedSuccessfully)
 		{
-			hasData = false;
+			HasData = false;
 			noDataContent.SetActive(true);
 			hasDataContent.SetActive(false);
 		}
 		else
 		{
-			hasData = true;
+			HasData = true;
 			noDataContent.SetActive(false);
 			hasDataContent.SetActive(true);
 
@@ -87,10 +94,24 @@ public class SaveSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 	public void OnPointerEnter(PointerEventData eventData)
 	{
 		emptyText.text = "START A NEW GAME?";
+
+		if (HasData)
+		{
+			DeleteButton.currentSlotIndex = this.transform.GetSiblingIndex();
+			DeleteButton.currentSlotID = this.SaveSlotID;
+			DeleteButton.SetYPosition(this.transform.position.y);
+			DeleteButton.interactable = true;
+		}
 	}
 
 	public void OnPointerExit(PointerEventData eventData)
 	{
 		emptyText.text = $"EMPTY SLOT {transform.GetSiblingIndex() + 1}";
+		Vector2 localMousePos = DeleteButton.transform.InverseTransformPoint(Input.mousePosition);
+
+		if (!DeleteButton.rect.Contains(localMousePos))
+		{
+			DeleteButton.OnPointerExit(eventData);
+		}
 	}
 }

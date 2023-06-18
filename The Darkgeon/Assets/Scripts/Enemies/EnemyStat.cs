@@ -15,7 +15,6 @@ public class EnemyStat : MonoBehaviour
 
 	[Header("Transform, Layers")]
 	[Space]
-	[SerializeField] private EnemyHPBar hpBar;
 	public Transform dmgTextPos;
 	public Transform worldCanvas;
 
@@ -27,10 +26,11 @@ public class EnemyStat : MonoBehaviour
 
 	[Header("References")]
 	[Space]
-	[SerializeField] private Animator animator;
-	[SerializeField] private Rigidbody2D rb2d;
-	[SerializeField] private Material enemyMat;
-	[SerializeField] private ParticleSystem deathFx;
+	private EnemyHPBar hpBar;
+	private Animator animator;
+	private Rigidbody2D rb2d;
+	private Material enemyMat;
+	private ParticleSystem deathFx;
 
 	public GameObject dmgTextPrefab;
 	public EnemyBehaviour behaviour;
@@ -105,7 +105,7 @@ public class EnemyStat : MonoBehaviour
 			rb2d.simulated = false;
 	}
 
-	// Check if the enemy is grounded. Ignore for flying enemies.
+	// Check if the enemy is grounded.
 	private void FixedUpdate()
 	{
 		grounded = false;
@@ -279,7 +279,7 @@ public struct DeathLoot
 {
 	public Item loot;
 
-	[Space]
+	[Space, Min(0)]
 	public int quantity;
 	[Range(.001f, 100f)] public float dropChance;
 	public bool isGuaranteed;

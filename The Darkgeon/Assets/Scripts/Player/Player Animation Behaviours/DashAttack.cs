@@ -14,8 +14,7 @@ public class DashAttack : StateMachineBehaviour
 	private bool dmgDealt, canCrit;
 	private float dmgScale = 1.1f;
 
-	// OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
-	override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
+	public override void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
 	{
 		action = animator.GetComponent<PlayerActions>();
 		stats = animator.GetComponent<PlayerStats>();
@@ -27,8 +26,7 @@ public class DashAttack : StateMachineBehaviour
 		PlayerMovement.canMove = true;
 	}
 
-	// OnStateUpdate is called on each Update frame between OnStateEnter and OnStateExit callbacks
-	override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
+	public override void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
 	{
 		if (!dmgDealt && stateInfo.normalizedTime > .4f)
 		{
@@ -49,15 +47,13 @@ public class DashAttack : StateMachineBehaviour
 			dustFx.Play();
 	}
 
-	// OnStateExit is called when a transition ends and the state machine finishes evaluating this state
-	override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
+	public override void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
 	{
 		dmgDealt = false;
 		animator.SetBool("IsAttacking", false);
 		animator.SetBool("DashAtk", false);  // Disable the bool.
 		action.comboDelay += Time.time;
 		PlayerActions.isComboDone = true;
-		PlayerActions.canFaceTowardsCursor = false;
 		PlayerMovement.canMove = false;  // The player can move again as soon as the animation is completed.
 	}
 }

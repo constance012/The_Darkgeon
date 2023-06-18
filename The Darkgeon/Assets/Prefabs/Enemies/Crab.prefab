@@ -114,7 +114,7 @@ Rigidbody2D:
   m_LinearDrag: 0
   m_AngularDrag: 0
   m_GravityScale: 2
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 6200000, guid: 1227cca4748deb8498b35f9ac540e053, type: 2}
   m_Interpolate: 0
   m_SleepingMode: 0
   m_CollisionDetection: 1
@@ -128,7 +128,7 @@ CircleCollider2D:
   m_GameObject: {fileID: 870357710861358019}
   m_Enabled: 1
   m_Density: 1
-  m_Material: {fileID: 6200000, guid: 1227cca4748deb8498b35f9ac540e053, type: 2}
+  m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
@@ -197,7 +197,6 @@ MonoBehaviour:
   droppedCoinPrefab: {fileID: 3580224330702370156, guid: 8284806231246b443b91a626b4ecf4d8, type: 3}
   loots:
   - loot: {fileID: 11400000, guid: 58f8c5aac4c879247a788b2917bdde98, type: 2}
-    type: 1
     quantity: 80
     dropChance: 100
     isGuaranteed: 1
@@ -240,9 +239,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1d23d9579a127bc47afb3e6af5dbf5b8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rb2d: {fileID: 0}
-  animator: {fileID: 0}
-  physicMat: {fileID: 0}
   edgeCheck: {fileID: 7650718340843937049}
   centerPoint: {fileID: 5649026995876315913}
   whatIsPlayer:
@@ -251,8 +247,6 @@ MonoBehaviour:
   whatIsGround:
     serializedVersion: 2
     m_Bits: 64
-  player: {fileID: 0}
-  stats: {fileID: 0}
   walkSpeed: 30
   checkRadius: 0.1
   attackRange: 0.35

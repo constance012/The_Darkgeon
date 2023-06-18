@@ -1,9 +1,11 @@
-using TMPro;
-using Unity.Android.Types;
 using UnityEngine;
 using UnityEngine.Events;
+using TMPro;
 
-public class NewItemUI : MonoBehaviour
+/// <summary>
+/// Represents a UI text when a new item is added to the player's Inventory.
+/// </summary>
+public class NewItemNotifier : MonoBehaviour
 {
 	public float aliveTime = 5f;
 
@@ -23,7 +25,11 @@ public class NewItemUI : MonoBehaviour
 			onLastSiblingDestroy = new UnityEvent();
 
 		onLastSiblingDestroy.RemoveAllListeners();
-		onLastSiblingDestroy.AddListener(() => transform.parent.parent.Find("Title").GetComponent<Animator>().SetBool("Slide Out", true));
+		onLastSiblingDestroy.AddListener(() => 
+		{
+			Animator titleAnimator = transform.parent.parent.Find("Title").GetComponent<Animator>();
+			titleAnimator.SetBool("Slide Out", true); 
+		});
 	}
 
 	private void Update()
@@ -55,7 +61,7 @@ public class NewItemUI : MonoBehaviour
 			aliveTime -= Time.deltaTime;
 	}
 
-	public static NewItemUI Generate(GameObject samplePrefab, Item target)
+	public static NewItemNotifier Generate(GameObject samplePrefab, Item target)
 	{
 		Transform parentPanel = GameObject.FindWithTag("UI Canvas").transform.Find("New Items Panel");
 		
@@ -72,7 +78,7 @@ public class NewItemUI : MonoBehaviour
 		GameObject newItemObj = Instantiate(samplePrefab, parentPanel.Find("New Items List"));
 		newItemObj.name = samplePrefab.name;
 
-		NewItemUI newItem =  newItemObj.GetComponent<NewItemUI>();
+		NewItemNotifier newItem =  newItemObj.GetComponent<NewItemNotifier>();
 
 		// Set the text.
 		newItem.displayText.text = target.itemName.ToUpper() + " x" + target.quantity;

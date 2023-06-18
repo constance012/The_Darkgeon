@@ -11,11 +11,11 @@ public class Chest : Interactable, ISaveDataTransceiver
 	/// <summary>
 	/// Represent every type of chest.
 	/// </summary>
-	public enum ChestType { Wooden, Iron, Silver, Golden }
+	public enum ChestTier { Wooden, Iron, Silver, Golden }
 
 	[Space]
 	[Header("General Info")]
-	[SerializeField] private string id;
+	[SerializeField, ReadOnly] private string id;
 
 	[ContextMenu("Generate Chest ID")]
 	private void GenerateChestID()
@@ -23,9 +23,12 @@ public class Chest : Interactable, ISaveDataTransceiver
 		id = Guid.NewGuid().ToString();
 	}
 
-	public ChestType type;
+	public ChestTier tier;
 	public float distanceBeforeClosed;
 
+	/// <summary>
+	/// The quantity of each item type for randomizing if these chests have never been opened for the first time.
+	/// </summary>
 	[Space]
 	private static Dictionary<ItemCategory, int> treasureAmount = new Dictionary<ItemCategory, int>
 	{
@@ -45,17 +48,21 @@ public class Chest : Interactable, ISaveDataTransceiver
 	// Special items list for each chest.
 	[SerializeField] private List<DeathLoot> treasures = new List<DeathLoot>();
 
-	[Header("References")]
-	[Space]
-	private Animator animator;
-
 	// Private fields.
+	private Animator animator;
 	private bool firstTimeOpen;
+
+	protected override void Awake()
+	{
+		base.Awake();
+		animator = GetComponent<Animator>();
+		mat = GetComponentInChildren<SpriteRenderer>().material;
+	}
 
 	private void Start()
 	{
-		animator = GetComponent<Animator>();
-		mat = GetComponentInChildren<SpriteRenderer>().material;
+		if (!GameDataManager.instance.enableManager)
+			InitializeTreasures();
 
 		// Use this to check if the chest is opened or not. True if the chest is closed.
 		hasInteracted = true;
@@ -111,6 +118,11 @@ public class Chest : Interactable, ISaveDataTransceiver
 		hasInteracted = !hasInteracted;
 
 		OpenAndClose();
+	}
+
+	public override void ExecuteRemoteLogic(bool state)
+	{
+		
 	}
 
 	public void LoadData(GameData gameData)
@@ -252,9 +264,7 @@ public class Chest : Interactable, ISaveDataTransceiver
 			if (numberOfItemsRemaining <= 0 || itemsOfCurrentType.Count == 0)
 				continue;
 
-			int randomIndex = UnityEngine.Random.Range(0, itemsOfCurrentType.Count);
-
-			DeathLoot selectedLoot = itemsOfCurrentType[randomIndex];
+			DeathLoot selectedLoot = itemsOfCurrentType.GetRandomItem();
 
 			Item otherItem = Instantiate(selectedLoot.loot);
 
@@ -263,7 +273,7 @@ public class Chest : Interactable, ISaveDataTransceiver
 			otherItem.quantity = selectedLoot.quantity;
 
 			storedItem.Add(otherItem);
-			itemsOfCurrentType.Remove(itemsOfCurrentType[randomIndex]);
+			itemsOfCurrentType.Remove(selectedLoot);
 
 			numberOfItemsRemaining--;
 		}

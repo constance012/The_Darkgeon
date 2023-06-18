@@ -2,6 +2,10 @@ using UnityEngine;
 using Pathfinding;
 using CSTGames.CommonEnums;
 
+/// <summary>
+/// Manages the Bat's behaviours and targeting AI.
+/// </summary>
+[RequireComponent(typeof(EnemyStat))]
 public class BatBehaviour : EnemyBehaviour
 {
 	[Header("Derived Class Section")]

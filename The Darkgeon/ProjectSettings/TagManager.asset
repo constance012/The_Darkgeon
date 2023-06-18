@@ -12,6 +12,8 @@ TagManager:
   - World Canvas
   - Enemies World Canvas
   - Health Bar
+  - Enemies Container
+  - Level UI Canvas
   layers:
   - Default
   - TransparentFX
@@ -20,13 +22,13 @@ TagManager:
   - Water
   - UI
   - Environment
-  - Prop
+  - Decoration
   - Enemy
   - Item
   - Light Source
   - Chest
-  - 
-  - 
+  - Separator
+  - Interactable
   - 
   - 
   - 

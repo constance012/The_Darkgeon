@@ -1,6 +1,7 @@
 using TMPro;
 using UnityEngine;
 
+[RequireComponent(typeof(SpriteRenderer))]
 public class ItemPickup : Interactable
 {
 	[Header("Current Item Info")]
@@ -12,12 +13,17 @@ public class ItemPickup : Interactable
 	private Item currentItem;
 	private SpriteRenderer spriteRenderer;
 
+	protected override void Awake()
+	{
+		base.Awake();
+		spriteRenderer = GetComponent<SpriteRenderer>();
+	}
+
 	private void Start()
 	{
 		currentItem = Instantiate(itemPrefab);
 		currentItem.name = itemPrefab.name;
 
-		spriteRenderer = GetComponent<SpriteRenderer>();
 		spriteRenderer.sprite = currentItem.icon;
 		
 		mat = spriteRenderer.material;
@@ -28,6 +34,11 @@ public class ItemPickup : Interactable
 		base.Interact();
 
 		Pickup();
+	}
+
+	public override void ExecuteRemoteLogic(bool state)
+	{
+		
 	}
 
 	protected override void CreatePopupLabel()
@@ -71,7 +82,7 @@ public class ItemPickup : Interactable
 
 		if (Inventory.instance.Add(currentItem))
 		{
-			NewItemUI.Generate(pickedItemUIPrefab, itemPrefab);
+			NewItemNotifier.Generate(pickedItemUIPrefab, itemPrefab);
 			Destroy(gameObject);
 		}
 	}

@@ -6,17 +6,18 @@ using UnityEngine.Events;
 /// <summary>
 /// A character controller for 2D game's characters, originally written by Brackeys.
 /// </summary>
+[RequireComponent(typeof(PlayerStats))]
 public class CharacterController2D : MonoBehaviour
 {
 	// References.
 	[Header("Movement")]
 	[Space]
-	[SerializeField] [Range(.1f, 10f)] private float m_Acceleration = 7f;
-	[SerializeField] [Range(.1f, 10f)] private float m_Deceleration = 7f;
+	[SerializeField, Range(.1f, 10f)] private float m_Acceleration = 7f;
+	[SerializeField, Range(.1f, 10f)] private float m_Deceleration = 7f;
 	[SerializeField] private float m_VelPower = .9f;
 	[SerializeField] private float m_FrictionAmount = .2f;
 	//[Range(0, .3f)][SerializeField] private float m_MovementSmoothing = .05f;   // How much to smooth out the movement
-	[Range(0, 1)][SerializeField] private float m_CrouchSpeed = .36f;           // Amount of maxSpeed applied to crouching movement. 1 = 100%
+	[SerializeField, Range(0, 1)] private float m_CrouchSpeed = .36f;           // Amount of maxSpeed applied to crouching movement. 1 = 100%
 
 	[Header("Jump, Dash, Slopes Handle")]
 	[Space]
@@ -24,7 +25,7 @@ public class CharacterController2D : MonoBehaviour
 	[SerializeField] private float m_DashForce = 200f;                          // Amount of force added when the player dashes.
 	[SerializeField] private bool m_AirControl;                         // Whether or not a player can steer while jumping;
 	[SerializeField] private float m_SlopeCheckDistance;
-	[SerializeField] [Range(10f, 89f)] private float m_MaxSlopeAngle;
+	[SerializeField, Range(10f, 89f)] private float m_MaxSlopeAngle;
 
 	[Header("Checks")]
 	[Space]
@@ -35,9 +36,9 @@ public class CharacterController2D : MonoBehaviour
 
 	[Header("References")]
 	[Space]
-	[SerializeField] private PlayerStats m_Stats;
-	[SerializeField] private Animator m_Animator;
-	[SerializeField] private TrailRenderer m_TrailRenderer;
+	private PlayerStats m_Stats;
+	private Animator m_Animator;
+	private TrailRenderer m_TrailRenderer;
 
 	[Header("Materials")]
 	[Space]
@@ -52,20 +53,16 @@ public class CharacterController2D : MonoBehaviour
 	[Header("Events")]
 	[Space]
 	public UnityEvent OnLandEvent;
-
-	[Serializable]
-	public class BoolEvent : UnityEvent<bool> { }
-
-	public BoolEvent OnCrouchEvent;
+	public UnityEvent<bool> OnCrouchEvent;
 
 	// Private fields.
 	[HideInInspector] public bool m_FacingRight = true;  // For determining which way the player is currently facing.
 	private bool m_wasCrouching;
 	private bool m_Grounded;            // Whether or not the player is grounded.
 	public static bool m_IsDashing { get; private set; }
+	public static bool onSlope { get; private set; }
 	
 	private bool canWalkOnSlope;
-	public bool onSlope { get; private set; }
 
 	private const float k_GroundedRadius = .1f; // Radius of the overlap circle to determine if grounded.
 	private const float k_CeilingRadius = .2f; // Radius of the overlap circle to determine if the player can stand up.
@@ -93,7 +90,7 @@ public class CharacterController2D : MonoBehaviour
 			OnLandEvent = new UnityEvent();
 
 		if (OnCrouchEvent == null)
-			OnCrouchEvent = new BoolEvent();
+			OnCrouchEvent = new UnityEvent<bool>();
 	}
 
 	private void FixedUpdate()
@@ -310,9 +307,7 @@ public class CharacterController2D : MonoBehaviour
 			m_FacingRight = !m_FacingRight;
 			transform.Rotate(0f, 180f, 0f);
 
-			Vector2 scale = runningDust.transform.localScale;
-			scale.x *= -1f;
-			runningDust.transform.localScale = scale;
+			runningDust.transform.localScale = runningDust.transform.localScale.FlipByScale('x');
 		}
 	}
 

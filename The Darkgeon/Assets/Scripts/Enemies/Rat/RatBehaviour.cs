@@ -4,6 +4,7 @@ using CSTGames.CommonEnums;
 /// <summary>
 /// Manages the Rat's behaviours and targeting AI.
 /// </summary>
+[RequireComponent(typeof(EnemyStat))]
 public class RatBehaviour : EnemyBehaviour
 {
 	[Header("Derived Class Section")]

@@ -2,16 +2,16 @@ using UnityEngine;
 /// <summary>
 /// An base class contains virtual enemy's behaviour methods and shared members.
 /// </summary>
-public class EnemyBehaviour : MonoBehaviour
+public abstract class EnemyBehaviour : MonoBehaviour
 {
 	[Header("Base Class Section")]
 	[Space]
 
 	[Header("Reference")]
 	[Space]
-	[SerializeField] protected Rigidbody2D rb2d;
-	[SerializeField] protected Animator animator;
-	[SerializeField] protected PhysicsMaterial2D physicMat;
+	protected Rigidbody2D rb2d;
+	protected Animator animator;
+	protected PhysicsMaterial2D physicMat;
 
 	[Header("Checking, Layers")]
 	[Space]
@@ -22,8 +22,8 @@ public class EnemyBehaviour : MonoBehaviour
 
 	[Header("Stats Scripts")]
 	[Space]
-	[SerializeField] protected PlayerStats player;
-	[SerializeField] protected EnemyStat stats;
+	protected PlayerStats player;
+	protected EnemyStat stats;
 
 	[Header("Check Ranges")]
 	[Space]
@@ -58,7 +58,7 @@ public class EnemyBehaviour : MonoBehaviour
 		rb2d = GetComponent<Rigidbody2D>();
 		animator = GetComponent<Animator>();
 		stats = GetComponent<EnemyStat>();
-		physicMat = GetComponent<CircleCollider2D>().sharedMaterial;
+		physicMat = rb2d.sharedMaterial;
 		player = GameObject.FindWithTag("Player").GetComponent<PlayerStats>();
 	}
 
@@ -166,8 +166,8 @@ public class EnemyBehaviour : MonoBehaviour
 									: new Vector2(-walkSpeed * Time.fixedDeltaTime, rb2d.velocity.y);
 	}
 
-    protected virtual void ChasePlayer() { }
-    protected virtual void Attack() { }
+	protected abstract void ChasePlayer();
+	protected abstract void Attack();
 
     protected void ResetAttack() => alreadyAttacked = false;
     
@@ -175,7 +175,7 @@ public class EnemyBehaviour : MonoBehaviour
 	{
 		isPatrol = false;
 
-		transform.localScale = new Vector2(transform.localScale.x * -1f, transform.localScale.y);
+		transform.localScale = transform.localScale.FlipByScale('x');
 		facingRight = !facingRight;
 
 		isPatrol = true;

@@ -67,7 +67,7 @@ namespace CSTGames.DataPersistence
 		public Dictionary<string, ContainerSaveData> chestsData;
 
 		/// <summary>
-		/// The values defined within this constructor will be the default values for a new game.
+		/// The values defined within this constructor will be set to the first level for a new game.
 		/// <para />
 		/// Or when the game has no data to load.
 		/// </summary>
@@ -77,6 +77,13 @@ namespace CSTGames.DataPersistence
 			levelName = "Tutorial";
 			chestsData = new Dictionary<string, ContainerSaveData>();
 		}
+
+		public LevelData(int levelIndex, string levelName)
+		{
+			this.levelIndex = levelIndex;
+			this.levelName = levelName;
+			this.chestsData = new Dictionary<string, ContainerSaveData>();
+		}
 	}
 
 	[Serializable]
@@ -85,7 +92,21 @@ namespace CSTGames.DataPersistence
 		/// <summary>
 		/// Store the total played time of this data (totalHours, minutes, seconds). 
 		/// </summary>
-		public Vector3Int TotalPlayedTime { get; set; } = Vector3Int.zero;
+		[SerializeField] private Vector3Int totalPlayedTime = Vector3Int.zero;
+		public Vector3Int TotalPlayedTime
+		{
+			get { return totalPlayedTime; }
+			set
+			{
+				value.y += value.z / 60;
+				value.z -= 60 * (value.z / 60);
+
+				value.x += value.y / 60;
+				value.y -= 60 * (value.y / 60);
+
+				totalPlayedTime = value;
+			}
+		}
 
 		/// <summary>
 		/// Store the last updated time as a 64-bit signed integer.

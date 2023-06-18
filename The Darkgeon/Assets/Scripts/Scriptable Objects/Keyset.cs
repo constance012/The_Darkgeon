@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using UnityEngine;
 using CSTGames.CommonEnums;
@@ -8,7 +9,7 @@ using CSTGames.CommonEnums;
 [CreateAssetMenu(fileName = "New Keyset", menuName = "Keybinding/Keyset")]
 public class Keyset : ScriptableObject
 {
-	[System.Serializable]
+	[Serializable]
 	public struct Key
 	{
 		public KeybindingActions action;
@@ -23,25 +24,35 @@ public class Keyset : ScriptableObject
 	/// <param name="fileName"></param>
 	public void SaveKeysetToJson(string fileName)
 	{
-		string persistentPath = Path.Combine(Application.persistentDataPath, "Keyset Data" + Path.DirectorySeparatorChar);
+		string fullPath = Path.Combine(Application.persistentDataPath, "Keyset Data", fileName + ".json");
+		string parentDirectory = Path.GetDirectoryName(fullPath);
 
-		Debug.Log(persistentPath);
-
-		// Create directories if they're not currently existed.
-		if (!Directory.Exists(persistentPath))
+		try
 		{
-			Directory.CreateDirectory(persistentPath);
+			// Create directories if they're not currently existed.
+			if (!Directory.Exists(parentDirectory))
+				Directory.CreateDirectory(parentDirectory);
+
+			Debug.Log("Saving data to " + fullPath);
+
+			string serializedData = JsonUtility.ToJson(this, true);
+
+			using (FileStream file = new FileStream(fullPath, FileMode.Create))
+			{
+				using StreamWriter writer = new StreamWriter(file);
+				{
+					writer.Write(serializedData);
+				}
+			}
+
+			UserSettings.SelectedKeyset = fileName;
 		}
-
-		persistentPath += fileName + ".json";
-
-		Debug.Log("Saving data to " + persistentPath);
-		
-		string json = JsonUtility.ToJson(this, true);
-
-		File.WriteAllText(persistentPath, json);
-
-		UserSettings.SelectedKeyset = fileName;
+		catch (Exception ex)
+		{
+			Debug.LogError($"Error occured when trying to save keyset data to file.\n" +
+						   $"At path: {fullPath}.\n" +
+						   $"Reason: {ex.Message}.");
+		}
 	}
 
 	/// <summary>
@@ -50,16 +61,14 @@ public class Keyset : ScriptableObject
 	/// <param name="fileName"></param>
 	public void LoadKeysetFromJson(string fileName)
 	{
-		string persistentPath = Path.Combine(Application.persistentDataPath, "Keyset Data", fileName + ".json");
+		string fullPath = Path.Combine(Application.persistentDataPath, "Keyset Data", fileName + ".json");
 
-		Debug.Log("Reading data at " + persistentPath);
+		Debug.Log("Reading data at " + fullPath);
 		
 		// If the custom keyset file exists.
-		if (File.Exists(persistentPath))
+		if (File.Exists(fullPath))
 		{
-			string json = File.ReadAllText(persistentPath);
-			
-			JsonUtility.FromJsonOverwrite(json, this);
+			ReadData(fullPath);
 		}
 
 		// If not, use the default file.
@@ -67,15 +76,37 @@ public class Keyset : ScriptableObject
 		{
 			fileName = "Default";
 
-			persistentPath = Path.Combine(Application.persistentDataPath, "Keyset Data", fileName + ".json");
+			fullPath = Path.Combine(Application.persistentDataPath, "Keyset Data", fileName + ".json");
 
 			// If the default file doesn't exist, create one.
-			if (!File.Exists(persistentPath))
+			if (!File.Exists(fullPath))
 				SaveKeysetToJson(fileName);
 
-			string json = File.ReadAllText(persistentPath);
-			
-			JsonUtility.FromJsonOverwrite(json, this);
+			ReadData(fullPath);
+		}
+	}
+
+	private void ReadData(string fullPath)
+	{
+		try
+		{
+			string serializedData = "";
+
+			using (FileStream file = new FileStream(fullPath, FileMode.Open))
+			{
+				using (StreamReader reader = new StreamReader(file))
+				{
+					serializedData = reader.ReadToEnd();
+				}
+			}
+
+			JsonUtility.FromJsonOverwrite(serializedData, this);
+		}
+		catch (Exception ex)
+		{
+			Debug.LogError($"Error occured when trying to load keyset data from file.\n" +
+					   $"At path: {fullPath}.\n" +
+					   $"Reason: {ex.Message}.");
 		}
 	}
 }

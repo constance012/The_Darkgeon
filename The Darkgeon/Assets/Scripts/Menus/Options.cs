@@ -19,7 +19,6 @@ public class Options : MonoBehaviour
 
 	[Header("Animators")]
 	[Space]
-	[SerializeField] private Animator fadeoutPanel;
 	[SerializeField] private Animator mainCamera;
 
 	private bool backToMenu;
@@ -29,7 +28,6 @@ public class Options : MonoBehaviour
 		optionsPanel = transform.Find("Options Panel").gameObject;
 		spawnerPos = GameObject.Find("Rat Spawner").transform;
 
-		fadeoutPanel = transform.Find("Fade Out Panel").GetComponent<Animator>();
 		mainCamera = GameObject.Find("Stationary Cam").GetComponent<Animator>();
 	}
 
@@ -37,6 +35,8 @@ public class Options : MonoBehaviour
 	{
 		if (MainMenu.isRatAlive)
 			SpawnRat();
+
+		FadeOutPanel.FadeIn();
 	}
 
 	private void Update()
@@ -70,15 +70,14 @@ public class Options : MonoBehaviour
 		optionsPanel.GetComponent<Animator>().SetTrigger("Fade Out");
 
 		CanvasGroup canvasGroup = optionsPanel.GetComponent<CanvasGroup>();
-		Image fadeoutImage = fadeoutPanel.GetComponent<Image>();
 
 		yield return new WaitUntil(() => canvasGroup.alpha == 0f);
 
 		mainCamera.SetTrigger("Pan Up");
-		fadeoutPanel.SetTrigger("Fade Out");
+		FadeOutPanel.FadeOut();
 
 		// Activate the scene when the fading process is completed.
-		yield return new WaitUntil(() => fadeoutImage.color.a == 1f);
+		yield return new WaitUntil(() => FadeOutPanel.alpha == 1f);
 
 		loadSceneOp.allowSceneActivation = true;
 	}

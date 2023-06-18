@@ -30,11 +30,11 @@ public class Tooltip : MonoBehaviour
 	{
 		Vector2 mousePos = Input.mousePosition;
 		
-		float mouseX = mousePos.x / Screen.width;
-		float mouseY = mousePos.y / Screen.height;
+		float mouseXRatio = mousePos.x / Screen.width;
+		float mouseYRatio = mousePos.y / Screen.height;
 
-		float pivotX = mouseX < .5f ? 0f : 1f;
-		float pivotY = mouseY < .5f ? 0f : 1f;
+		float pivotX = mouseXRatio < .5f ? 0f : 1f;
+		float pivotY = mouseYRatio < .5f ? 0f : 1f;
 
 		rectTransform.pivot = new Vector2(pivotX, pivotY);
 		transform.position = mousePos;

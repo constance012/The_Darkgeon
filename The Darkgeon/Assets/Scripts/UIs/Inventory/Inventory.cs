@@ -30,6 +30,8 @@ public class Inventory : MonoBehaviour, ISaveDataTransceiver
 	private void OnEnable()
 	{
 		onItemChanged?.Invoke();
+		PlayerMovement.isModifierKeysOccupied = true;
+		PlayerActions.canAttack = false;
 	}
 
 	private void OnDisable()
@@ -40,6 +42,8 @@ public class Inventory : MonoBehaviour, ISaveDataTransceiver
 			ChestStorage.instance.gameObject.SetActive(false);
 		}
 
+		TooltipHandler.Hide();
+		PlayerMovement.isModifierKeysOccupied = false;
 		PlayerActions.canAttack = true;
 	}
 

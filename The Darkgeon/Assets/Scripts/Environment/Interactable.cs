@@ -2,8 +2,13 @@ using TMPro;
 using UnityEngine;
 using CSTGames.CommonEnums;
 
-public class Interactable : MonoBehaviour
+public abstract class Interactable : MonoBehaviour
 {
+	public enum InteractableType { Passive, Active, Manual }
+
+	[Header("Type")]
+	public InteractableType type;
+
 	[Header("Reference")]
 	public Transform player;
 	[SerializeField] protected GameObject popupLabelPrefab;
@@ -17,9 +22,9 @@ public class Interactable : MonoBehaviour
 	protected Material mat;
 	protected GameObject clone;
 
-	protected bool hasInteracted;
+	[SerializeField, ReadOnly] protected bool hasInteracted;
 
-	private void Awake()
+	protected virtual void Awake()
 	{
 		if (player == null)
 			player = GameObject.FindWithTag("Player").transform;
@@ -29,7 +34,9 @@ public class Interactable : MonoBehaviour
 
 	protected virtual void Update()
 	{
-		//Debug.Log("Base Update");
+		if (type == InteractableType.Passive)
+			return;
+
 		float distance = Vector2.Distance(player.position, transform.position);
 
 		if (distance <= radius)
@@ -61,6 +68,11 @@ public class Interactable : MonoBehaviour
 	{
 		Debug.Log("Interacting with " + transform.name);
 	}
+
+	/// <summary>
+	/// This method is responsible for being executed by other <c>Interactable</c> objects.
+	/// </summary>
+	public abstract void ExecuteRemoteLogic(bool state);
 
 	protected virtual void CreatePopupLabel()
 	{

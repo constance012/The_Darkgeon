@@ -199,11 +199,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b9e07f5db7720434a833a63329645991, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  type: 2
   player: {fileID: 0}
   popupLabelPrefab: {fileID: 8135185957320462521, guid: ca4be55abf8b73d4a99492bb73ba7595, type: 3}
   radius: 0.3
+  hasInteracted: 0
   id: 
-  type: 1
+  tier: 1
   distanceBeforeClosed: 1.5
   storedItem: []
   treasures: []

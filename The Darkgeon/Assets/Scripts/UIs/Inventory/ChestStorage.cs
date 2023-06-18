@@ -13,7 +13,6 @@ public class ChestStorage : MonoBehaviour
 	public Chest openedChest;
 	public int space = 10;
 
-	// Delegate.
 	public UnityEvent onItemChanged { get; private set; } = new UnityEvent();
 
 	private ChestSlot[] slots;

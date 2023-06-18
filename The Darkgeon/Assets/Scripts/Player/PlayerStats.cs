@@ -14,8 +14,8 @@ public class PlayerStats : MonoBehaviour, ISaveDataTransceiver
 	public Transform dmgTextLoc;
 	public GameObject dmgTextPrefab;
 
-	[SerializeField] private Animator animator;
-	[SerializeField] private Rigidbody2D rb2d;
+	private Animator animator;
+	private Rigidbody2D rb2d;
 
 	[Header("UI Elements")]
 	[Space]
@@ -63,8 +63,6 @@ public class PlayerStats : MonoBehaviour, ISaveDataTransceiver
 	private float regenDelay;
 	[HideInInspector] public bool canRegen = true;
 
-	//private LocalKeyword isOutlineOn;
-
 	private void Awake()
 	{
 		hpBar = GameObject.Find("Health Bar Slider").GetComponent<HealthBar>();
@@ -84,14 +82,11 @@ public class PlayerStats : MonoBehaviour, ISaveDataTransceiver
 		regenDelay = 1 / m_RegenRate.Value;
 
 		EquipmentManager.instance.onEquipmentChanged.AddListener(OnEquipmentChanged);
-
-		//var shader = playerMat.shader;
-		//isOutlineOn = new LocalKeyword(shader, "_IS_OUTLINE_ON");
 	}
 
 	private void Update()
 	{
-		if (invincibilityTime < 0f && Physics2D.GetIgnoreLayerCollision(3, 8))
+		if (invincibilityTime < 0f && Physics2D.GetIgnoreLayerCollision(3, 8) && !CharacterController2D.m_IsDashing)
 			Physics2D.IgnoreLayerCollision(3, 8, false);
 
 		if (invincibilityTime > 0f)

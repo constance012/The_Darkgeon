@@ -27,18 +27,16 @@ public class MainMenu : MonoBehaviour
 	[Space]
 	[SerializeField] private GameObject ratPrefab;
 	[SerializeField] private GameObject menuPanel;
-	[SerializeField] private Transform spawnerPos;
+	private Transform spawnerPos;
 
-	[Header("Animators")]
-	[Space]
-	[SerializeField] private Animator fadeoutPanel;
-	[SerializeField] private Animator mainCamera;
+	private Animator mainCamera;
+	private Torch menuTorch;
+	
+	private TextMeshProUGUI starterText;
+	private TextMeshProUGUI loadGameButtonText;
+	private Button continueButton;
 
-	[Header("UI Elements")]
-	[Space]
-	[SerializeField] private TextMeshProUGUI starterText;
-
-	public Action loadGameSceneEvent;
+	public Action loadGameSceneEvent { get; set; }
 
 	public static bool isRatAlive { get; set; }
 	public static bool isIntroDone { get; private set; }
@@ -49,26 +47,35 @@ public class MainMenu : MonoBehaviour
 		saveSlotsMenu = transform.root.GetComponentInChildren<SaveSlotsMenu>(true);
 
 		menuPanel = transform.Find("Menu Panel").gameObject;
+
 		spawnerPos = GameObject.Find("Rat Spawner").transform;
-		
-		fadeoutPanel = transform.root.Find("Fade Out Panel").GetComponent<Animator>();
 		mainCamera = GameObject.Find("Stationary Cam").GetComponent<Animator>();
+		menuTorch = FindObjectOfType<Torch>();
 		
-		starterText = transform.Find("Starter Text").GetComponent<TextMeshProUGUI>();
+		starterText = transform.parent.Find("Starter Text").GetComponent<TextMeshProUGUI>();
+		loadGameButtonText = menuPanel.transform.Find("Load Game Button/Text").GetComponent<TextMeshProUGUI>();
+		continueButton = menuPanel.transform.Find("Continue Button").GetComponent<Button>();
 
 		loadGameSceneEvent = () => StartCoroutine(LoadGameScene());
 	}
 
 	private void Start()
 	{
+		ChangeButtonsInteractableState(GameDataManager.ContainsAnyData);
+
 		if (!isThingsSet)
 			SettingThingsUp();
-		
+
 		if (!isIntroDone)
+		{
+			menuTorch.ExecuteRemoteLogic(false);
 			menuPanel.SetActive(false);
+		}
 
 		if (isRatAlive)
 			SpawnRat();
+
+		FadeOutPanel.FadeIn();
 	}
 
 	private void Update()
@@ -78,7 +85,7 @@ public class MainMenu : MonoBehaviour
 			if (Time.timeSinceLevelLoad > 2f && Time.timeSinceLevelLoad < 2.1f)
 				starterText.GetComponent<Animator>().Play("Slide In");
 
-			if (Input.GetMouseButtonDown(0) && Time.timeSinceLevelLoad > 2.5f)
+			if (Input.GetMouseButtonDown(0) && Time.timeSinceLevelLoad > 3f)
 				StartCoroutine(EnableUI());
 		}
 
@@ -129,6 +136,12 @@ public class MainMenu : MonoBehaviour
 		Application.Quit();
 	}
 
+	public void ChangeButtonsInteractableState(bool state)
+	{
+		continueButton.interactable = state;
+		loadGameButtonText.text = state ? "Load Game" : "New Game";
+	}
+
 	/// <summary>
 	/// Setting up essential things once when the game first start.
 	/// </summary>
@@ -162,17 +175,18 @@ public class MainMenu : MonoBehaviour
 
 	private IEnumerator EnableUI()
 	{
-		starterText.GetComponent<Animator>().SetTrigger("Fade Out");
-		FindObjectOfType<MenuTorch>().LightUp();
+		starterText.GetComponent<Animator>().Play("Fade Out");
+		menuTorch.ExecuteRemoteLogic(true);
 
 		yield return new WaitForSeconds(2f);
 
 		menuPanel.SetActive(true);
 
+
 		isIntroDone = true;
 	}
 
-	public IEnumerator LoadGameScene()
+	private IEnumerator LoadGameScene()
 	{
 		AsyncOperation loadSceneOp = SceneManager.LoadSceneAsync("Scenes/Base Scene");
 		loadSceneOp.allowSceneActivation = false;
@@ -182,15 +196,14 @@ public class MainMenu : MonoBehaviour
 
 		yield return new WaitUntil(() => menuCanvasGroup.alpha == 0f);
 
-		FindObjectOfType<MenuTorch>().Extinguish();
+		menuTorch.ExecuteRemoteLogic(false);
 
 		yield return new WaitForSeconds(1f);
 
-		fadeoutPanel.SetTrigger("Fade Out");
-		Image fadeoutImage = fadeoutPanel.GetComponent<Image>();
+		FadeOutPanel.FadeOut();
 
 		// Activate the scene when the fading process is completed.
-		yield return new WaitUntil(() => fadeoutImage.color.a == 1f);
+		yield return new WaitUntil(() => FadeOutPanel.alpha == 1f);
 		
 		loadSceneOp.allowSceneActivation = true;
 	}
@@ -201,14 +214,16 @@ public class MainMenu : MonoBehaviour
 		loadSceneOp.allowSceneActivation = false;
 
 		menuPanel.GetComponent<Animator>().SetTrigger("Fade Out");
+		CanvasGroup menuPanelGroup = menuPanel.GetComponent<CanvasGroup>();
 
-		yield return new WaitUntil(() => menuPanel.GetComponent<CanvasGroup>().alpha == 0f);
+		yield return new WaitUntil(() => menuPanelGroup.alpha == 0f);
 
 		mainCamera.SetTrigger("Pan Down");
-		fadeoutPanel.SetTrigger("Fade Out");
+
+		FadeOutPanel.FadeOut();
 
 		// Activate the scene when the fading process is completed.
-		yield return new WaitUntil(() => fadeoutPanel.GetComponent<Image>().color.a == 1f);
+		yield return new WaitUntil(() => FadeOutPanel.alpha == 1f);
 
 		loadSceneOp.allowSceneActivation = true;
 	}

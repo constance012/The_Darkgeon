@@ -8,9 +8,14 @@ public class LevelsManager : MonoBehaviour, ISaveDataTransceiver
 {
 	public static LevelsManager instance { get; private set; }
 
-	public int currentLevelIndex { get; set; } = -1;
+	[Header("Debugging (Development Only)")]
+	[Space]
+	[ReadOnly] public bool developmentMode;
 
-	private Scene currentScene;
+	public int currentLevelIndex { get; set; } = -1;
+	public Scene currentScene { get; private set; }
+
+	private LevelNavigation navigation;
 	private bool transitionFromMenu;
 
 	private void Awake()
@@ -27,6 +32,19 @@ public class LevelsManager : MonoBehaviour, ISaveDataTransceiver
 
 	private IEnumerator Start()
 	{
+		developmentMode = !GameDataManager.instance.enableManager;
+
+		if (developmentMode)
+		{
+			Debug.LogWarning("Levels Manager is currently in development mode.", this);
+			currentScene = SceneManager.GetSceneAt(SceneManager.sceneCount - 1);
+			SceneManager.SetActiveScene(currentScene);
+
+			currentLevelIndex = currentScene.buildIndex;
+
+			yield break;
+		}
+
 		yield return new WaitUntil(() => currentLevelIndex != -1);
 		LoadLevel(LevelNavigation.LastPlayed);
 	}
@@ -36,13 +54,19 @@ public class LevelsManager : MonoBehaviour, ISaveDataTransceiver
 		gameData.levelData.levelIndex = this.currentLevelIndex;
 		gameData.levelData.levelName = this.currentScene.name;
 
-		gameData.playerData.lastPlayedLevel = this.currentLevelIndex;
+		switch (navigation)
+		{
+			case LevelNavigation.Next:
+				gameData.playerData.lastPlayedLevel = this.currentLevelIndex + 1;
+				break;
+			
+			case LevelNavigation.Previous:
+				gameData.playerData.lastPlayedLevel = this.currentLevelIndex - 1;
+				break;
+		}	
 	}
 
-	public void LoadData(GameData gameData)
-	{
-		
-	}
+	public void LoadData(GameData gameData) { }
 
 	public void RestartLevel()
 	{
@@ -64,16 +88,22 @@ public class LevelsManager : MonoBehaviour, ISaveDataTransceiver
 
 	private void LoadLevel(LevelNavigation navigation)
 	{
+		this.navigation = navigation;
+
 		switch (navigation)
 		{
 			case LevelNavigation.Next:
-				SceneManager.UnloadSceneAsync(currentLevelIndex, UnloadSceneOptions.UnloadAllEmbeddedSceneObjects);
+				GameDataManager.instance.SaveGame();
+				
 				currentLevelIndex++;
+				SceneManager.UnloadSceneAsync(currentLevelIndex, UnloadSceneOptions.UnloadAllEmbeddedSceneObjects);
 				break;
 
 			case LevelNavigation.Previous:
-				SceneManager.UnloadSceneAsync(currentLevelIndex, UnloadSceneOptions.UnloadAllEmbeddedSceneObjects);
+				GameDataManager.instance.SaveGame();
+				
 				currentLevelIndex--;
+				SceneManager.UnloadSceneAsync(currentLevelIndex, UnloadSceneOptions.UnloadAllEmbeddedSceneObjects);
 				break;
 
 			case LevelNavigation.Restart:
@@ -91,25 +121,27 @@ public class LevelsManager : MonoBehaviour, ISaveDataTransceiver
 		{
 			AsyncOperation loadSceneOp = SceneManager.LoadSceneAsync(currentLevelIndex, LoadSceneMode.Additive);
 
-			loadSceneOp.completed += OnSceneCompletedLoading;
+			loadSceneOp.completed += OnLevelCompletedLoading;
 		}
 		else
-			OnSceneCompletedLoading(null);
+			OnLevelCompletedLoading(null);
 	}
 
 	/// <summary>
-	/// Callback method when the new level scene has been asynchronously loaded.
+	/// Callback method when the new level level has been asynchronously loaded.
 	/// </summary>
 	/// <param name="obj"></param>
-	private void OnSceneCompletedLoading(AsyncOperation obj)
+	private void OnLevelCompletedLoading(AsyncOperation obj)
 	{
 		currentScene = SceneManager.GetSceneByBuildIndex(currentLevelIndex);
-
 		SceneManager.SetActiveScene(currentScene);
+
+		// Set the event camera for the level's world canvas.
+		Canvas enemiesWorldCanvas = GameObject.FindWithTag("Enemies World Canvas").GetComponent<Canvas>();
+		enemiesWorldCanvas.worldCamera = Camera.main;
 
 		if (!transitionFromMenu)
 		{
-			GameDataManager.instance.UpdateLevelSaveFile(currentLevelIndex);
 			GameDataManager.instance.LoadGame();
 		}
 		else

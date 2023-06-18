@@ -92,7 +92,6 @@ public class SaveFileHandler<TData>
 					writer.Write(serializedData);
 				}
 			}
-
 		}
 		catch (Exception ex)
 		{
