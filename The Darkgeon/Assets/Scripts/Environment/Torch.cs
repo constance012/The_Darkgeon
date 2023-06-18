@@ -1,4 +1,5 @@
 using UnityEngine;
+using static UnityEngine.ParticleSystem;
 
 public class Torch : Interactable
 {
@@ -6,6 +7,16 @@ public class Torch : Interactable
 	[Space]
 	[SerializeField] private ParticleSystem effects;
 	[SerializeField] private Flickering pointLight;
+
+	public bool PlayOnAwake
+	{
+		get { return effects.main.playOnAwake; }
+		set
+		{
+			MainModule main = effects.main;
+			main.playOnAwake = value;
+		}
+	}
 
 	protected override void Awake()
 	{

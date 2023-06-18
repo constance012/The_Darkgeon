@@ -87,7 +87,7 @@ TextureImporter:
       213: -3888567672798316567
     second: TX Chest Animation Golden 6
   externalObjects: {}
-  serializedVersion: 11
+  serializedVersion: 12
   mipmaps:
     mipMapMode: 0
     enableMipMap: 0
@@ -104,11 +104,12 @@ TextureImporter:
     externalNormalMap: 0
     heightScale: 0.25
     normalMapFilter: 0
+    flipGreenChannel: 0
   isReadable: 0
   streamingMipmaps: 0
   streamingMipmapsPriority: 0
   vTOnly: 0
-  ignoreMasterTextureLimit: 0
+  ignoreMipmapLimit: 0
   grayScaleToAlpha: 0
   generateCubemap: 6
   cubemapConvolution: 0
@@ -147,6 +148,8 @@ TextureImporter:
   textureFormatSet: 0
   ignorePngGamma: 0
   applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 1
   platformSettings:
   - serializedVersion: 3
     buildTarget: DefaultTexturePlatform
@@ -158,6 +161,7 @@ TextureImporter:
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
+    ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 3
@@ -169,7 +173,8 @@ TextureImporter:
     compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0
-    overridden: 0
+    overridden: 1
+    ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 3
@@ -182,6 +187,7 @@ TextureImporter:
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
+    ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 3
@@ -194,6 +200,33 @@ TextureImporter:
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Server
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: 4
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: iPhone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: 4
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
@@ -798,37 +831,36 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      TX Chest Animation_14: -977893446
-      TX Chest Animation_26: -1294543398
-      TX Chest Animation_15: -86353382
-      TX Chest Animation_27: 1315526571
-      TX Chest Animation_12: 733442784
-      TX Chest Animation_16: -776401476
+      TX Chest Animation_0: 303186335
       TX Chest Animation_1: 761704403
-      TX Chest Animation_6: -1046581168
-      TX Chest Animation_24: -2040805030
       TX Chest Animation_10: -1805650824
-      TX Chest Animation_21: -358129642
       TX Chest Animation_11: 677960951
+      TX Chest Animation_12: 733442784
+      TX Chest Animation_13: -387277452
+      TX Chest Animation_14: -977893446
+      TX Chest Animation_15: -86353382
+      TX Chest Animation_16: -776401476
       TX Chest Animation_17: -2072807579
+      TX Chest Animation_18: -1212864109
       TX Chest Animation_19: 877770546
       TX Chest Animation_2: 309413612
-      TX Chest Animation_0: 303186335
-      TX Chest Animation_4: -1307424738
-      TX Chest Animation_13: -387277452
-      TX Chest Animation_8: 462142327
-      TX Chest Animation_7: 1961473554
-      TX Chest Animation_23: 1345337028
-      TX Chest Animation_9: 100871504
       TX Chest Animation_20: 1550009259
-      TX Chest Animation_18: -1212864109
-      TX Chest Animation_3: -1795971993
-      TX Chest Animation_5: 2013097557
-      TX Chest Animation_25: 937455374
+      TX Chest Animation_21: -358129642
       TX Chest Animation_22: -811664633
-  spritePackingTag: 
+      TX Chest Animation_23: 1345337028
+      TX Chest Animation_24: -2040805030
+      TX Chest Animation_25: 937455374
+      TX Chest Animation_26: -1294543398
+      TX Chest Animation_27: 1315526571
+      TX Chest Animation_3: -1795971993
+      TX Chest Animation_4: -1307424738
+      TX Chest Animation_5: 2013097557
+      TX Chest Animation_6: -1046581168
+      TX Chest Animation_7: 1961473554
+      TX Chest Animation_8: 462142327
+      TX Chest Animation_9: 100871504
+  mipmapLimitGroupName: 
   pSDRemoveMatte: 0
-  pSDShowRemoveMatteOption: 0
   userData: 
   assetBundleName: 
   assetBundleVariant: 

@@ -3,10 +3,6 @@ using UnityEngine.EventSystems;
 using UnityRandom = UnityEngine.Random;
 using CSTGames.DataPersistence;
 using TMPro;
-using System;
-using UnityEngine.UI;
-using System.Collections;
-using Mono.Cecil;
 
 public class SaveSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {

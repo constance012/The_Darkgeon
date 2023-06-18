@@ -66,11 +66,8 @@ public class MainMenu : MonoBehaviour
 		if (!isThingsSet)
 			SettingThingsUp();
 
-		if (!isIntroDone)
-		{
-			menuTorch.ExecuteRemoteLogic(false);
-			menuPanel.SetActive(false);
-		}
+		menuTorch.ExecuteRemoteLogic(isIntroDone);
+		menuPanel.SetActive(isIntroDone);
 
 		if (isRatAlive)
 			SpawnRat();
