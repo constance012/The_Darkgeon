@@ -18,10 +18,10 @@ public class InventorySlot : MonoBehaviour
 
 	private void Awake()
 	{
-		favoriteBorder = transform.Find("Item Button/Favorite Border").GetComponent<Image>();
-		icon = transform.Find("Item Button/Icon").GetComponent<Image>();
+		favoriteBorder = transform.GetComponentInChildren<Image>("Item Button/Favorite Border");
+		icon = transform.GetComponentInChildren<Image>("Item Button/Icon");
 		
-		quantity = transform.Find("Item Button/Quantity").GetComponent<TextMeshProUGUI>();
+		quantity = transform.GetComponentInChildren<TextMeshProUGUI>("Item Button/Quantity");
 		tooltip = GetComponent<TooltipTrigger>();
 	}
 

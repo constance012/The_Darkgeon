@@ -35,14 +35,14 @@ public class GraphicsOptionPage : MonoBehaviour
 
 	private void Awake()
 	{
-		qualityDropdown = transform.Find("Quality Dropdown").GetComponent<TMP_Dropdown>();
+		qualityDropdown = transform.GetComponentInChildren<TMP_Dropdown>("Quality Dropdown");
 		
-		resolutionDropdown = transform.Find("Resolution Dropdown").GetComponent<TMP_Dropdown>();
-		fullscreenToggle = transform.Find("Fullscreen Toggle").GetComponent<Toggle>();
+		resolutionDropdown = transform.GetComponentInChildren<TMP_Dropdown>("Resolution Dropdown");
+		fullscreenToggle = transform.GetComponentInChildren<Toggle>("Fullscreen Toggle");
 		
-		framerateSlider = transform.Find("Framerate Slider").GetComponent<Slider>();
-		vsyncToggle = transform.Find("Vsync Toggle").GetComponent<Toggle>();
-		framerateNumber = transform.Find("Framerate Number").GetComponent<TextMeshProUGUI>();
+		framerateSlider = transform.GetComponentInChildren<Slider>("Framerate Slider");
+		vsyncToggle = transform.GetComponentInChildren<Toggle>("Vsync Toggle");
+		framerateNumber = transform.GetComponentInChildren<TextMeshProUGUI>("Framerate Number");
 	}
 
 	private void Start()

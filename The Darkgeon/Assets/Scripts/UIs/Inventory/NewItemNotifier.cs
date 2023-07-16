@@ -3,33 +3,27 @@ using UnityEngine.Events;
 using TMPro;
 
 /// <summary>
-/// Represents a UI text when a new item is added to the player's Inventory.
+/// Represents a UI text notifier when a new item is added to the player's Inventory.
 /// </summary>
 public class NewItemNotifier : MonoBehaviour
 {
 	public float aliveTime = 5f;
 
-	public static UnityEvent onLastSiblingDestroy;
+	public static UnityEvent onLastSiblingDestroy = new UnityEvent();
 
-	private RectTransform rTransform;
-	private TextMeshProUGUI displayText;
+	// Private fields.
+	private static Transform _parentPanel;
+	private static Animator _title;
+	private static bool _isTitleSlidOut = true;
 
-	private float disappearSpeed = 70f;
+	private TextMeshProUGUI _displayText;
 
 	private void Awake()
 	{
-		rTransform = GetComponent<RectTransform>();
-		displayText = GetComponent<TextMeshProUGUI>();
-
-		if (onLastSiblingDestroy == null)
-			onLastSiblingDestroy = new UnityEvent();
+		_displayText = GetComponent<TextMeshProUGUI>();
 
 		onLastSiblingDestroy.RemoveAllListeners();
-		onLastSiblingDestroy.AddListener(() => 
-		{
-			Animator titleAnimator = transform.parent.parent.Find("Title").GetComponent<Animator>();
-			titleAnimator.SetBool("Slide Out", true); 
-		});
+		onLastSiblingDestroy.AddListener(HideTitle);
 	}
 
 	private void Update()
@@ -37,23 +31,7 @@ public class NewItemNotifier : MonoBehaviour
 		// Begin disposing, one after another.
 		if (aliveTime <= 0f && transform.GetSiblingIndex() == 0)
 		{
-			if (displayText.fontSize >= 10f)
-				displayText.GetComponent<Animator>().SetTrigger("Disappear");
-			
-			float newHeight = rTransform.rect.height;
-
-			newHeight -= disappearSpeed * Time.deltaTime;
-
-			rTransform.sizeDelta = new Vector2(rTransform.rect.width, newHeight);
-
-			if (rTransform.rect.height <= 0f)
-			{
-				if (transform.parent.childCount == 1)
-					onLastSiblingDestroy?.Invoke();
-
-				Destroy(gameObject);
-			}
-
+			BeginDisposing();
 			return;
 		}
 
@@ -63,27 +41,49 @@ public class NewItemNotifier : MonoBehaviour
 
 	public static NewItemNotifier Generate(GameObject samplePrefab, Item target)
 	{
-		Transform parentPanel = GameObject.FindWithTag("UI Canvas").transform.Find("New Items Panel");
-		
-		// Toggle the title animation.
-		GameObject title = parentPanel.Find("Title").gameObject;
-		if (!title.activeInHierarchy)
-			title.SetActive(true);
+		if (_parentPanel == null)
+		{
+			_parentPanel = GameObject.FindWithTag("UI Canvas").transform.Find("New Items Panel");
+			_title = _parentPanel.GetComponentInChildren<Animator>("Title");
+		}
 
 		// Only slide in when it's already slid out.
-		else if (title.GetComponent<Animator>().GetBool("Slide Out"))
-			title.GetComponent<Animator>().SetBool("Slide Out", false);
+		if (_isTitleSlidOut)
+		{
+			_title.Play("Slide In");
+			_isTitleSlidOut = false;
+		}
 
 		// Instantiate the game object.
-		GameObject newItemObj = Instantiate(samplePrefab, parentPanel.Find("New Items List"));
+		GameObject newItemObj = Instantiate(samplePrefab, _parentPanel.Find("New Items List"));
 		newItemObj.name = samplePrefab.name;
 
 		NewItemNotifier newItem =  newItemObj.GetComponent<NewItemNotifier>();
 
 		// Set the text.
-		newItem.displayText.text = target.itemName.ToUpper() + " x" + target.quantity;
-		newItem.displayText.color = target.rarity.color;
+		newItem._displayText.text = target.itemName.ToUpper() + " x" + target.quantity;
+		newItem._displayText.color = target.rarity.color;
 		
 		return newItem;
+	}
+
+	private void BeginDisposing()
+	{
+		if (_displayText.fontSize >= 10f)
+			_displayText.GetComponent<Animator>().Play("Get Smaller");
+
+		if (_displayText.fontSize <= 0f)
+		{
+			if (transform.parent.childCount == 1)
+				onLastSiblingDestroy?.Invoke();
+
+			Destroy(gameObject);
+		}
+	}
+
+	private void HideTitle()
+	{
+		_title.Play("Slide Out");
+		_isTitleSlidOut = true;
 	}
 }

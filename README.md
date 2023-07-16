@@ -13,5 +13,6 @@ Credits for arts, sprites and packages:
 + "Pixel Art Platformer - Village Props" by Cainos - https://assetstore.unity.com/packages/2d/environments/pixel-art-platformer-village-props-166114
 + "Pixel Cursors" by ClayManStudio - https://assetstore.unity.com/packages/2d/gui/icons/pixel-cursors-109256
 + "Pixel Art Icon Pack - RPG" by Cainos - https://assetstore.unity.com/packages/2d/gui/icons/pixel-art-icon-pack-rpg-158343
++ "Ink Integration for Unity" by Inkle Studios - https://assetstore.unity.com/packages/tools/integration/ink-integration-for-unity-60055
 
-© 2022 CST Games (except those arts and sprites listed above).
+© 2022 CST Games (except those listed above).

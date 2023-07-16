@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 8165b14b50365f248bd8267ee3557c5b
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - player: {instanceID: 0}
+  - popupLabelPrefab: {fileID: 8135185957320462521, guid: ca4be55abf8b73d4a99492bb73ba7595, type: 3}
+  - effects: {instanceID: 0}
+  - pointLight: {instanceID: 0}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

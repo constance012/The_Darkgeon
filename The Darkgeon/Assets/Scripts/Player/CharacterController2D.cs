@@ -79,12 +79,12 @@ public class CharacterController2D : MonoBehaviour
 	{
 		m_Rigidbody2D = GetComponent<Rigidbody2D>();
 		m_Stats = GetComponent<PlayerStats>();
-		m_Animator = GetComponent<Animator>();
-		m_TrailRenderer = GetComponent<TrailRenderer>();
+		m_Animator = transform.GetComponentInChildren<Animator>("Graphic");
+		m_TrailRenderer = transform.GetComponentInChildren<TrailRenderer>("Graphic");
 		m_CrouchDisableCollider = GetComponent<BoxCollider2D>();
 
-		runningDust = transform.Find("Effects/Running Dust").GetComponent<ParticleSystem>();
-		jumpingDust = transform.Find("Effects/Jumping Dust").GetComponent<ParticleSystem>();
+		runningDust = transform.GetComponentInChildren<ParticleSystem>("Effects/Running Dust");
+		jumpingDust = transform.GetComponentInChildren<ParticleSystem>("Effects/Jumping Dust");
 
 		if (OnLandEvent == null)
 			OnLandEvent = new UnityEvent();
@@ -230,6 +230,8 @@ public class CharacterController2D : MonoBehaviour
 				// Landing event only triggers when falling to the ground.
 				if (!wasGrounded && m_Rigidbody2D.velocity.y < 0f)
 					OnLandEvent.Invoke();
+
+				break;
 			}
 	}
 

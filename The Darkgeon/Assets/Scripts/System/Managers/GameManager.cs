@@ -55,17 +55,18 @@ public class GameManager : MonoBehaviour
 			return;
 		}
 
-		playerAnim = GameObject.FindWithTag("Player").GetComponent<Animator>();
-		playerStats = playerAnim.GetComponent<PlayerStats>();
-		rb2d = playerAnim.GetComponent<Rigidbody2D>();
+		Transform player = GameObject.FindWithTag("Player").transform;
+		playerAnim = player.GetComponentInChildren<Animator>("Graphic");
+		playerStats = player.GetComponent<PlayerStats>();
+		rb2d = player.GetComponent<Rigidbody2D>();
 
-		moveScript = playerAnim.GetComponent<PlayerMovement>();
+		moveScript = player.GetComponent<PlayerMovement>();
 		actionsScript = playerAnim.GetComponent<PlayerActions>();
 
-		deathPanel = GameObject.FindWithTag("UI Canvas").transform.Find("Death Message").GetComponent<Animator>();
-		deathMessageText = deathPanel.transform.Find("Message").GetComponent<TextMeshProUGUI>();
-		killSourceText = deathPanel.transform.Find("Kill Source").GetComponent<TextMeshProUGUI>();
-		countdownText = deathPanel.transform.Find("Countdown").GetComponent<TextMeshProUGUI>();
+		deathPanel = GameObject.FindWithTag("UI Canvas").transform.GetComponentInChildren<Animator>("Death Message");
+		deathMessageText = deathPanel.transform.GetComponentInChildren<TextMeshProUGUI>("Message");
+		killSourceText = deathPanel.transform.GetComponentInChildren<TextMeshProUGUI>("Kill Source");
+		countdownText = deathPanel.transform.GetComponentInChildren<TextMeshProUGUI>("Countdown");
 
 		pauseMenu = GameObject.FindWithTag("UI Canvas").transform.Find("Pause Menu").gameObject;
 		playerUI = GameObject.FindWithTag("UI Canvas").transform.Find("Player UI").gameObject;

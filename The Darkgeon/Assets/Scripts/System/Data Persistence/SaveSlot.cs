@@ -53,11 +53,11 @@ public class SaveSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 	{
 		noDataContent = transform.Find("No Data Content").gameObject;
 		hasDataContent = transform.Find("Has Data Content").gameObject;
-		emptyText = noDataContent.transform.Find("Empty Text").GetComponent<TextMeshProUGUI>();
-		levelText = hasDataContent.transform.Find("Level Text").GetComponent<TextMeshProUGUI>();
-		playedTimeText = hasDataContent.transform.Find("Played Time Text").GetComponent<TextMeshProUGUI>();
+		emptyText = noDataContent.transform.GetComponentInChildren<TextMeshProUGUI>("Empty Text");
+		levelText = hasDataContent.transform.GetComponentInChildren<TextMeshProUGUI>("Level Text");
+		playedTimeText = hasDataContent.transform.GetComponentInChildren<TextMeshProUGUI>("Played Time Text");
 
-		DeleteButton = transform.parent.Find("Delete Button").GetComponent<DeleteSaveSlotButton>();
+		DeleteButton = transform.parent.GetComponentInChildren<DeleteSaveSlotButton>("Delete Button");
 	}
 
 	private void Start()

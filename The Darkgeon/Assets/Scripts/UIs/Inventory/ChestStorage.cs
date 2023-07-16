@@ -35,8 +35,8 @@ public class ChestStorage : MonoBehaviour
 			return;
 		}
 
-		slots = transform.Find("Slots").GetComponentsInChildren<ChestSlot>();
-		uiTitle = transform.Find("Title/Text").GetComponent<TextMeshProUGUI>();
+		slots = transform.GetComponentsInChildren<ChestSlot>("Slots");
+		uiTitle = transform.GetComponentInChildren<TextMeshProUGUI>("Title/Text");
 
 		gameObject.SetActive(false);
 		

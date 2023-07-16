@@ -23,7 +23,7 @@ public class LadderClimbing : MonoBehaviour
 	private void Awake()
 	{
 		rb2d = GetComponent<Rigidbody2D>();
-		animator = GetComponent<Animator>();
+		animator = transform.GetComponentInChildren<Animator>("Graphic");
 		originalGravity = rb2d.gravityScale;
 	}
 
@@ -42,6 +42,9 @@ public class LadderClimbing : MonoBehaviour
 
 	private void OnTriggerStay2D(Collider2D collision)
 	{
+		if (!collision.CompareTag("Ladder"))
+			return;
+
 		verticalMove = InputManager.instance.GetAxisRaw("vertical");
 		animator.SetFloat(verticalInputHash, verticalMove);
 

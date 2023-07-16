@@ -37,7 +37,7 @@ public class MenuRatBehavior : MonoBehaviour
 		animator = GetComponent<Animator>();
 		rb2d = GetComponent<Rigidbody2D>();
 		enemyMat = GetComponent<SpriteRenderer>().material;
-		deathFx = transform.Find("Soul Release Effect").GetComponent<ParticleSystem>();
+		deathFx = transform.GetComponentInChildren<ParticleSystem>("Soul Release Effect");
 	}
 
 	private void Update()

@@ -62,11 +62,11 @@ public class ControlsOptionPage : MonoBehaviour
 
 	private void Awake()
 	{
-		keySetDropdown = transform.Find("Keyset Area/Keyset Dropdown").GetComponent<TMP_Dropdown>();
-		inputField = transform.Find("Keyset Area/Keyset Input Field").GetComponent<TMP_InputField>();
+		keySetDropdown = transform.GetComponentInChildren<TMP_Dropdown>("Keyset Area/Keyset Dropdown");
+		inputField = transform.GetComponentInChildren<TMP_InputField>("Keyset Area/Keyset Input Field");
 
-		cancelButton = transform.Find("Keyset Area/Cancel Button").GetComponent<Button>();
-		addButton = transform.Find("Keyset Area/Add Button").GetComponent<Button>();
+		cancelButton = transform.GetComponentInChildren<Button>("Keyset Area/Cancel Button");
+		addButton = transform.GetComponentInChildren<Button>("Keyset Area/Add Button");
 	}
 
 	private void Start()
@@ -136,8 +136,8 @@ public class ControlsOptionPage : MonoBehaviour
 	/// <param name="action"></param>
 	public void RegisterNewKey(string action)
 	{
-		TextMeshProUGUI clickedButtonTextUI = transform.Find("Scroll View/Viewport/Content/" + action + " Button/Text")
-														.GetComponent<TextMeshProUGUI>();
+		TextMeshProUGUI clickedButtonTextUI = 
+			transform.GetComponentInChildren<TextMeshProUGUI>($"Scroll View/Viewport/Content/{action} Button/Text");
 
 		currentButtonTextUI = clickedButtonTextUI;
 
@@ -213,7 +213,7 @@ public class ControlsOptionPage : MonoBehaviour
 
 	public void OnDeleteButtonClick()
 	{
-		TextMeshProUGUI warningText = transform.Find("Delete Keyset Page/Delete Box/Warning Text").GetComponent<TextMeshProUGUI>();
+		TextMeshProUGUI warningText = transform.GetComponentInChildren<TextMeshProUGUI>("Delete Keyset Page/Delete Box/Warning Text");
 		
 		TMP_Dropdown.OptionData selectedOption = keySetDropdown.options[keySetDropdown.value];
 		
@@ -310,7 +310,8 @@ public class ControlsOptionPage : MonoBehaviour
 			// Get each button and edit its text.
 			string buttonName = StringManipulator.AddWhitespaceBeforeCapital(key.action.ToString());
 
-			TextMeshProUGUI buttonTextUI = transform.Find("Scroll View/Viewport/Content/" + buttonName + " Button/Text").GetComponent<TextMeshProUGUI>();
+			TextMeshProUGUI buttonTextUI =
+				transform.GetComponentInChildren<TextMeshProUGUI>($"Scroll View/Viewport/Content/{buttonName} Button/Text");
 			
 			string keyName = StringManipulator.AddWhitespaceBeforeCapital(key.keyCode.ToString()).ToUpper();
 

@@ -52,9 +52,9 @@ public class MainMenu : MonoBehaviour
 		mainCamera = GameObject.Find("Stationary Cam").GetComponent<Animator>();
 		menuTorch = FindObjectOfType<Torch>();
 		
-		starterText = transform.parent.Find("Starter Text").GetComponent<TextMeshProUGUI>();
-		loadGameButtonText = menuPanel.transform.Find("Load Game Button/Text").GetComponent<TextMeshProUGUI>();
-		continueButton = menuPanel.transform.Find("Continue Button").GetComponent<Button>();
+		starterText = transform.parent.GetComponentInChildren<TextMeshProUGUI>("Starter Text");
+		loadGameButtonText = menuPanel.transform.GetComponentInChildren<TextMeshProUGUI>("Load Game Button/Text");
+		continueButton = menuPanel.transform.GetComponentInChildren<Button>("Continue Button");
 
 		loadGameSceneEvent = () => StartCoroutine(LoadGameScene());
 	}

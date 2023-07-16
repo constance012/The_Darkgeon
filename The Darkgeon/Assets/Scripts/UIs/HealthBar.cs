@@ -39,13 +39,13 @@ public class HealthBar : MonoBehaviour
 	private void Awake()
 	{
 		hpSlider = GetComponent<Slider>();
-		fxSlider = transform.Find("Deplete Effect").GetComponent<Slider>();
+		fxSlider = transform.GetComponentInChildren<Slider>("Deplete Effect");
 
-		fillRect = transform.Find("Fill").GetComponent<Image>();
-		fxFillRect = transform.Find("Deplete Effect/Effect Fill").GetComponent<Image>();
-		screenBloodBorder = transform.root.Find("Screen Blood").GetComponent<Image>();
+		fillRect = transform.GetComponentInChildren<Image>("Fill");
+		fxFillRect = transform.GetComponentInChildren<Image>("Deplete Effect/Effect Fill");
+		screenBloodBorder = transform.root.GetComponentInChildren<Image>("Screen Blood");
 
-		healthText = transform.Find("Text Display/Health Text").GetComponent<TextMeshProUGUI>();
+		healthText = transform.GetComponentInChildren<TextMeshProUGUI>("Text Display/Health Text");
 	}
 
 	public void OnHealthChanged()

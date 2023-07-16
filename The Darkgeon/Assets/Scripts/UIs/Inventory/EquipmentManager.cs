@@ -48,17 +48,19 @@ public class EquipmentManager : MonoBehaviour, ISaveDataTransceiver
 			return;
 		}
 
-		slots = transform.Find("Slots").GetComponentsInChildren<EquipmentSlot>();
-		statTexts = transform.Find("Stats Panel/Scroll View/Viewport/Content").GetComponentsInChildren<TextMeshProUGUI>();
+		slots = transform.GetComponentsInChildren<EquipmentSlot>("Slots");
+		statTexts = transform.GetComponentsInChildren<TextMeshProUGUI>("Stats Panel/Scroll View/Viewport/Content");
 
-		playerSprite = GameObject.FindWithTag("Player").GetComponent<SpriteRenderer>();
-		playerStats = playerSprite.GetComponent<PlayerStats>();
-		portrait = transform.Find("Portrait/Player Sprite").GetComponent<Image>();
+		Transform player = GameObject.FindWithTag("Player").transform;
+		playerSprite = player.GetComponentInChildren<SpriteRenderer>("Graphic");
+		playerStats = player.GetComponent<PlayerStats>();
 
-		toggleText = transform.Find("Stats Toggle/Text").GetComponent<TextMeshProUGUI>();
-		titleText = transform.Find("Title/Text").GetComponent<TextMeshProUGUI>();
+		portrait = transform.GetComponentInChildren<Image>("Portrait/Player Sprite");
+
+		toggleText = transform.GetComponentInChildren<TextMeshProUGUI>("Stats Toggle/Text");
+		titleText = transform.GetComponentInChildren<TextMeshProUGUI>("Title/Text");
 		statsPanel = transform.Find("Stats Panel").gameObject;
-		unequipAllButton = transform.Find("Unequip All Button").GetComponent<Button>();
+		unequipAllButton = transform.GetComponentInChildren<Button>("Unequip All Button");
 		
 		int numberOfSlots = Enum.GetNames(typeof(Equipment.EquipmentType)).Length;
 		currentEquipments = new Equipment[numberOfSlots];

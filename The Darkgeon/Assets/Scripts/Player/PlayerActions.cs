@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.EventSystems;
 using CSTGames.CommonEnums;
 
 /// <summary>
@@ -32,7 +31,7 @@ public class PlayerActions : MonoBehaviour
 	private void Awake()
 	{
 		animator = GetComponent<Animator>();
-		controller = GetComponent<CharacterController2D>();
+		controller = GetComponentInParent<CharacterController2D>();
 	}
 
 	private void Update()

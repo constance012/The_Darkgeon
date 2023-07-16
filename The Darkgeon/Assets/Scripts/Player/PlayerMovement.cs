@@ -33,7 +33,7 @@ public class PlayerMovement : MonoBehaviour
 	private void Awake()
 	{
 		controller = GetComponent<CharacterController2D>();
-		animator = GetComponent<Animator>();
+		animator = transform.GetComponentInChildren<Animator>("Graphic");
 		rb2D = GetComponent<Rigidbody2D>();
 	}
 

@@ -68,7 +68,7 @@ public class PlayerStats : MonoBehaviour, ISaveDataTransceiver
 		hpBar = GameObject.Find("Health Bar Slider").GetComponent<HealthBar>();
 		dmgTextLoc = transform.Find("Damage Text Loc");
 
-		animator = GetComponent<Animator>();
+		animator = transform.GetComponentInChildren<Animator>("Graphic");
 		rb2d = GetComponent<Rigidbody2D>();
 	}
 

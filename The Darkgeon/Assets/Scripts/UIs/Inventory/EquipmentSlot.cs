@@ -19,7 +19,7 @@ public class EquipmentSlot : MonoBehaviour, IPointerClickHandler
 
 	private void Awake()
 	{
-		icon = transform.Find("Icon").GetComponent<Image>();
+		icon = transform.GetComponentInChildren<Image>("Icon");
 		trigger = GetComponent<TooltipTrigger>();
 	}
 

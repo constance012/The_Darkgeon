@@ -25,13 +25,13 @@ public class AudioOptionPage : MonoBehaviour
 	private void Awake()
 	{
 		Debug.Log("Audio Page awoke.");
-		masterSlider = transform.Find("Master Slider").GetComponent<Slider>();
-		musicSlider = transform.Find("Music Slider").GetComponent<Slider>();
-		soundsSlider = transform.Find("Sounds Slider").GetComponent<Slider>();
+		masterSlider = transform.GetComponentInChildren<Slider>("Master Slider");
+		musicSlider = transform.GetComponentInChildren<Slider>("Music Slider");
+		soundsSlider = transform.GetComponentInChildren<Slider>("Sounds Slider");
 
-		masterAmountUI = transform.Find("Master Amount").GetComponent<TextMeshProUGUI>();
-		musicAmountUI = transform.Find("Music Amount").GetComponent<TextMeshProUGUI>();
-		soundsAmountUI = transform.Find("Sounds Amount").GetComponent<TextMeshProUGUI>();
+		masterAmountUI = transform.GetComponentInChildren<TextMeshProUGUI>("Master Amount");
+		musicAmountUI = transform.GetComponentInChildren<TextMeshProUGUI>("Music Amount");
+		soundsAmountUI = transform.GetComponentInChildren<TextMeshProUGUI>("Sounds Amount");
 	}
 
 	private void Start()

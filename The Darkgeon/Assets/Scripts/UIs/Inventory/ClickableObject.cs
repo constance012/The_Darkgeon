@@ -48,7 +48,7 @@ public class ClickableObject : MonoBehaviour, IPointerClickHandler, IPointerDown
 		else
 			currentChestSlot = transform.GetComponentInParent<ChestSlot>();
 
-		icon = transform.Find("Icon").GetComponent<Image>();
+		icon = transform.GetComponentInChildren<Image>("Icon");
 		tooltip = GetComponentInParent<TooltipTrigger>();
 		player = GameObject.FindWithTag("Player").transform;
 	}
@@ -169,9 +169,9 @@ public class ClickableObject : MonoBehaviour, IPointerClickHandler, IPointerDown
 				// Set up the drop.
 				ItemPickup droppedItem = droppedItemPrefab.GetComponent<ItemPickup>();
 
-				droppedItem.itemPrefab = disposeItem;
-				droppedItem.itemPrefab.slotIndex = -1;
-				droppedItem.itemPrefab.isFavorite = false;
+				droppedItem.itemSO = disposeItem;
+				droppedItem.itemSO.slotIndex = -1;
+				droppedItem.itemSO.isFavorite = false;
 				droppedItem.player = player;
 
 				// Make the drop.
@@ -233,8 +233,8 @@ public class ClickableObject : MonoBehaviour, IPointerClickHandler, IPointerDown
 	{
 		clone = Instantiate(gameObject, transform.root);
 		clone.GetComponent<Image>().enabled = false;
-		clone.transform.Find("Icon").GetComponent<Image>().raycastTarget = false;
-		clone.transform.Find("Favorite Border").GetComponent<Image>().enabled = false;
+		clone.transform.GetComponentInChildren<Image>("Icon").raycastTarget = false;
+		clone.transform.GetComponentInChildren<Image>("Favorite Border").enabled = false;
 
 		icon.color = new Color(.51f, .51f, .51f);
 
@@ -290,9 +290,9 @@ public class ClickableObject : MonoBehaviour, IPointerClickHandler, IPointerDown
 			clone.GetComponent<ClickableObject>().dragItem = split;
 
 			clone.GetComponent<Image>().enabled = false;
-			clone.transform.Find("Icon").GetComponent<Image>().raycastTarget = false;
-			clone.transform.Find("Favorite Border").GetComponent<Image>().enabled = false;
-			clone.transform.Find("Quantity").GetComponent<TextMeshProUGUI>().text = half1.ToString();
+			clone.transform.GetComponentInChildren<Image>("Icon").raycastTarget = false;
+			clone.transform.GetComponentInChildren<Image>("Favorite Border").enabled = false;
+			clone.transform.GetComponentInChildren<TextMeshProUGUI>("Quantity").text = half1.ToString();
 
 			holdingItem = true;
 			splittingItem = true;
@@ -314,7 +314,7 @@ public class ClickableObject : MonoBehaviour, IPointerClickHandler, IPointerDown
 		int half2 = dragItem.quantity / 2;
 		holdItem.quantity += half2;
 
-		clone.transform.Find("Quantity").GetComponent<TextMeshProUGUI>().text = holdItem.quantity.ToString();
+		clone.transform.GetComponentInChildren<TextMeshProUGUI>("Quantity").text = holdItem.quantity.ToString();
 
 		if (dragItem.quantity <= 1)
 		{
@@ -329,11 +329,11 @@ public class ClickableObject : MonoBehaviour, IPointerClickHandler, IPointerDown
 				currentChestSlot.currentItem = null;
 			}
 
-			sender.transform.Find("Quantity").GetComponent<TextMeshProUGUI>().text = "0";
+			sender.transform.GetComponentInChildren<TextMeshProUGUI>("Quantity").text = "0";
 			icon.color = new Color(.51f, .51f, .51f);
 
 			holdItem.quantity++;  // Because 1 / 2 == 0, we need to increase the quantity by 1.
-			clone.transform.Find("Quantity").GetComponent<TextMeshProUGUI>().text = holdItem.quantity.ToString();
+			clone.transform.GetComponentInChildren<TextMeshProUGUI>("Quantity").text = holdItem.quantity.ToString();
 				
 			return;
 		}
@@ -363,9 +363,9 @@ public class ClickableObject : MonoBehaviour, IPointerClickHandler, IPointerDown
 			clone.GetComponent<ClickableObject>().dragItem = split;
 
 			clone.GetComponent<Image>().enabled = false;
-			clone.transform.Find("Icon").GetComponent<Image>().raycastTarget = false;
-			clone.transform.Find("Favorite Border").GetComponent<Image>().enabled = false;
-			clone.transform.Find("Quantity").GetComponent<TextMeshProUGUI>().text = "1";
+			clone.transform.GetComponentInChildren<Image>("Icon").raycastTarget = false;
+			clone.transform.GetComponentInChildren<Image>("Favorite Border").enabled = false;
+			clone.transform.GetComponentInChildren<TextMeshProUGUI>("Quantity").text = "1";
 
 			holdingItem = true;
 			splittingItem = true;
@@ -386,7 +386,7 @@ public class ClickableObject : MonoBehaviour, IPointerClickHandler, IPointerDown
 		Item holdItem = clone.GetComponent<ClickableObject>().dragItem;
 		holdItem.quantity++;
 
-		clone.transform.Find("Quantity").GetComponent<TextMeshProUGUI>().text = holdItem.quantity.ToString();
+		clone.transform.GetComponentInChildren<TextMeshProUGUI>("Quantity").text = holdItem.quantity.ToString();
 
 		if (dragItem.quantity == 1)
 		{
@@ -401,7 +401,7 @@ public class ClickableObject : MonoBehaviour, IPointerClickHandler, IPointerDown
 				currentChestSlot.currentItem = null;
 			}
 
-			sender.transform.Find("Quantity").GetComponent<TextMeshProUGUI>().text = "0";
+			sender.transform.GetComponentInChildren<TextMeshProUGUI>("Quantity").text = "0";
 			icon.color = new Color(.51f, .51f, .51f);
 
 			return;

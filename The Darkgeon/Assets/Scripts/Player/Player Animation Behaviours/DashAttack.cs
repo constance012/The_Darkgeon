@@ -17,8 +17,8 @@ public class DashAttack : StateMachineBehaviour
 	public override void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
 	{
 		action = animator.GetComponent<PlayerActions>();
-		stats = animator.GetComponent<PlayerStats>();
-		dustFx = animator.transform.Find("Effects/Sword Dust Effect").GetComponent<ParticleSystem>();
+		stats = animator.GetComponentInParent<PlayerStats>();
+		dustFx = animator.transform.GetComponentInSibling<ParticleSystem>("Effects/Sword Dust Effect");
 		animator.GetComponent<Rigidbody2D>().velocity = Vector3.zero;
 
 		canCrit = stats.IsCriticalStrike();

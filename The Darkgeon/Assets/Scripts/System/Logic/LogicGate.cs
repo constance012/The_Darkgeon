@@ -6,12 +6,12 @@ public class LogicGate : LogicEvaluator
 	[Space]
 	public BooleanOperator _operator;
 
-	[SerializeField] private OnOffLever leverA;
-	[SerializeField] private OnOffLever leverB;
+	[SerializeField] private Mechanisms triggerA;
+	[SerializeField] private Mechanisms triggerB;
 
 	public override void Evaluate()
 	{
-		if (leverA == null || leverB == null)
+		if (triggerA == null || triggerB == null)
 		{
 			Debug.LogWarning("Please asign both levers before trying to evaluate the logic gate.", this);
 			return;
@@ -22,27 +22,27 @@ public class LogicGate : LogicEvaluator
 		switch (_operator)
 		{
 			case BooleanOperator.AND:
-				result = leverA.Status && leverB.Status;
+				result = triggerA.Status && triggerB.Status;
 				break;
 
 			case BooleanOperator.OR:
-				result = leverA.Status || leverB.Status;
+				result = triggerA.Status || triggerB.Status;
 				break;
 
 			case BooleanOperator.NOR:
-				result = !(leverA.Status || leverB.Status);
+				result = !(triggerA.Status || triggerB.Status);
 				break;
 
 			case BooleanOperator.NAND:
-				result = !(leverA.Status && leverB.Status);
+				result = !(triggerA.Status && triggerB.Status);
 				break;
 
 			case BooleanOperator.XOR:
-				result = leverA.Status != leverB.Status;
+				result = triggerA.Status != triggerB.Status;
 				break;
 
 			case BooleanOperator.XNOR:
-				result = leverA.Status == leverB.Status;
+				result = triggerA.Status == triggerB.Status;
 				break;
 		}
 

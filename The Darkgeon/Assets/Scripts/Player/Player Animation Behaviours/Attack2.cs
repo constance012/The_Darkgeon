@@ -16,7 +16,7 @@ public class Attack2 : StateMachineBehaviour
 	public override void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
 	{
 		action = animator.GetComponent<PlayerActions>();
-		stats = animator.GetComponent<PlayerStats>();
+		stats = animator.GetComponentInParent<PlayerStats>();
 
 		canCrit = stats.IsCriticalStrike();
 	}

@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: fb5aab6717216584b919447588d58761
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - player: {instanceID: 0}
+  - popupLabelPrefab: {fileID: 8135185957320462521, guid: ca4be55abf8b73d4a99492bb73ba7595, type: 3}
+  - openSprite: {fileID: 21300004, guid: ae3918a914038694d852d0bb81f62473, type: 3}
+  - closeSprite: {fileID: 21300002, guid: ae3918a914038694d852d0bb81f62473, type: 3}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

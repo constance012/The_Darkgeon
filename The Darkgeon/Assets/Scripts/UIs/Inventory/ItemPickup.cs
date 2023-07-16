@@ -1,32 +1,44 @@
+using CSTGames.CommonEnums;
 using TMPro;
 using UnityEngine;
 
-[RequireComponent(typeof(SpriteRenderer))]
 public class ItemPickup : Interactable
 {
 	[Header("Current Item Info")]
 	[Space]
 
-	public Item itemPrefab;
+	[Tooltip("The scriptable object represents this item.")] public Item itemSO;
 	public GameObject pickedItemUIPrefab;
 
 	private Item currentItem;
-	private SpriteRenderer spriteRenderer;
-
-	protected override void Awake()
-	{
-		base.Awake();
-		spriteRenderer = GetComponent<SpriteRenderer>();
-	}
 
 	private void Start()
 	{
-		currentItem = Instantiate(itemPrefab);
-		currentItem.name = itemPrefab.name;
+		currentItem = Instantiate(itemSO);
+		currentItem.name = itemSO.name;
 
-		spriteRenderer.sprite = currentItem.icon;
-		
-		mat = spriteRenderer.material;
+		spriteRenderer.sprite = currentItem.icon;		
+	}
+
+	protected override void CheckForInteraction(float mouseDistance, float playerDistance)
+	{
+		if (mouseDistance <= radius || playerDistance <= interactDistance)
+		{
+			TriggerInteraction(playerDistance);
+		}
+		else
+		{
+			CancelInteraction(playerDistance);
+		}
+
+	}
+
+	protected override void TriggerInteraction(float playerDistance)
+	{
+		base.TriggerInteraction(playerDistance);
+
+		if (InputManager.instance.GetKeyDown(KeybindingActions.Interact) && playerDistance <= interactDistance)
+			Interact();
 	}
 
 	public override void Interact()
@@ -43,46 +55,39 @@ public class ItemPickup : Interactable
 
 	protected override void CreatePopupLabel()
 	{
-		bool isCloneExisting = worldCanvas.transform.Find("Popup Label");
+		Transform foundLabel = worldCanvas.transform.Find("Popup Label");
 
+		string itemName = currentItem.itemName;
 		int quantity = currentItem.quantity;
-		TextMeshProUGUI labelText;
+		Color textColor = currentItem.rarity.color;
 
 		// Create a clone if not already exists.
-		if (!isCloneExisting)
+		if (foundLabel == null)
 		{
 			base.CreatePopupLabel();
-			labelText = clone.transform.Find("Names/Object Name").GetComponent<TextMeshProUGUI>();
-
-			labelText.text = quantity > 1 ? currentItem.itemName.ToUpper() + " x" + currentItem.quantity
-										: currentItem.itemName.ToUpper();
-			labelText.color = currentItem.rarity.color;
+			clone.SetObjectName(itemName, quantity, textColor);
 		}
-		// Otherwise, use the existing one.
+
+		// Otherwise, append to the existing one.
 		else
 		{
-			clone = worldCanvas.transform.Find("Popup Label").gameObject;
-			labelText = clone.transform.Find("Names/Object Name").GetComponent<TextMeshProUGUI>();
-			TextMeshProUGUI duplicatedLabel = Instantiate(labelText, labelText.transform.parent);
+			clone = foundLabel.GetComponent<InteractionPopupLabel>();
 
-			duplicatedLabel.text = quantity > 1 ? currentItem.itemName.ToUpper() + " x" + currentItem.quantity
-										: currentItem.itemName.ToUpper();
-			duplicatedLabel.color = currentItem.rarity.color;
-
-			clone.GetComponent<Animator>().SetTrigger("Restart");
+			clone.SetObjectName(itemName, quantity, textColor, true);
+			clone.RestartAnimation();
 		}
 	}
 
 	private void Pickup()
 	{
-		Debug.Log("You're picking up a(an) " + currentItem.itemName);
+		Debug.Log("You're picking up a(n) " + currentItem.itemName);
 
 		// Destroy the popup label.
-		Destroy(clone);
+		Destroy(clone.gameObject);
 
 		if (Inventory.instance.Add(currentItem))
 		{
-			NewItemNotifier.Generate(pickedItemUIPrefab, itemPrefab);
+			NewItemNotifier.Generate(pickedItemUIPrefab, itemSO);
 			Destroy(gameObject);
 		}
 	}

@@ -77,7 +77,7 @@ public class DebuffManager : MonoBehaviour
 
 			debuffUIObj.name = target.debuffName;
 			debuffUIObj.GetComponent<Image>().sprite = target.icon;
-			debuffUIObj.transform.Find("Duration").GetComponent<TextMeshProUGUI>().text = target.duration.ToString();
+			debuffUIObj.transform.GetComponentInChildren<TextMeshProUGUI>("Duration").text = target.duration.ToString();
 
 			TooltipTrigger tooltip = debuffUIObj.GetComponent<TooltipTrigger>();
 			tooltip.header = target.debuffName;

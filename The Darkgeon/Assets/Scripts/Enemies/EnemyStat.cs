@@ -65,13 +65,13 @@ public class EnemyStat : MonoBehaviour
 
 	private void Awake()
 	{
-		hpBar = transform.Find("Enemy Health Bar").GetComponent<EnemyHPBar>();
-		dmgTextPos = transform.Find("Damage Text Pos").transform;
+		hpBar = transform.GetComponentInChildren<EnemyHPBar>("Enemy Health Bar");
+		dmgTextPos = transform.Find("Damage Text Pos");
 
 		worldCanvas = GameObject.FindWithTag("Enemies World Canvas").transform;
 		animator = GetComponent<Animator>();
 		enemyMat = GetComponent<SpriteRenderer>().material;
-		deathFx = transform.Find("Soul Release Effect").GetComponent<ParticleSystem>();
+		deathFx = transform.GetComponentInChildren<ParticleSystem>("Soul Release Effect");
 		
 		rb2d = GetComponent<Rigidbody2D>();
 		centerPoint = transform.Find("Center Point");
@@ -184,8 +184,8 @@ public class EnemyStat : MonoBehaviour
 			// Set up the drop.
 			ItemPickup droppedLoot = selectedPrefab.GetComponent<ItemPickup>();
 
-			droppedLoot.itemPrefab = Instantiate(target.loot);
-			droppedLoot.itemPrefab.quantity = target.quantity;
+			droppedLoot.itemSO = Instantiate(target.loot);
+			droppedLoot.itemSO.quantity = target.quantity;
 			droppedLoot.player = player;
 
 			// Make the drop.

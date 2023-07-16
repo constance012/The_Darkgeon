@@ -26,7 +26,7 @@ public class Debuff : ScriptableObject
 		{
 			player = GameObject.FindWithTag("Player").GetComponent<PlayerStats>();
 			
-			playerAnim = player.GetComponent<Animator>();
+			playerAnim = player.transform.GetComponentInChildren<Animator>("Graphic");
 			
 			durationUI = GameObject.FindWithTag("UI Canvas").transform.
 									Find($"Player UI/Debuff Panel/{debuffName}/Duration").GetComponent<TextMeshProUGUI>();

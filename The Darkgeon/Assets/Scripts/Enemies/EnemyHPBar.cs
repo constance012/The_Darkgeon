@@ -21,7 +21,7 @@ public class EnemyHPBar : MonoBehaviour
 	private void Awake()
 	{
 		hpSlider = GetComponent<Slider>();
-		fillRect = transform.Find("Fill").GetComponent<Image>();
+		fillRect = transform.GetComponentInChildren<Image>("Fill");
 		hpBarPos = transform.parent.Find("HP Bar Pos");
 	}
 

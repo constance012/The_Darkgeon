@@ -13,7 +13,7 @@ public class CoinSlot : MonoBehaviour
 	private void Awake()
 	{
 		tooltipTrigger = GetComponent<TooltipTrigger>();
-		quantityText = transform.Find("Quantity").GetComponent<TextMeshProUGUI>();
+		quantityText = transform.GetComponentInChildren<TextMeshProUGUI>("Quantity");
 
 		isAwoken = true;
 	}

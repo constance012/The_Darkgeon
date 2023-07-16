@@ -58,9 +58,9 @@ public class Inventory : MonoBehaviour, ISaveDataTransceiver
 			return;
 		}
 
-		slots = transform.Find("Slots").GetComponentsInChildren<InventorySlot>();
-		coinSlot = transform.Find("Coin Slot").GetComponent<CoinSlot>();
-		outsideZone = transform.root.Find("Outside Zone").GetComponent<Image>();
+		slots = transform.GetComponentsInChildren<InventorySlot>("Slots");
+		coinSlot = transform.GetComponentInChildren<CoinSlot>("Coin Slot");
+		outsideZone = transform.root.GetComponentInChildren<Image>("Outside Zone");
 		
 		onItemChanged.AddListener(ReloadUI);
 	}

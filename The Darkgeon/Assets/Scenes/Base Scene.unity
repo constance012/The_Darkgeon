@@ -293,7 +293,7 @@ MonoBehaviour:
   m_BlockingObjects: 0
   m_BlockingMask:
     serializedVersion: 2
-    m_Bits: 2147483647
+    m_Bits: 4294967295
 --- !u!114 &38209106
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2534,8 +2534,8 @@ MonoBehaviour:
     serializedVersion: 2
     key0: {r: 0.7924528, g: 0.12335351, b: 0.12335351, a: 1}
     key1: {r: 1, g: 0.99247026, b: 0, a: 1}
-    key2: {r: 0.43805102, g: 0.8490566, b: 0.11614456, a: 1}
-    key3: {r: 0.43862867, g: 1, b: 0, a: 0}
+    key2: {r: 0.43805102, g: 0.8490566, b: 0.11614456, a: 0}
+    key3: {r: 0, g: 0, b: 0, a: 0}
     key4: {r: 0, g: 0, b: 0, a: 0}
     key5: {r: 0, g: 0, b: 0, a: 0}
     key6: {r: 0, g: 0, b: 0, a: 0}
@@ -2543,14 +2543,14 @@ MonoBehaviour:
     ctime0: 16384
     ctime1: 39321
     ctime2: 65535
-    ctime3: 65535
+    ctime3: 0
     ctime4: 0
     ctime5: 0
     ctime6: 0
     ctime7: 0
     atime0: 0
     atime1: 65535
-    atime2: 65535
+    atime2: 0
     atime3: 0
     atime4: 0
     atime5: 0
@@ -3312,7 +3312,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 4
+  orthographic size: 5
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -3336,7 +3336,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 519420028}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 7.84, y: -1.3899999, z: -10}
+  m_LocalPosition: {x: 7.84, y: -1.2899998, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -11894,7 +11894,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 68925220190622934}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 7.84, y: -1.3899999, z: -10}
+  m_LocalPosition: {x: 7.84, y: -1.2899998, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -11924,7 +11924,7 @@ MonoBehaviour:
   m_Follow: {fileID: 1796416770}
   m_Lens:
     FieldOfView: 60
-    OrthographicSize: 4
+    OrthographicSize: 5
     NearClipPlane: 0.3
     FarClipPlane: 1000
     Dutch: 0
@@ -12846,7 +12846,7 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 2333666
+    rgba: 4280523746
   m_fontColor: {r: 0.8867924, g: 0.6096294, b: 0.13803846, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
@@ -12944,7 +12944,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!95 &6928333299120773463
 Animator:
   serializedVersion: 5
