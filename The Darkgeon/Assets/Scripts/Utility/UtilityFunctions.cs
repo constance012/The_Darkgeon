@@ -49,7 +49,7 @@ namespace CSTGames.Utility
 			float oldRange = oldMax - oldMin;
 			float newRange = newMax - newMin;
 
-			// If the oldMax == oldMin, then just clamps the value directly to the new range.
+			// If the oldMax == oldMin, then just clamps the value directly within the new range.
 			if (oldRange == 0f)
 				return Math.Clamp(targetValue, newMin, newMax);
 			else

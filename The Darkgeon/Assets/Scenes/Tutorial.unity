@@ -762,6 +762,7 @@ MonoBehaviour:
   radius: 0.3
   interactDistance: 0.5
   hasInteracted: 0
+  inkJson: {fileID: 0}
   itemSO: {fileID: 11400000, guid: 3603a14138fe15a4baf4cbc9d92b22c5, type: 2}
   pickedItemUIPrefab: {fileID: 9083029984369846302, guid: d719be5a54912e5418688b98f699fdf9, type: 3}
 --- !u!58 &152452470
@@ -18875,6 +18876,7 @@ MonoBehaviour:
   radius: 0.3
   interactDistance: 0.5
   hasInteracted: 0
+  inkJson: {fileID: 0}
   itemSO: {fileID: 11400000, guid: e21f47a03238dfe41a441c3bc8d492c9, type: 2}
   pickedItemUIPrefab: {fileID: 9083029984369846302, guid: d719be5a54912e5418688b98f699fdf9, type: 3}
 --- !u!58 &1778729506
@@ -23552,6 +23554,7 @@ MonoBehaviour:
   radius: 0.6
   interactDistance: 0.7
   hasInteracted: 0
+  inkJson: {fileID: 4900000, guid: 299de320c205b2c469fdf555534a7620, type: 3}
   isOpened: 0
   direction: 2
   doorDescription: RETURN TO THE MAIN MENU

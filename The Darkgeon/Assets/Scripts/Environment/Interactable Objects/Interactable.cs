@@ -47,11 +47,15 @@ public abstract class Interactable : MonoBehaviour
 	
 	[SerializeField, ReadOnly] protected bool hasInteracted;
 
+	[Header("Dialogue (Optional)")]
+	[SerializeField] private TextAsset inkJson;
+
 	// Protected fields.
 	protected Transform worldCanvas;
 	protected SpriteRenderer spriteRenderer;
 	protected Material mat;
 	protected InteractionPopupLabel clone;
+	public bool HasDialogue => inkJson != null;
 
 	protected virtual void Awake()
 	{
@@ -79,6 +83,11 @@ public abstract class Interactable : MonoBehaviour
 	public virtual void Interact()
 	{
 		Debug.Log("Interacting with " + transform.name);
+
+		// TODO - call the method in Dialogue Manager asynchronously.
+
+		if (HasDialogue && !DialogueManager.DialogueIsPlaying)
+			DialogueManager.instance.TriggerDialogue(inkJson);
 	}
 
 	/// <summary>

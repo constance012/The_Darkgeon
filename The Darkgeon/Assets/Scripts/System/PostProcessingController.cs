@@ -39,7 +39,7 @@ public class PostProcessingController : MonoBehaviour
 	}
 
 	/// <summary>
-	/// Callback function whether the health value is updated.
+	/// Callback function whenever the health value is updated.
 	/// </summary>
 	/// <param name="healthNormalized"></param>
 	public void SetLowHealthEffect()

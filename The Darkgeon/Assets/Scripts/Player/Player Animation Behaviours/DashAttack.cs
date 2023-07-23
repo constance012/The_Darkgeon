@@ -23,7 +23,7 @@ public class DashAttack : StateMachineBehaviour
 
 		canCrit = stats.IsCriticalStrike();
 
-		PlayerMovement.canMove = true;
+		PlayerMovement.canMove = false;
 	}
 
 	public override void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
@@ -54,6 +54,6 @@ public class DashAttack : StateMachineBehaviour
 		animator.SetBool("DashAtk", false);  // Disable the bool.
 		action.comboDelay += Time.time;
 		PlayerActions.isComboDone = true;
-		PlayerMovement.canMove = false;  // The player can move again as soon as the animation is completed.
+		PlayerMovement.canMove = true;  // The player can move again as soon as the animation is completed.
 	}
 }

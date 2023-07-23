@@ -27,7 +27,7 @@ public class PlayerMovement : MonoBehaviour
 	private bool crouch = false;
 	private bool dash = false;
 
-	public static bool canMove { get; set; }
+	public static bool canMove { get; set; } = true;
 	public static bool isModifierKeysOccupied { get; set; }
 
 	private void Awake()
@@ -40,7 +40,7 @@ public class PlayerMovement : MonoBehaviour
 	// Update is called once per frame
 	private void Update()
 	{
-		if (CharacterController2D.m_IsDashing || canMove)
+		if (CharacterController2D.m_IsDashing || !canMove)
 		{
 			horizontalMove = 0f;
 			return;

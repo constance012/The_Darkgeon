@@ -1,4 +1,5 @@
 using UnityEngine;
+using CSTGames.CommonEnums;
 
 public class Attack1 : StateMachineBehaviour
 {
@@ -39,7 +40,7 @@ public class Attack1 : StateMachineBehaviour
 			dmgDealt = true;
 		}
 
-		if (Input.GetMouseButtonDown(0))
+		if (InputManager.instance.GetKeyDown(KeybindingActions.PrimaryAttack))
 		{
 			animator.SetTrigger("Atk2");
 			isAtk2Triggered = true;
