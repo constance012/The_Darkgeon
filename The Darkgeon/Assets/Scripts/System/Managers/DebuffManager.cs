@@ -7,10 +7,8 @@ using TMPro;
 /// <summary>
 /// A manager for the debuff system.
 /// </summary>
-public class DebuffManager : MonoBehaviour
+public class DebuffManager : Singleton<DebuffManager>
 {
-	public static DebuffManager instance { get; private set; }
-
 	[Header("References")]
 	[Space]
 
@@ -29,34 +27,17 @@ public class DebuffManager : MonoBehaviour
 
 	private Action debuffHandler = null;
 
-	public static bool deathByDebuff { get; set; }
-
-	private void Awake()
+	protected override void Awake()
 	{
-		if (instance == null)
-			instance = this;
-		else
-		{
-			Debug.LogWarning("More than one instance of Debuff Manager found!! Destroy the newest one.");
-			Destroy(gameObject);
-			return;
-		}
+		base.Awake();
 
 		player = GameObject.FindWithTag("Player").GetComponent<PlayerStats>();
-		playerAnim = player.GetComponent<Animator>();
+		playerAnim = player.GetComponentInChildren<Animator>("Graphic");
 		debuffPanel = GameObject.Find("Debuff Panel").transform;
 	}
 
 	private void Update()
 	{
-		// If the player is killed by any debuff.
-		if (player.currentHP <= 0 && !deathByDebuff)
-		{
-			playerAnim.SetTrigger("TakingDamage");
-			deathByDebuff = true;
-			return;
-		}
-
 		// Invoke the debuff handler if not null.
 		debuffHandler?.Invoke();
 	}

@@ -7,10 +7,8 @@ using CSTGames.Utility;
 /// <summary>
 /// A core manager for the current game's session.
 /// </summary>
-public class GameManager : MonoBehaviour
+public class GameManager : Singleton<GameManager>
 {
-	public static GameManager instance { get; private set; }
-
 	[Header("Player References")]
 	[Space]
 
@@ -44,16 +42,9 @@ public class GameManager : MonoBehaviour
 	public float m_RespawnTimer;
 	private float respawnTimer;
 
-	private void Awake()
+	protected override void Awake()
 	{
-		if (instance == null)
-			instance = this;
-		else
-		{
-			Debug.LogWarning("More than one instance of Game Manager found!! Destroy the newest one.");
-			Destroy(gameObject);
-			return;
-		}
+		base.Awake();
 
 		Transform player = GameObject.FindWithTag("Player").transform;
 		playerAnim = player.GetComponentInChildren<Animator>("Graphic");
@@ -143,12 +134,15 @@ public class GameManager : MonoBehaviour
 
 		playerStats.transform.position = playerStats.respawnPosition;
 		isPlayerDeath = false;
-		DebuffManager.deathByDebuff = false;
 	}
 
 	private void Die()
 	{
+		playerStats.StopAllCoroutines();
+		playerStats.playerMat.SetFloat("_FlashIntensity", 0f);
+
 		playerAnim.SetBool("IsDeath", true);
+		playerAnim.Play("Death");
 
 		deathPanel.Play("Increase Alpha");
 

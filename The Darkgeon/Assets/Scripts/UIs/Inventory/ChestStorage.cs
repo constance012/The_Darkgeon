@@ -2,29 +2,28 @@ using System;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
-using UnityEngine.Events;
 
-public class ChestStorage : MonoBehaviour
+public class ChestStorage : ItemStorage
 {
 	public static ChestStorage instance { get; private set; }
 
-	[Header("References")]
+	[Header("Target Chest")]
 	[Space]
 	public Chest openedChest;
-	public int space = 10;
 
-	public UnityEvent onItemChanged { get; private set; } = new UnityEvent();
+	// Private fields.
+	private ChestSlot[] _slots;
+	private TextMeshProUGUI _uiTitle;
 
-	private ChestSlot[] slots;
-	private TextMeshProUGUI uiTitle;
-
-	private void OnEnable()
+	protected override void OnEnable()
 	{
-		onItemChanged?.Invoke();
-		uiTitle.text = openedChest?.type.ToString().ToUpper() + " CHEST";
+		base.OnEnable();
+		_uiTitle.text = openedChest?.tier.ToString().ToUpper() + " CHEST";
+
+		Inventory.instance.InitializeOtherOpenedStorage();
 	}
 
-	private void Awake()
+	protected override void Awake()
 	{
 		if (instance == null)
 			instance = this;
@@ -35,141 +34,52 @@ public class ChestStorage : MonoBehaviour
 			return;
 		}
 
-		slots = transform.GetComponentsInChildren<ChestSlot>("Slots");
-		uiTitle = transform.GetComponentInChildren<TextMeshProUGUI>("Title/Text");
+		_slots = transform.GetComponentsInChildren<ChestSlot>("Slots");
+		_uiTitle = transform.GetComponentInChildren<TextMeshProUGUI>("Title/Text");
 
 		gameObject.SetActive(false);
-		
-		onItemChanged.AddListener(ReloadUI);
+		base.Awake();
 	}
 
-	public bool Add(Item target, bool forcedSplit = false)
+	public override bool Add(Item target, bool forcedSplit = false)
 	{
 		List<Item> items = openedChest.storedItem;
 
-		if (items.Count >= space)
-		{
-			Debug.Log("This chest is full.");
-			return false;
-		}
-
-		// Add to the list if it's not a default item.
-		if (!target.isDefaultItem)
-		{
-			// Generate a unique id for the target.
-			target.id = Guid.NewGuid().ToString();
-
-			if (!forcedSplit)
-			{
-				// Check for stackable items.
-				for (int i = 0; i < items.Count; i++)
-				{
-					if (!items[i].itemName.Equals(target.itemName))
-						continue;
-
-					if (items[i].quantity == items[i].maxPerStack || !items[i].stackable)
-						continue;
-
-					// If the item is stackable and hasn't reached its max per stack yet.
-					if (items[i].quantity < items[i].maxPerStack)
-					{
-						int totalQuantity = items[i].quantity + target.quantity;
-
-						// If the new total quantity exceeds the maximum amount.
-						// Then set the current one's quantity to max, set the new one's quantity to the residue amount and add to the next slot.
-						if (totalQuantity > items[i].maxPerStack)
-						{
-							int residue = totalQuantity - items[i].maxPerStack;
-
-							items[i].quantity = items[i].maxPerStack;
-							target.quantity = residue;
-						}
-
-						else if (totalQuantity == items[i].maxPerStack)
-						{
-							items[i].quantity = totalQuantity;
-							target.quantity = 0;
-						}
-
-						// Otherwise, just increase the quantity of the current one.
-						else
-						{
-							items[i].quantity += target.quantity;
-							target.quantity = 0;
-						}
-					}
-
-					if (target.quantity <= 0)
-						break;
-				}
-
-				// If there's a residue or this is a completely different item. Then add it to the list.
-				if (target.quantity > 0)
-				{
-					items.Add(target);
-					Debug.Log("This is empty slot.");
-				}
-
-				onItemChanged?.Invoke();
-				return true;
-			}
-
-			// If it's a completely new item or forced to split the same item, then just add it into the list.
-			if (target.quantity > 0)
-				items.Add(target);
-
-			onItemChanged?.Invoke();
-			return true;
-		}
-
-		return false;
+		return base.AddToList(items, target, forcedSplit);
 	}
 
-	public void Remove(Item target)
+	public override void Remove(Item target, bool forced = false)
 	{
 		openedChest.storedItem.Remove(target);
 		onItemChanged?.Invoke();
 	}
 
-	public void Remove(string targetID)
+	public override void Remove(string targetID, bool forced = false)
 	{
 		openedChest.storedItem.Remove(GetItem(targetID));
 		onItemChanged?.Invoke();
 	}
 
-	public Item GetItem(string targetID)
+	public override void RemoveWithoutNotify(Item target)
+	{
+		openedChest.storedItem.Remove(target);
+	}
+
+	public override Item GetItem(string targetID)
 	{
 		return openedChest.storedItem.Find(item => item.id.Equals(targetID));
 	}
 
-	public bool IsExisting(string targetID)
+	public override bool IsExisting(string targetID)
 	{
 		return openedChest.storedItem.Exists(item => item.id == targetID);
 	}
 
-	public void SetFavorite(string targetID, bool state)
-	{
-		GetItem(targetID).isFavorite = state;
-		onItemChanged?.Invoke();
-	}
-
-	public void UpdateSlotIndex(string targetID, int index)
-	{
-		index = Mathf.Clamp(index, 0, space - 1);
-		GetItem(targetID).slotIndex = index;
-		onItemChanged?.Invoke();
-	}
-
-	public void UpdateQuantity(string targetID, int amount, bool setExactAmount = false)
+	public override void UpdateQuantity(string targetID, int amount, bool setExactAmount = false)
 	{
 		Item target = GetItem(targetID);
 
-		if (setExactAmount)
-			target.quantity = amount;
-		else
-			target.quantity += amount;
-
-		target.quantity = Mathf.Clamp(target.quantity, 0, target.maxPerStack);
+		base.SetQuantity(target, amount, setExactAmount);
 
 		if (target.quantity <= 0)
 		{
@@ -180,7 +90,7 @@ public class ChestStorage : MonoBehaviour
 		onItemChanged?.Invoke();
 	}
 
-	private void ReloadUI()
+	protected override void ReloadUI()
 	{
 		if (openedChest == null)
 			return;
@@ -194,12 +104,12 @@ public class ChestStorage : MonoBehaviour
 
 		// Clear all the slots.
 		Action<ChestSlot> ClearAllSlots = (slot) => slot.ClearItem();
-		Array.ForEach(slots, ClearAllSlots);
+		Array.ForEach(_slots, ClearAllSlots);
 
 		// Load the indexed items first.
 		if (indexedItems.Count != 0)
 		{
-			Action<Item> ReloadIndexedItems = (item) => slots[item.slotIndex].AddItem(item);
+			Action<Item> ReloadIndexedItems = (item) => _slots[item.slotIndex].AddItem(item);
 			indexedItems.ForEach(ReloadIndexedItems);
 		}
 
@@ -207,12 +117,12 @@ public class ChestStorage : MonoBehaviour
 		if (unindexedItems.Count != 0)
 		{
 			for (int i = 0; i < unindexedItems.Count; i++)
-				for (int j = 0; j < slots.Length; j++)
-					if (slots[j].currentItem == null)
+				for (int j = 0; j < _slots.Length; j++)
+					if (_slots[j].currentItem == null)
 					{
-						unindexedItems[i].slotIndex = slots[j].transform.GetSiblingIndex();
+						unindexedItems[i].slotIndex = _slots[j].transform.GetSiblingIndex();
 
-						slots[j].AddItem(unindexedItems[i]);
+						_slots[j].AddItem(unindexedItems[i]);
 
 						break;
 					}

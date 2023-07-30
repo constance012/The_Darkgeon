@@ -14,6 +14,7 @@ public class PlayerStats : MonoBehaviour, ISaveDataTransceiver
 	public Transform dmgTextLoc;
 	public GameObject dmgTextPrefab;
 
+	public Material playerMat;
 	private Animator animator;
 	private Rigidbody2D rb2d;
 
@@ -50,6 +51,7 @@ public class PlayerStats : MonoBehaviour, ISaveDataTransceiver
 
 	[Header("Timers")]
 	[Space]
+	public float damageFlashTime = .25f;
 	public float timeBeforeRegen = 5f;
 	public Stat m_InvincibilityTime;
 
@@ -68,6 +70,7 @@ public class PlayerStats : MonoBehaviour, ISaveDataTransceiver
 		hpBar = GameObject.Find("Health Bar Slider").GetComponent<HealthBar>();
 		dmgTextLoc = transform.Find("Damage Text Loc");
 
+		playerMat = transform.GetComponentInChildren<SpriteRenderer>("Graphic").material;
 		animator = transform.GetComponentInChildren<Animator>("Graphic");
 		rb2d = GetComponent<Rigidbody2D>();
 	}
@@ -111,6 +114,8 @@ public class PlayerStats : MonoBehaviour, ISaveDataTransceiver
 			hpBar.SetCurrentHealth(currentHP);
 
 			animator.SetTrigger("TakingDamage");
+			StartCoroutine(TriggerDamageFlash());
+
 			DamageText.Generate(dmgTextPrefab, dmgTextLoc.position, finalDmg.ToString());
 
 			StartCoroutine(BeingKnockedBack(knockBackVal));
@@ -163,26 +168,7 @@ public class PlayerStats : MonoBehaviour, ISaveDataTransceiver
 			regenDelay = 1 / m_RegenRate.Value;
 		}
 	}
-
-	private IEnumerator BeingKnockedBack(float knockBackValue)
-	{
-		if (attacker != null)
-		{
-			// Make sure the object doesn't move.
-			rb2d.velocity = Vector3.zero;
-			transform.GetComponent<PlayerMovement>().enabled = false;
-
-			Vector2 knockbackDir = transform.position - attacker.position;  // The direction of the knock back.
-			float knockbackForce = knockBackValue * (1f - knockBackRes.Value);  // Calculate the actual knock back value.
-			
-			rb2d.AddForce(knockbackForce * knockbackDir.normalized, ForceMode2D.Impulse);
-
-			yield return new WaitForSeconds(.3f);
-
-			transform.GetComponent<PlayerMovement>().enabled = true;
-		}
-	}
-
+	
 	private void OnEquipmentChanged(Equipment newEquipment, Equipment oldEquipment)
 	{
 		if (newEquipment != null)
@@ -224,5 +210,40 @@ public class PlayerStats : MonoBehaviour, ISaveDataTransceiver
 		// Update the health bar limit.
 		hpBar.SetMaxHealth(maxHP.Value, false);
 		regenDelay = 1 / m_RegenRate.Value;
+	}
+
+	private IEnumerator BeingKnockedBack(float knockBackValue)
+	{
+		if (attacker != null)
+		{
+			// Make sure the object doesn't move.
+			rb2d.velocity = Vector3.zero;
+			transform.GetComponent<PlayerMovement>().enabled = false;
+
+			Vector2 knockbackDir = transform.position - attacker.position;  // The direction of the knock back.
+			float knockbackForce = knockBackValue * (1f - knockBackRes.Value);  // Calculate the actual knock back value.
+			
+			rb2d.AddForce(knockbackForce * knockbackDir.normalized, ForceMode2D.Impulse);
+
+			yield return new WaitForSeconds(.3f);
+
+			transform.GetComponent<PlayerMovement>().enabled = true;
+		}
+	}
+
+	private IEnumerator TriggerDamageFlash()
+	{
+		float flashIntensity;
+		float elapsedTime = 0f;
+
+		while (elapsedTime < damageFlashTime)
+		{
+			elapsedTime += Time.deltaTime;
+
+			flashIntensity = Mathf.Lerp(1f, 0f, elapsedTime / damageFlashTime);
+			playerMat.SetFloat("_FlashIntensity", flashIntensity);
+
+			yield return null;
+		}
 	}
 }

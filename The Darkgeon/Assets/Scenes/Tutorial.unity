@@ -762,7 +762,7 @@ MonoBehaviour:
   radius: 0.3
   interactDistance: 0.5
   hasInteracted: 0
-  inkJson: {fileID: 0}
+  dialogueTrigger: {fileID: 0}
   itemSO: {fileID: 11400000, guid: 3603a14138fe15a4baf4cbc9d92b22c5, type: 2}
   pickedItemUIPrefab: {fileID: 9083029984369846302, guid: d719be5a54912e5418688b98f699fdf9, type: 3}
 --- !u!58 &152452470
@@ -18876,7 +18876,7 @@ MonoBehaviour:
   radius: 0.3
   interactDistance: 0.5
   hasInteracted: 0
-  inkJson: {fileID: 0}
+  dialogueTrigger: {fileID: 0}
   itemSO: {fileID: 11400000, guid: e21f47a03238dfe41a441c3bc8d492c9, type: 2}
   pickedItemUIPrefab: {fileID: 9083029984369846302, guid: d719be5a54912e5418688b98f699fdf9, type: 3}
 --- !u!58 &1778729506
@@ -23415,6 +23415,7 @@ GameObject:
   - component: {fileID: 4843965557002691290}
   - component: {fileID: 6564873952351782074}
   - component: {fileID: 6810363635459157965}
+  - component: {fileID: 6810363635459157967}
   - component: {fileID: 6810363635459157966}
   m_Layer: 13
   m_Name: Level Progess Door Menu
@@ -23554,7 +23555,7 @@ MonoBehaviour:
   radius: 0.6
   interactDistance: 0.7
   hasInteracted: 0
-  inkJson: {fileID: 4900000, guid: 299de320c205b2c469fdf555534a7620, type: 3}
+  dialogueTrigger: {fileID: 0}
   isOpened: 0
   direction: 2
   doorDescription: RETURN TO THE MAIN MENU
@@ -23576,6 +23577,20 @@ MonoBehaviour:
   _operator: 0
   triggerA: {fileID: 1215647883689180490}
   triggerB: {fileID: 868471413}
+--- !u!114 &6810363635459157967
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4741357776667832494}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d4df31fb6b33245439b259e57071853f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  inkJson: {fileID: 4900000, guid: 299de320c205b2c469fdf555534a7620, type: 3}
+  triggerOneTime: 1
 --- !u!1001 &7361055771337334244
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -16,7 +16,7 @@ public abstract class LogicEvaluator : MonoBehaviour
 
 	protected void Start()
 	{
-		Evaluate();
+		//Evaluate();
 	}
 
 	public abstract void Evaluate();

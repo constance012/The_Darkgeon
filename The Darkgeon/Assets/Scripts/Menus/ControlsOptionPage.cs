@@ -8,6 +8,7 @@ using UnityEngine.Events;
 using TMPro;
 using CSTGames.CommonEnums;
 using CSTGames.Utility;
+using static Keyset;
 
 public class ControlsOptionPage : MonoBehaviour
 {
@@ -168,10 +169,10 @@ public class ControlsOptionPage : MonoBehaviour
 		Debug.Log("Pressed key: " + keyCode);
 		//Debug.Log("Current key action: " + currentAction);
 
-		for (int i = 0; i < keySet.keyList.Length; i++)
-			if (keySet.keyList[i].action == currentAction && keySet.keyList[i].keyCode != keyCode)
+		for (int i = 0; i < keySet.keys.TotalKeys; i++)
+			if (keySet.keys[i].action == currentAction && keySet.keys[i].keyCode != keyCode)
 			{
-				keySet.keyList[i].keyCode = keyCode;
+				keySet.SetKeycodeAt(i, keyCode);
 
 				string selectedFile = keySetDropdown.options[keySetDropdown.value].text;
 				keySet.SaveKeysetToJson(selectedFile);
@@ -265,14 +266,14 @@ public class ControlsOptionPage : MonoBehaviour
 
 	private void FetchJsonFiles()
 	{
-		string path = Path.Combine(Application.persistentDataPath, "Keyset Data" + Path.DirectorySeparatorChar);
+		string path = Path.Combine(Application.persistentDataPath, keySet.subFolders);
 		keySetDropdown.ClearOptions();
 		
-		jsonFiles = Directory.GetFiles(path, "*.json");
+		jsonFiles = Directory.GetFiles(path, $"*{keySet.extension}");
 		
 		for (int i = 0; i < jsonFiles.Length; i++)
 		{
-			string[] splitPath = jsonFiles[i].Split(Path.DirectorySeparatorChar, '.');
+			string[] splitPath = jsonFiles[i].Split(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar, '.');
 
 			// Get the file name, excluding the extension and add it to the dropdown.
 			TMP_Dropdown.OptionData optionData = new TMP_Dropdown.OptionData(splitPath[splitPath.Length - 2]);
@@ -305,7 +306,7 @@ public class ControlsOptionPage : MonoBehaviour
 
 	private void ReloadUI()
 	{
-		foreach (Keyset.Key key in keySet.keyList)
+		foreach (Key key in keySet.keys.list)
 		{
 			// Get each button and edit its text.
 			string buttonName = StringManipulator.AddWhitespaceBeforeCapital(key.action.ToString());

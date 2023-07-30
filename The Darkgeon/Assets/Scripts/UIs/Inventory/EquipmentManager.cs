@@ -6,12 +6,10 @@ using UnityEngine.UI;
 using CSTGames.DataPersistence;
 using System.Linq;
 
-public class EquipmentManager : MonoBehaviour, ISaveDataTransceiver
+public class EquipmentManager : Singleton<EquipmentManager>, ISaveDataTransceiver
 {
 	[Serializable]
 	public class EquipmentEvent : UnityEvent<Equipment, Equipment> { }
-
-	public static EquipmentManager instance { get; private set; }
 
 	[Header("Current Equipments")]
 	[Space]
@@ -37,16 +35,9 @@ public class EquipmentManager : MonoBehaviour, ISaveDataTransceiver
 		ReloadUI();
 	}
 
-	private void Awake()
+	protected override void Awake()
 	{
-		if (instance == null)
-			instance = this;
-		else
-		{
-			Debug.LogWarning("More than one instance of Equipment Manager found!! Destroy the newest one.");
-			Destroy(gameObject);
-			return;
-		}
+		base.Awake();
 
 		slots = transform.GetComponentsInChildren<EquipmentSlot>("Slots");
 		statTexts = transform.GetComponentsInChildren<TextMeshProUGUI>("Stats Panel/Scroll View/Viewport/Content");

@@ -5,24 +5,14 @@ using UnityEngine;
 /// A class that manages all the game's sounds and music.
 /// The instance of this class remains through different game sessions.
 /// </summary>
-public class AudioManager : MonoBehaviour
-{
-	// Make a Singleton.
-	public static AudioManager instance { get; private set; }
-	
+public class AudioManager : Singleton<AudioManager>
+{	
 	// An array of audios.
 	public Sound[] sounds;
 
-	private void Awake()
+	protected override void Awake()
 	{
-		if (instance == null)
-			instance = this;
-		else
-		{
-			Debug.LogWarning("More than one instance of Audio Manager found!!");
-			Destroy(gameObject);
-			return;
-		}
+		base.Awake();
 
 		GameObject audioSourceHolder = new GameObject("Audio Source Holder");
 		audioSourceHolder.transform.parent = this.transform;

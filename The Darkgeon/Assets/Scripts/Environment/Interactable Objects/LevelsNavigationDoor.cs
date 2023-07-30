@@ -2,6 +2,7 @@
 using CSTGames.CommonEnums;
 using TMPro;
 using System.Collections;
+using Ink.Runtime;
 
 public class LevelsNavigationDoor : Interactable
 {
@@ -83,31 +84,33 @@ public class LevelsNavigationDoor : Interactable
 	{
 		base.Interact();
 
-		if (isOpened)
-		{
-			switch (direction)
-			{
-				case DoorDirection.ToNextLevel:
-					if (levelCleared)
-						LevelsManager.instance.LoadNextLevel();
-					break;
+		//if (isOpened)
+		//{
+		//	switch (direction)
+		//	{
+		//		case DoorDirection.ToNextLevel:
+		//			if (levelCleared)
+		//				LevelsManager.instance.LoadNextLevel();
+		//			break;
 
-				case DoorDirection.ToPreviousLevel:
-					LevelsManager.instance.LoadPreviousLevel();
-					break;
+		//		case DoorDirection.ToPreviousLevel:
+		//			LevelsManager.instance.LoadPreviousLevel();
+		//			break;
 
-				case DoorDirection.ToMainMenu:
-					GameManager.instance.ReturnToMenu();
-					break;
-			}
+		//		case DoorDirection.ToMainMenu:
+		//			GameManager.instance.ReturnToMenu();
+		//			break;
+		//	}
 
-			hasInteracted = true;
-		}
+		//	hasInteracted = true;
+		//}
 	}
 
 	public override void ExecuteRemoteLogic(bool state)
 	{
 		isOpened = state;
+
+		DialogueManager.instance.SetVariable("is_door_opened", state);
 
 		spriteRenderer.sprite = isOpened ? openSprite : closeSprite;
 	}

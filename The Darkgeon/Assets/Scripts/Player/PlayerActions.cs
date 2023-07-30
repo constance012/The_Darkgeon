@@ -37,7 +37,10 @@ public class PlayerActions : MonoBehaviour
 	private void Update()
 	{
 		if (!canAttack)
+		{
+			Debug.Log("Can not attack");
 			return;
+		}
 
 		canFaceTowardsCursor = Mathf.Round(animator.GetFloat("Speed")) == 0f;
 		

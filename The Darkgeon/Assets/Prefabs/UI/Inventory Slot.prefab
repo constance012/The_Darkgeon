@@ -152,7 +152,7 @@ MonoBehaviour:
   m_fontColor32:
     serializedVersion: 2
     rgba: 4278919735
-  m_fontColor: {r: 0.21568628, g: 0.13333334, b: 0.043137256, a: 1}
+  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -424,7 +424,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 96e669092ce96ce4d81702fbc586e9cc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isChestSlot: 0
+  storageType: 0
+  currentStorage: {fileID: 0}
+  otherStorage: {fileID: 0}
   dragItem: {fileID: 0}
   droppedItemPrefab: {fileID: 6994718978722962414, guid: 2c248f9dcbada824d9027a98c85012db, type: 3}
   player: {fileID: 0}
@@ -460,7 +462,7 @@ RectTransform:
   m_Children:
   - {fileID: 5835338857342441776}
   m_Father: {fileID: 0}
-  m_RootOrder: 0
+  m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}

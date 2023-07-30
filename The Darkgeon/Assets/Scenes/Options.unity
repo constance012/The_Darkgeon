@@ -26527,10 +26527,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   type: 0
+  inputSource: 0
   player: {fileID: 0}
   popupLabelPrefab: {fileID: 0}
   radius: 0.5
+  interactDistance: 0
   hasInteracted: 0
+  dialogueTrigger: {fileID: 0}
   effects: {fileID: 0}
   pointLight: {fileID: 0}
 --- !u!198 &442012060584679147
@@ -43847,8 +43850,8 @@ MonoBehaviour:
   m_ShadowVolumeIntensityEnabled: 0
   m_ShadowVolumeIntensity: 0.75
   m_LocalBounds:
-    m_Center: {x: -0.044200003, y: 1.5291001, z: 0}
-    m_Extent: {x: 0.847, y: 2.3003001, z: 0}
+    m_Center: {x: -0.041200012, y: 1.52635, z: 0}
+    m_Extent: {x: 0.84720004, y: 2.29805, z: 0}
   m_PointLightInnerAngle: 23.600004
   m_PointLightOuterAngle: 45.33
   m_PointLightInnerRadius: 0
@@ -45732,7 +45735,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 9f51c2dc574d4a443833a21daeebb0b3, type: 2}
+  - {fileID: 2100000, guid: 4388e1ca8e8f3014f91c7215bdb3c6a8, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

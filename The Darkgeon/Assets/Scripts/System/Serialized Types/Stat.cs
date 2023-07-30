@@ -10,7 +10,7 @@ public class Stat
 	[field: SerializeField]
 	public float BaseValue { get; set; }
 
-	public float Value { get => GetValue(); }
+	public float Value => GetValue();
 
 	// Private fields.
 	private float modifier = 0f;

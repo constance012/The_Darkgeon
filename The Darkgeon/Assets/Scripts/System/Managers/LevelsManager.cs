@@ -4,10 +4,8 @@ using System.Transactions;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class LevelsManager : MonoBehaviour, ISaveDataTransceiver
+public class LevelsManager : Singleton<LevelsManager>, ISaveDataTransceiver
 {
-	public static LevelsManager instance { get; private set; }
-
 	[Header("Debugging (Development Only)")]
 	[Space]
 	[ReadOnly] public bool developmentMode;
@@ -17,18 +15,6 @@ public class LevelsManager : MonoBehaviour, ISaveDataTransceiver
 
 	private LevelNavigation navigation;
 	private bool transitionFromMenu;
-
-	private void Awake()
-	{
-		if (instance == null)
-			instance = this;
-		else
-		{
-			Debug.LogWarning("More than one instance of Levels Manager found!! Destroy the newest one.");
-			Destroy(gameObject);
-			return;
-		}
-	}
 
 	private IEnumerator Start()
 	{

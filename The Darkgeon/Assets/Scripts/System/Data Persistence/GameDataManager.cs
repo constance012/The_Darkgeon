@@ -4,16 +4,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using CSTGames.DataPersistence;
-using Unity.VisualScripting;
-using System.Security.Cryptography;
 using System;
-using static UnityEngine.Rendering.DebugUI;
-using System.Runtime.CompilerServices;
 
-public class GameDataManager : MonoBehaviour
+public class GameDataManager : Singleton<GameDataManager>
 {
-	public static GameDataManager instance { get; private set; }
-
 	[Header("Debugging (Development Only)")]
 	[Space]
 	[ReadOnly] public bool enableManager;
@@ -48,16 +42,9 @@ public class GameDataManager : MonoBehaviour
 	/// </summary>
 	private List<ISaveDataTransceiver> dataTransceiverObjects;
 
-	private void Awake()
+	protected override void Awake()
 	{
-		if (instance == null)
-			instance = this;
-		else
-		{
-			Debug.LogError("More than 1 instance of Game Data Manager found!! Destroy the newest one.");
-			Destroy(gameObject);
-			return;
-		}
+		base.Awake();
 
 		DontDestroyOnLoad(this.gameObject);
 
@@ -191,6 +178,7 @@ public class GameDataManager : MonoBehaviour
 		// TODO: Save all that data into a file on the local machine.
 		playerSaveHandler.SaveDataToFile(gameData.playerData, SelectedSaveSlotID);
 		levelSaveHandler.SaveDataToFile(gameData.levelData, SelectedSaveSlotID);
+		DialogueManager.instance.SaveGlobalVariables();
 	}
 
 	public void DistributeDataToScripts()

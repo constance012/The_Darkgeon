@@ -57,11 +57,12 @@ public class EnemyStat : MonoBehaviour
 	[Header("Others")]
 	[Space]
 	public float timeToDissolve = 5f;
+	public float damageFlashTime = .25f;
 
 	[HideInInspector] public bool grounded;
 
-	private bool isDeath, canDissolve;
-	private float fade = 1f;
+	private bool _isDeath, _canDissolve;
+	private float _fade = 1f;
 
 	private void Awake()
 	{
@@ -91,17 +92,16 @@ public class EnemyStat : MonoBehaviour
 
 	private void Update()
 	{
-		if (currentHP <= 0 && !isDeath)
+		if (currentHP <= 0 && !_isDeath)
 		{
-			StopAllCoroutines();
 			Die();
-			isDeath = true;
+			_isDeath = true;
 		}
 
-		if (canDissolve && Time.time > timeToDissolve)
+		if (_canDissolve && Time.time > timeToDissolve)
 			Dissolve();
 
-		if (isDeath && grounded)
+		if (_isDeath && grounded)
 			rb2d.simulated = false;
 	}
 
@@ -111,9 +111,12 @@ public class EnemyStat : MonoBehaviour
 		grounded = false;
 
 		Collider2D[] colliders = Physics2D.OverlapCircleAll(groundCheck.position, .1f, whatIsGround);
+
 		foreach (Collider2D collider in colliders)
+		{
 			if (collider.CompareTag("Ground"))
 				grounded = true;
+		}
 	}
 
 	public void TakeDamage(float dmg, float critDmgMul = 1f, float knockBackVal = 0f)
@@ -126,7 +129,6 @@ public class EnemyStat : MonoBehaviour
 			float armorReducedDmg = dmg - armor * armorReduceFactor;
 			int finalDmg = Mathf.RoundToInt(armorReducedDmg * critDmgMul);
 			bool isCrit = critDmgMul != 1f;
-			Color textColor;
 			
 			currentHP -= finalDmg;
 			currentHP = Mathf.Clamp(currentHP, 0, maxHealth);
@@ -134,9 +136,10 @@ public class EnemyStat : MonoBehaviour
 			hpBar.SetCurrentHealth(currentHP);
 
 			animator.SetTrigger("Hit");
+			StartCoroutine(TriggerDamageFlash());
 
 			// If there's critical hit, then popup text will be different.
-			textColor = isCrit ? new Color(1f, .5f, 0f) : new Color(1f, .84f, .2f);
+			Color textColor = isCrit ? new Color(1f, .5f, 0f) : new Color(1f, .84f, .2f);
 			DamageText.Generate(dmgTextPrefab, dmgTextPos.position, textColor, isCrit, finalDmg.ToString());
 
 			StartCoroutine(BeingKnockedBack(knockBackVal));
@@ -145,6 +148,9 @@ public class EnemyStat : MonoBehaviour
 
 	private void Die()
 	{
+		StopAllCoroutines();
+
+		enemyMat.SetFloat("_FlashIntensity", 0f);
 		animator.SetBool("IsDeath", true);
 
 		if (isFlyingEnemy)
@@ -153,25 +159,25 @@ public class EnemyStat : MonoBehaviour
 		behaviour.enabled = false;
 		hpBar.gameObject.SetActive(false);
 		
-		canDissolve = true;
+		_canDissolve = true;
 		timeToDissolve += Time.time;
 	}
 
 	private void Dissolve()
 	{
-		fade -= Time.deltaTime;
-		enemyMat.SetFloat("_Fade", fade);
+		_fade -= Time.deltaTime;
+		enemyMat.SetFloat("_Fade", _fade);
 
-		if (fade < .4f && fade > 0f && !deathFx.isPlaying)
+		if (_fade < .4f && _fade > 0f && !deathFx.isPlaying)
 		{
 			deathFx.Play();
 			DropDeathLoots();
 		}
 
-		if (fade <= 0f && deathFx.isStopped)
+		if (_fade <= 0f && deathFx.isStopped)
 		{
-			fade = 0f;
-			canDissolve = false;
+			_fade = 0f;
+			_canDissolve = false;
 			Destroy(hpBar.gameObject);
 			Destroy(gameObject);
 		}
@@ -228,24 +234,6 @@ public class EnemyStat : MonoBehaviour
 		}
 	}
 
-	private IEnumerator BeingKnockedBack(float knockBackValue)
-	{
-		// Make sure the object doesn't move.
-		rb2d.velocity = Vector3.zero;
-		behaviour.enabled = false;
-
-		// The direction of the knock back.
-		Vector2 knockbackDir = isFlyingEnemy ? transform.position - player.transform.position 
-											: centerPoint.position - player.transform.position;
-		float knockBackForce = knockBackValue * (1f - knockBackRes);  // Calculate the actual knock back value.
-
-		rb2d.AddForce(knockBackForce * knockbackDir.normalized, ForceMode2D.Impulse);
-
-		yield return new WaitForSeconds(.15f);
-
-		behaviour.enabled = true;
-	}
-
 	private void GetBehaviour()
 	{
 		switch (enemyName.ToLower().Trim())
@@ -267,6 +255,40 @@ public class EnemyStat : MonoBehaviour
 				behaviour = null;
 				Debug.LogWarning("Behaviour script for enemy " + name + " not found!!");
 				break;
+		}
+	}
+
+	private IEnumerator BeingKnockedBack(float knockBackValue)
+	{
+		// Make sure the object doesn't move.
+		rb2d.velocity = Vector3.zero;
+		behaviour.enabled = false;
+
+		// The direction of the knock back.
+		Vector2 knockbackDir = isFlyingEnemy ? transform.position - player.transform.position 
+											: centerPoint.position - player.transform.position;
+		float knockBackForce = knockBackValue * (1f - knockBackRes);  // Calculate the actual knock back value.
+
+		rb2d.AddForce(knockBackForce * knockbackDir.normalized, ForceMode2D.Impulse);
+
+		yield return new WaitForSeconds(.15f);
+
+		behaviour.enabled = true;
+	}
+
+	private IEnumerator TriggerDamageFlash()
+	{
+		float flashIntensity;
+		float elapsedTime = 0f;
+
+		while (elapsedTime < damageFlashTime)
+		{
+			elapsedTime += Time.deltaTime;
+
+			flashIntensity = Mathf.Lerp(1f, 0f, elapsedTime / damageFlashTime);
+			enemyMat.SetFloat("_FlashIntensity", flashIntensity);
+
+			yield return null;
 		}
 	}
 }

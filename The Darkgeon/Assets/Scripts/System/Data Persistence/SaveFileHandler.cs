@@ -2,7 +2,6 @@
 using System.IO;
 using UnityEngine;
 using Newtonsoft.Json;
-using Unity.VisualScripting;
 
 public class SaveFileHandler<TData>
 {
@@ -23,6 +22,11 @@ public class SaveFileHandler<TData>
 		this.useEncryption = useEncryption;
 	}
 
+	/// <summary>
+	/// Load the data from a save slot using Newtonsoft's JSON.Net.
+	/// </summary>
+	/// <param name="saveSlotID"></param>
+	/// <returns>The loaded TData</returns>
 	public TData LoadDataFromFile(string saveSlotID)
 	{
 		if (saveSlotID == null)
@@ -65,6 +69,53 @@ public class SaveFileHandler<TData>
 		return loadedData;
 	}
 
+	/// <summary>
+	/// Load the data from a standalone file using Unity's JsonUtility.
+	/// </summary>
+	/// <returns>The loaded TData</returns>
+	public TData LoadDataFromFile()
+	{
+		string fullPath = Path.Combine(directory, subFolders, fileName);
+		TData loadedData = default;
+
+		if (File.Exists(fullPath))
+		{
+			try
+			{
+				string json = "";
+
+				// Read the serialized data.
+				using (FileStream file = new FileStream(fullPath, FileMode.Open))
+				{
+					using (StreamReader reader = new StreamReader(file))
+					{
+						json = reader.ReadToEnd();
+					}
+				}
+
+				// Decrypt the data (Optional).
+				if (useEncryption)
+					json = EncryptOrDecrypt(json);
+
+				// Deserialize data.
+				loadedData = JsonUtility.FromJson<TData>(json);
+			}
+			catch (Exception ex)
+			{
+				Debug.LogError($"Error occured when trying to load json from file.\n" +
+						   $"At player path: {fullPath}.\n" +
+						   $"Reason: {ex.Message}.");
+			}
+		}
+
+		return loadedData;
+	}
+
+	/// <summary>
+	/// Save the data of a save slot using Newtonsoft's JSON.Net.
+	/// </summary>
+	/// <param name="dataToSave"></param>
+	/// <param name="saveSlotID"></param>
 	public void SaveDataToFile(TData dataToSave, string saveSlotID)
 	{
 		if (saveSlotID == null)
@@ -96,6 +147,44 @@ public class SaveFileHandler<TData>
 		catch (Exception ex)
 		{
 			Debug.LogError($"Error occured when trying to save data to file.\n" +
+						   $"At player path: {fullPath}.\n" +
+						   $"Reason: {ex.Message}.");
+		}
+	}
+
+	/// <summary>
+	/// Save the data of type TData using Unity's JsonUtility.
+	/// </summary>
+	/// <param name="dataToSave"></param>
+	public void SaveDataToFile(TData dataToSave)
+	{
+		string fullPath = Path.Combine(directory, subFolders, fileName);
+		string parentDirectory = Path.GetDirectoryName(fullPath);
+
+		try
+		{
+			if (!Directory.Exists(parentDirectory))
+				Directory.CreateDirectory(parentDirectory);
+
+			// Serialize data.
+			string json = JsonUtility.ToJson(dataToSave, true);
+
+			// Encrypt the data (Optional).
+			if (useEncryption)
+				json = EncryptOrDecrypt(json);
+
+			// Write the serialized data to file.
+			using (FileStream file = new FileStream(fullPath, FileMode.Create))
+			{
+				using StreamWriter writer = new StreamWriter(file);
+				{
+					writer.Write(json);
+				}
+			}
+		}
+		catch (Exception ex)
+		{
+			Debug.LogError($"Error occured when trying to save json to file.\n" +
 						   $"At player path: {fullPath}.\n" +
 						   $"Reason: {ex.Message}.");
 		}

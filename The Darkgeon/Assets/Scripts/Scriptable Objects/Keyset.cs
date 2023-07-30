@@ -1,7 +1,10 @@
+using System.Collections.Generic;
 using System;
 using System.IO;
 using UnityEngine;
 using CSTGames.CommonEnums;
+using System.Threading;
+using System.Dynamic;
 
 /// <summary>
 /// A scriptable object for creating a set of keys use in keybinding.
@@ -16,7 +19,37 @@ public class Keyset : ScriptableObject
 		public KeyCode keyCode;
 	}
 
-	public Key[] keyList;
+	[Serializable]
+	public class KeysList
+	{
+		public Key[] list;
+
+		public int TotalKeys => list.Length;
+		public int LastIndex => TotalKeys - 1;
+		
+		public Key this[int index]
+		{
+			get { return list[index]; }
+			set { list[index] = value; }
+		}
+	}
+
+	[Header("List of keys")]
+	[Space]
+	public KeysList keys;
+
+	[Header("Data Saving Configuration")]
+	[Space]
+	public string subFolders = "";
+	public string extension = "";
+
+	private SaveFileHandler<KeysList> _saveHandler;
+	private string _fullPath;
+
+	public void SetKeycodeAt(int index, KeyCode keyCode)
+	{
+		keys.list[index].keyCode = keyCode;
+	}
 
 	/// <summary>
 	///  Save the Keyset's data into a json file. Create one if the file doesn't already exist.
@@ -24,35 +57,13 @@ public class Keyset : ScriptableObject
 	/// <param name="fileName"></param>
 	public void SaveKeysetToJson(string fileName)
 	{
-		string fullPath = Path.Combine(Application.persistentDataPath, "Keyset Data", fileName + ".json");
-		string parentDirectory = Path.GetDirectoryName(fullPath);
+		ManageSaveHandler(fileName);
 
-		try
-		{
-			// Create directories if they're not currently existed.
-			if (!Directory.Exists(parentDirectory))
-				Directory.CreateDirectory(parentDirectory);
+		Debug.Log("Saving data to " + _fullPath);
 
-			Debug.Log("Saving data to " + fullPath);
+		_saveHandler.SaveDataToFile(keys);
 
-			string serializedData = JsonUtility.ToJson(this, true);
-
-			using (FileStream file = new FileStream(fullPath, FileMode.Create))
-			{
-				using StreamWriter writer = new StreamWriter(file);
-				{
-					writer.Write(serializedData);
-				}
-			}
-
-			UserSettings.SelectedKeyset = fileName;
-		}
-		catch (Exception ex)
-		{
-			Debug.LogError($"Error occured when trying to save keyset data to file.\n" +
-						   $"At path: {fullPath}.\n" +
-						   $"Reason: {ex.Message}.");
-		}
+		UserSettings.SelectedKeyset = fileName;
 	}
 
 	/// <summary>
@@ -61,14 +72,14 @@ public class Keyset : ScriptableObject
 	/// <param name="fileName"></param>
 	public void LoadKeysetFromJson(string fileName)
 	{
-		string fullPath = Path.Combine(Application.persistentDataPath, "Keyset Data", fileName + ".json");
+		ManageSaveHandler(fileName);
 
-		Debug.Log("Reading data at " + fullPath);
+		Debug.Log("Reading data at " + _fullPath);
 		
 		// If the custom keyset file exists.
-		if (File.Exists(fullPath))
+		if (File.Exists(_fullPath))
 		{
-			ReadData(fullPath);
+			keys = _saveHandler.LoadDataFromFile();
 		}
 
 		// If not, use the default file.
@@ -76,37 +87,23 @@ public class Keyset : ScriptableObject
 		{
 			fileName = "Default";
 
-			fullPath = Path.Combine(Application.persistentDataPath, "Keyset Data", fileName + ".json");
+			ManageSaveHandler(fileName, true);
 
 			// If the default file doesn't exist, create one.
-			if (!File.Exists(fullPath))
+			if (!File.Exists(_fullPath))
 				SaveKeysetToJson(fileName);
 
-			ReadData(fullPath);
+			keys = _saveHandler.LoadDataFromFile();
 		}
 	}
 
-	private void ReadData(string fullPath)
+	private void ManageSaveHandler(string fileName, bool update = false)
 	{
-		try
-		{
-			string serializedData = "";
+		string directory = Application.persistentDataPath;
 
-			using (FileStream file = new FileStream(fullPath, FileMode.Open))
-			{
-				using (StreamReader reader = new StreamReader(file))
-				{
-					serializedData = reader.ReadToEnd();
-				}
-			}
+		if (_saveHandler == null || update)
+			_saveHandler = new SaveFileHandler<KeysList>(directory, subFolders, fileName + extension, false);
 
-			JsonUtility.FromJsonOverwrite(serializedData, this);
-		}
-		catch (Exception ex)
-		{
-			Debug.LogError($"Error occured when trying to load keyset data from file.\n" +
-					   $"At path: {fullPath}.\n" +
-					   $"Reason: {ex.Message}.");
-		}
+		_fullPath = Path.Combine(directory, subFolders, fileName + extension);
 	}
 }

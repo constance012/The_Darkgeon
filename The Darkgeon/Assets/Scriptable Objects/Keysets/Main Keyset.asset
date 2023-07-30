@@ -12,28 +12,31 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd2b9a4d259fdbb418dbe54c39e9222d, type: 3}
   m_Name: Main Keyset
   m_EditorClassIdentifier: 
-  keyList:
-  - action: 1
-    keyCode: 323
-  - action: 2
-    keyCode: 324
-  - action: 3
-    keyCode: 97
-  - action: 4
-    keyCode: 100
-  - action: 5
-    keyCode: 119
-  - action: 6
-    keyCode: 115
-  - action: 7
-    keyCode: 32
-  - action: 8
-    keyCode: 306
-  - action: 9
-    keyCode: 304
-  - action: 10
-    keyCode: 116
-  - action: 11
-    keyCode: 101
-  - action: 12
-    keyCode: 27
+  keys:
+    list:
+    - action: 1
+      keyCode: 316
+    - action: 2
+      keyCode: 317
+    - action: 3
+      keyCode: 97
+    - action: 4
+      keyCode: 100
+    - action: 5
+      keyCode: 119
+    - action: 6
+      keyCode: 115
+    - action: 7
+      keyCode: 32
+    - action: 8
+      keyCode: 306
+    - action: 9
+      keyCode: 304
+    - action: 10
+      keyCode: 116
+    - action: 11
+      keyCode: 101
+    - action: 12
+      keyCode: 27
+  subFolders: Keyset Data
+  extension: .cst

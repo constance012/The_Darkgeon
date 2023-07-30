@@ -2,16 +2,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using UnityEngine.Events;
 using UnityEngine.UI;
 using CSTGames.DataPersistence;
 using CSTGames.CommonEnums;
 
-public class Inventory : MonoBehaviour, ISaveDataTransceiver
+public class Inventory : ItemStorage, ISaveDataTransceiver
 {
 	public static Inventory instance { get; private set; }
-
-	public UnityEvent onItemChanged { get; private set; } = new UnityEvent();
 
 	[Header("Item Database")]
 	[Space]
@@ -21,15 +18,16 @@ public class Inventory : MonoBehaviour, ISaveDataTransceiver
 	[Space]
 	public List<Item> items = new List<Item>();
 	public int coins = 0;
-	public int space = 20;
 
-	private InventorySlot[] slots;
-	private CoinSlot coinSlot;
-	private Image outsideZone;
+	private InventorySlot[] _slots;
+	private ClickableObject[] _clickables;
+	private CoinSlot _coinSlot;
+	private Image _outsideZone;
 
-	private void OnEnable()
+	protected override void OnEnable()
 	{
-		onItemChanged?.Invoke();
+		base.OnEnable();
+
 		PlayerMovement.isModifierKeysOccupied = true;
 		PlayerActions.canAttack = false;
 	}
@@ -47,7 +45,7 @@ public class Inventory : MonoBehaviour, ISaveDataTransceiver
 		PlayerActions.canAttack = true;
 	}
 
-	private void Awake()
+	protected override void Awake()
 	{
 		if (instance == null)
 			instance = this;
@@ -58,105 +56,52 @@ public class Inventory : MonoBehaviour, ISaveDataTransceiver
 			return;
 		}
 
-		slots = transform.GetComponentsInChildren<InventorySlot>("Slots");
-		coinSlot = transform.GetComponentInChildren<CoinSlot>("Coin Slot");
-		outsideZone = transform.root.GetComponentInChildren<Image>("Outside Zone");
-		
-		onItemChanged.AddListener(ReloadUI);
+		_slots = transform.GetComponentsInChildren<InventorySlot>("Slots");
+		_coinSlot = transform.GetComponentInChildren<CoinSlot>("Coin Slot");
+		_outsideZone = transform.parent.GetComponentInChildren<Image>("Outside Zone");
+		_clickables = GetComponentsInChildren<ClickableObject>();
+
+		base.Awake();
 	}
 
 	private void Update()
 	{
-		outsideZone.raycastTarget = ClickableObject.holdingItem;
+		_outsideZone.raycastTarget = ClickableObject.holdingItem;
 	}
 
-	public bool Add(Item target, bool forcedSplit = false)
+	public void InitializeOtherOpenedStorage()
+	{
+		ItemStorage[] openedStorages = transform.parent.GetComponentsInChildren<ItemStorage>();
+		ItemStorage selectedStorage = null;
+
+		foreach (ItemStorage storage in openedStorages)
+			if (storage.GetType() != typeof(Inventory))
+			{
+				selectedStorage = storage;
+				break;
+			}
+
+		foreach (ClickableObject clickable in _clickables)
+		{
+			clickable.otherStorage = selectedStorage;
+		}
+	}
+
+	public override bool Add(Item target, bool forcedSplit = false)
 	{
 		if (target.itemName.Equals("Coin"))
 		{
 			coins += target.quantity;
-			coinSlot.AddCoin(coins);
-
-			onItemChanged?.Invoke();
-			return true;
-		}
-		
-		if (items.Count >= space)
-		{
-			Debug.LogWarning("Inventory Full.");
-			return false;
-		}
-
-		// Add to the list if it's not a default item.
-		if (!target.isDefaultItem)
-		{
-			// Generate a unique id for the target.
-			target.id = Guid.NewGuid().ToString();
-
-			if (!forcedSplit)
-			{
-				// Check for stackable items.
-				for (int i = 0; i < items.Count; i++)
-				{	
-					if (!items[i].itemName.Equals(target.itemName))
-						continue;
-
-					if (items[i].quantity == items[i].maxPerStack || !items[i].stackable)
-						continue;
-
-					// If the item is stackable and hasn't reached its max per stack yet.
-					if (items[i].quantity < items[i].maxPerStack)
-					{
-						int totalQuantity = items[i].quantity + target.quantity;
-
-						// If the new total quantity exceeds the maximum amount.
-						// Then set the current one's quantity to max, set the new one's quantity to the residue amount and add to the next slot.
-						if (totalQuantity > items[i].maxPerStack)
-						{
-							int residue = totalQuantity - items[i].maxPerStack;
-
-							items[i].quantity = items[i].maxPerStack;
-							target.quantity = residue;
-						}
-
-						else if (totalQuantity == items[i].maxPerStack)
-						{
-							items[i].quantity = totalQuantity;
-							target.quantity = 0;
-						}
-
-						// Otherwise, just increase the quantity of the current one.
-						else
-						{
-							items[i].quantity += target.quantity;
-							target.quantity = 0;
-						}
-					}
-
-					if (target.quantity <= 0)
-						break;
-				}
-
-				// If there's a residue or this is a completely different item. Then add it to the list.
-				if (target.quantity > 0)
-					items.Add(target);
-
-				onItemChanged?.Invoke();
-				return true;
-			}
-
-			// If it's a completely new item or forced to split the same item, then just add it into the list.
-			if (target.quantity > 0)
-				items.Add(target);
+			_coinSlot.AddCoin(coins);
 
 			onItemChanged?.Invoke();
 			return true;
 		}
 
-		return false;
+		return base.AddToList(items, target, forcedSplit);
 	}
 
-	public void Remove(Item target, bool forced = false)
+	public override void Remove(Item target, bool forced = false)
 	{
 		if (!target.isFavorite || forced)
 		{
@@ -165,7 +110,7 @@ public class Inventory : MonoBehaviour, ISaveDataTransceiver
 		}
 	}
 
-	public void Remove(string targetID, bool forced = false)
+	public override void Remove(string targetID, bool forced = false)
 	{
 		Item target = GetItem(targetID);
 
@@ -176,35 +121,26 @@ public class Inventory : MonoBehaviour, ISaveDataTransceiver
 		}
 	}
 
-	public Item GetItem(string targetID) => items.Find(item => item.id.Equals(targetID));
-
-	public List<Item> GetItemsByName(string name) => items.FindAll(item => item.itemName.Equals(name));
-
-	public bool IsExisting(string targetID) => items.Exists(item => item.id == targetID);
-
-	public void SetFavorite(string targetID, bool state)
+	public override void RemoveWithoutNotify(Item target)
 	{
-		GetItem(targetID).isFavorite = state;
-		onItemChanged?.Invoke();
+		items.Remove(target);
 	}
 
-	public void UpdateSlotIndex(string targetID, int index)
+	public override Item GetItem(string targetID)
 	{
-		index = Mathf.Clamp(index, 0, space - 1);
-		GetItem(targetID).slotIndex = index;
-		onItemChanged?.Invoke();
+		return items.Find(item => item.id.Equals(targetID));
 	}
 
-	public void UpdateQuantity(string targetID, int amount, bool setExactAmount = false)
+	public override bool IsExisting(string targetID)
+	{
+		return items.Exists(item => item.id == targetID);
+	}
+
+	public override void UpdateQuantity(string targetID, int amount, bool setExactAmount = false)
 	{
 		Item target = GetItem(targetID);
 
-		if (setExactAmount)
-			target.quantity = amount;
-		else
-			target.quantity += amount;
-
-		target.quantity = Mathf.Clamp(target.quantity, 0, target.maxPerStack);
+		base.SetQuantity(target, amount, setExactAmount);
 
 		if (target.quantity <= 0)
 		{
@@ -257,9 +193,9 @@ public class Inventory : MonoBehaviour, ISaveDataTransceiver
 		playerData.inventoryData = new ContainerSaveData(items);
 	}
 
-	private void ReloadUI()
+	protected override void ReloadUI()
 	{
-		coinSlot.AddCoin(coins);
+		_coinSlot.AddCoin(coins);
 
 		// Split the master list into 2 smaller lists.
 		List<Item> unindexedItems = items.FindAll(item => item.slotIndex == -1);
@@ -268,13 +204,13 @@ public class Inventory : MonoBehaviour, ISaveDataTransceiver
 		//Debug.Log("Unindexed items count : " + unindexedItems.Count);
 		//Debug.Log("Indexed items count : " + indexedItems.Count);
 
-		// Clear all the slots.
-		Array.ForEach(slots, (slot) => slot.ClearItem());
+		// Clear all the _slots.
+		Array.ForEach(_slots, (slot) => slot.ClearItem());
 
 		// Load the indexed items first.
 		if (indexedItems.Count != 0)
 		{
-			Action<Item> ReloadIndexedItems = (item) => slots[item.slotIndex].AddItem(item);
+			Action<Item> ReloadIndexedItems = (item) => _slots[item.slotIndex].AddItem(item);
 			indexedItems.ForEach(ReloadIndexedItems);
 		}
 
@@ -283,7 +219,7 @@ public class Inventory : MonoBehaviour, ISaveDataTransceiver
 		{
 			int i = 0;
 
-			foreach (InventorySlot slot in slots)
+			foreach (InventorySlot slot in _slots)
 			{
 				if (i == unindexedItems.Count)
 					break;

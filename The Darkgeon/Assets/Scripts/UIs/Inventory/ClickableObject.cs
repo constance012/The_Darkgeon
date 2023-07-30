@@ -3,23 +3,31 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using TMPro;
+using Unity.VisualScripting;
+using UnityEngine.U2D;
 
 public class ClickableObject : MonoBehaviour, IPointerClickHandler, IPointerDownHandler
 {
-	[Header("Slot Type")]
+	public enum StorageType { Inventory, Chest }
+
+	[Header("Storage Type")]
 	[Space]
-	public bool isChestSlot;
+	public StorageType storageType;
+	[ReadOnly] public ItemStorage currentStorage;
+	[ReadOnly] public ItemStorage otherStorage;
 
 	[Header("References")]
 	[Space]
-
 	public Item dragItem;
 	[SerializeField] private GameObject droppedItemPrefab;
 	[SerializeField] private Transform player;
 
+	public bool IsChestSlot => storageType == StorageType.Chest;
+	public bool IsInventorySlot => storageType == StorageType.Inventory;
+	public bool FromSameStorageSlot<TSlot>() where TSlot : StorageSlot => currentSlot.GetType() == typeof(TSlot);
+
 	// Private fields.
-	private InventorySlot currentSlot;
-	private ChestSlot currentChestSlot;
+	private StorageSlot currentSlot;
 	private Image icon;
 	private TooltipTrigger tooltip;
 
@@ -43,10 +51,7 @@ public class ClickableObject : MonoBehaviour, IPointerClickHandler, IPointerDown
 
 	private void Awake()
 	{
-		if (!isChestSlot)
-			currentSlot = transform.GetComponentInParent<InventorySlot>();
-		else
-			currentChestSlot = transform.GetComponentInParent<ChestSlot>();
+		InitializeItemStorage();
 
 		icon = transform.GetComponentInChildren<Image>("Icon");
 		tooltip = GetComponentInParent<TooltipTrigger>();
@@ -82,7 +87,7 @@ public class ClickableObject : MonoBehaviour, IPointerClickHandler, IPointerDown
 
 	public void OnPointerDown(PointerEventData eventData)
 	{
-		dragItem = isChestSlot ? currentChestSlot.currentItem : currentSlot.currentItem;
+		dragItem = currentSlot.currentItem;
 		tooltip.HideTooltip();
 
 		if (dragItem == null && !holdingItem)
@@ -100,17 +105,17 @@ public class ClickableObject : MonoBehaviour, IPointerClickHandler, IPointerDown
 				return;
 			}
 			
-			// Set an item as favorite.
-			if (isLeftAltHeld && !isChestSlot)
+			// Set an item in Inventory as favorite.
+			if (isLeftAltHeld && IsInventorySlot)
 			{
 				bool favorite = !dragItem.isFavorite;
-				Inventory.instance.SetFavorite(dragItem.id, favorite);
+				currentStorage.SetFavorite(dragItem.id, favorite);
 				Debug.Log(dragItem + " is " + (favorite ? "favorite" : "not favorite"));
 				return;
 			}
 
-			// Quick deposit an item between the currently opening chest and the inventory.
-			if (isLeftControlHeld && ChestStorage.instance.openedChest != null)
+			// Quick deposit an item between two storages.
+			if (isLeftControlHeld && otherStorage != null)
 			{
 				QuickDeposit();
 				return;
@@ -126,10 +131,7 @@ public class ClickableObject : MonoBehaviour, IPointerClickHandler, IPointerDown
 			// Drop item down.
 			if (holdingItem)
 			{
-				if (!isChestSlot)
-					currentSlot.OnDrop(clone);
-				else
-					currentChestSlot.OnDrop(clone);
+				currentSlot.OnDrop(clone);
 
 				ClearSingleton();
 				return;
@@ -155,59 +157,52 @@ public class ClickableObject : MonoBehaviour, IPointerClickHandler, IPointerDown
 			currentSlot?.UseItem();
 	}
 
+	#region Item Manipulation.
 	// This method is called from an event trigger.
 	public void DisposeItem()
 	{
 		Debug.Log("Outside of inventory area.");
 
-		if (clone != null)
+		if (clone == null)
+			return;
+
+		Item disposeItem = clone.GetComponent<ClickableObject>().dragItem;
+
+		if (!disposeItem.isFavorite || sender.IsChestSlot)
 		{
-			Item disposeItem = clone.GetComponent<ClickableObject>().dragItem;
+			// Set up the drop.
+			ItemPickup droppedItem = droppedItemPrefab.GetComponent<ItemPickup>();
 
-			if (!disposeItem.isFavorite || sender.isChestSlot)
-			{
-				// Set up the drop.
-				ItemPickup droppedItem = droppedItemPrefab.GetComponent<ItemPickup>();
+			droppedItem.itemSO = disposeItem;
+			droppedItem.itemSO.slotIndex = -1;
+			droppedItem.itemSO.isFavorite = false;
+			droppedItem.player = player;
 
-				droppedItem.itemSO = disposeItem;
-				droppedItem.itemSO.slotIndex = -1;
-				droppedItem.itemSO.isFavorite = false;
-				droppedItem.player = player;
+			// Make the drop.
+			GameObject droppedItemObj = Instantiate(droppedItemPrefab, player.position, Quaternion.identity);
 
-				// Make the drop.
-				GameObject droppedItemObj = Instantiate(droppedItemPrefab, player.position, Quaternion.identity);
+			droppedItemObj.name = disposeItem.name;
+			droppedItemObj.transform.SetParent(GameObject.Find("Items").transform);
 
-				droppedItemObj.name = disposeItem.name;
-				droppedItemObj.transform.SetParent(GameObject.Find("Items").transform);
+			// Add force to the dropped item.
+			Rigidbody2D rb2d = droppedItemObj.GetComponent<Rigidbody2D>();
 
-				// Add force to the dropped item.
-				Rigidbody2D rb2d = droppedItemObj.GetComponent<Rigidbody2D>();
+			Vector3 screenPlayerPos = Camera.main.WorldToScreenPoint(player.position);
+			Vector3 aimingDir = Input.mousePosition - screenPlayerPos;
 
-				Vector3 screenPlayerPos = Camera.main.WorldToScreenPoint(player.position);
-				Vector3 aimingDir = Input.mousePosition - screenPlayerPos;
+			rb2d.AddForce(5f * aimingDir.normalized, ForceMode2D.Impulse);
 
-				rb2d.AddForce(5f * aimingDir.normalized, ForceMode2D.Impulse);
-
-				if (!splittingItem)
-				{
-					if (!sender.isChestSlot)
-						Inventory.instance.Remove(disposeItem);
-					else
-						ChestStorage.instance.Remove(disposeItem);
-				}
-			}
-
-			// Update the quantity if we dispose a favorite item via splitting.
-			else if (disposeItem.isFavorite && splittingItem)
-			{
-				if (sender.isChestSlot)
-					ChestStorage.instance.UpdateQuantity(disposeItem.id, disposeItem.quantity);
-				else
-					Inventory.instance.UpdateQuantity(disposeItem.id, disposeItem.quantity);
-			}
-
-			ClearSingleton();
+			if (!splittingItem)
+				currentStorage.Remove(disposeItem);
 		}
+
+		// Update the quantity if we try disposing a favorite item via splitting.
+		else if (disposeItem.isFavorite && splittingItem)
+		{
+			currentStorage.UpdateQuantity(disposeItem.id, disposeItem.quantity);
+		}
+
+		ClearSingleton();
 	}
 
 	public static void ClearSingleton()
@@ -231,10 +226,7 @@ public class ClickableObject : MonoBehaviour, IPointerClickHandler, IPointerDown
 
 	private void BeginDragItem()
 	{
-		clone = Instantiate(gameObject, transform.root);
-		clone.GetComponent<Image>().enabled = false;
-		clone.transform.GetComponentInChildren<Image>("Icon").raycastTarget = false;
-		clone.transform.GetComponentInChildren<Image>("Favorite Border").enabled = false;
+		CreateClone();
 
 		icon.color = new Color(.51f, .51f, .51f);
 
@@ -254,21 +246,49 @@ public class ClickableObject : MonoBehaviour, IPointerClickHandler, IPointerDown
 		holdingItem = true;
 		sender = this;
 
-		if (!sender.isChestSlot)
-		{
-			ChestStorage.instance.Add(sender.dragItem);
-			Inventory.instance.Remove(sender.dragItem);
-		}
-		else
-		{
-			Inventory.instance.Add(sender.dragItem);
-			ChestStorage.instance.Remove(sender.dragItem);
-		}
+		otherStorage.Add(sender.dragItem);
+		currentStorage.Remove(sender.dragItem);
 
 		holdingItem = false;
 		sender = null;
 	}
 
+	private void InitializeItemStorage()
+	{
+		switch (storageType)
+		{
+			case StorageType.Inventory:
+				currentStorage = GetComponentInParent<Inventory>();
+				otherStorage = null;  // TODO - assign this when any storages other than the Invetory is Enable.
+				break;
+
+			case StorageType.Chest:
+				currentStorage = GetComponentInParent<ChestStorage>();
+				otherStorage = transform.root.GetComponentInChildren<Inventory>();
+				break;
+		}
+
+		currentSlot = GetComponentInParent<StorageSlot>();
+	}
+
+	private void CreateClone()
+	{
+		clone = Instantiate(gameObject, transform.root);
+
+		clone.GetComponent<RectTransform>().pivot = new Vector2(.48f, .55f);
+
+		clone.GetComponent<Image>().enabled = false;
+		clone.transform.GetComponentInChildren<Image>("Icon").raycastTarget = false;
+		clone.transform.GetComponentInChildren<Image>("Favorite Border").enabled = false;
+
+		ClickableObject cloneData = clone.GetComponent<ClickableObject>();
+		cloneData.currentStorage = currentStorage;
+		cloneData.otherStorage = otherStorage;
+		cloneData.currentSlot = currentSlot;
+	}
+	#endregion
+
+	#region Item Splitting.
 	private void SplitItemInHalf()
 	{	
 		// Create a clone if it doesn't already exist.
@@ -286,22 +306,16 @@ public class ClickableObject : MonoBehaviour, IPointerClickHandler, IPointerDown
 			split.quantity = half1;
 			split.name = dragItem.name;
 
-			clone = Instantiate(gameObject, transform.root);
+			CreateClone();
 			clone.GetComponent<ClickableObject>().dragItem = split;
-
-			clone.GetComponent<Image>().enabled = false;
-			clone.transform.GetComponentInChildren<Image>("Icon").raycastTarget = false;
-			clone.transform.GetComponentInChildren<Image>("Favorite Border").enabled = false;
 			clone.transform.GetComponentInChildren<TextMeshProUGUI>("Quantity").text = half1.ToString();
 
 			holdingItem = true;
 			splittingItem = true;
 			sender = this;
 				
-			if (!isChestSlot)
-				Inventory.instance.UpdateQuantity(dragItem.id, -half1);
-			else
-				ChestStorage.instance.UpdateQuantity(dragItem.id, -half1);
+			currentStorage.UpdateQuantity(dragItem.id, -half1);
+
 			return;
 		}
 
@@ -318,16 +332,8 @@ public class ClickableObject : MonoBehaviour, IPointerClickHandler, IPointerDown
 
 		if (dragItem.quantity <= 1)
 		{
-			if (!isChestSlot)
-			{
-				Inventory.instance.items.Remove(dragItem);
-				currentSlot.currentItem = null;
-			}
-			else
-			{
-				ChestStorage.instance.openedChest.storedItem.Remove(dragItem);
-				currentChestSlot.currentItem = null;
-			}
+			currentStorage.RemoveWithoutNotify(dragItem);
+			currentSlot.currentItem = null;
 
 			sender.transform.GetComponentInChildren<TextMeshProUGUI>("Quantity").text = "0";
 			icon.color = new Color(.51f, .51f, .51f);
@@ -338,10 +344,7 @@ public class ClickableObject : MonoBehaviour, IPointerClickHandler, IPointerDown
 			return;
 		}
 
-		if (!isChestSlot)
-			Inventory.instance.UpdateQuantity(dragItem.id, -half2);
-		else
-			ChestStorage.instance.UpdateQuantity(dragItem.id, -half2);
+		currentStorage.UpdateQuantity(dragItem.id, -half2);
 	}
 
 	private void SplitItemOneByOne()
@@ -359,22 +362,15 @@ public class ClickableObject : MonoBehaviour, IPointerClickHandler, IPointerDown
 			split.quantity = 1;
 			split.name = dragItem.name;
 
-			clone = Instantiate(gameObject, transform.root);
+			CreateClone();
 			clone.GetComponent<ClickableObject>().dragItem = split;
-
-			clone.GetComponent<Image>().enabled = false;
-			clone.transform.GetComponentInChildren<Image>("Icon").raycastTarget = false;
-			clone.transform.GetComponentInChildren<Image>("Favorite Border").enabled = false;
 			clone.transform.GetComponentInChildren<TextMeshProUGUI>("Quantity").text = "1";
 
 			holdingItem = true;
 			splittingItem = true;
 			sender = this;
 
-			if (!isChestSlot)
-				Inventory.instance.UpdateQuantity(dragItem.id, -1);
-			else
-				ChestStorage.instance.UpdateQuantity(dragItem.id, -1);
+			currentStorage.UpdateQuantity(dragItem.id, -1);
 
 			return;
 		}
@@ -390,16 +386,8 @@ public class ClickableObject : MonoBehaviour, IPointerClickHandler, IPointerDown
 
 		if (dragItem.quantity == 1)
 		{
-			if (!isChestSlot)
-			{
-				Inventory.instance.items.Remove(dragItem);
-				currentSlot.currentItem = null;
-			}
-			else
-			{
-				ChestStorage.instance.openedChest.storedItem.Remove(dragItem);
-				currentChestSlot.currentItem = null;
-			}
+			currentStorage.RemoveWithoutNotify(dragItem);
+			currentSlot.currentItem = null;
 
 			sender.transform.GetComponentInChildren<TextMeshProUGUI>("Quantity").text = "0";
 			icon.color = new Color(.51f, .51f, .51f);
@@ -407,10 +395,7 @@ public class ClickableObject : MonoBehaviour, IPointerClickHandler, IPointerDown
 			return;
 		}
 
-		if (!isChestSlot)
-			Inventory.instance.UpdateQuantity(dragItem.id, -1);
-		else
-			ChestStorage.instance.UpdateQuantity(dragItem.id, -1);
+		currentStorage.UpdateQuantity(dragItem.id, -1);
 	}
 
 	private IEnumerator ContinueSplitting(PointerEventData.InputButton heldMouseButton)
@@ -430,13 +415,7 @@ public class ClickableObject : MonoBehaviour, IPointerClickHandler, IPointerDown
 
 		while (isMouseButtonHeld && isLeftShiftHeld)
 		{
-			if (!isChestSlot && !Inventory.instance.IsExisting(dragItem.id))
-			{
-				isCoroutineRunning = false;
-				yield break;
-			}
-
-			if (isChestSlot && !ChestStorage.instance.IsExisting(dragItem.id))
+			if (!currentStorage.IsExisting(dragItem.id))
 			{
 				isCoroutineRunning = false;
 				yield break;
@@ -463,4 +442,5 @@ public class ClickableObject : MonoBehaviour, IPointerClickHandler, IPointerDown
 
 		isCoroutineRunning = false;
 	}
+	#endregion
 }

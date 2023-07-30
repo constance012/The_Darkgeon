@@ -9736,7 +9736,7 @@ GameObject:
   - component: {fileID: 404653854681916495}
   - component: {fileID: 7964040724204792522}
   - component: {fileID: 4013390920824231238}
-  - component: {fileID: 525277692065339919}
+  - component: {fileID: 263334395009068219}
   - component: {fileID: 529238897561743942}
   m_Layer: 3
   m_Name: Graphic
@@ -9780,7 +9780,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 4388e1ca8e8f3014f91c7215bdb3c6a8, type: 2}
+  - {fileID: 2100000, guid: 8330d992747b7f0498899e8b59b930d0, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -9946,7 +9946,7 @@ TrailRenderer:
   m_Autodestruct: 0
   m_Emitting: 0
   m_ApplyActiveColorSpace: 0
---- !u!114 &525277692065339919
+--- !u!114 &263334395009068219
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -9963,7 +9963,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 256
   atkRange: 0.5
-  m_ComboDelay: 0.3
+  m_ComboDelay: 0.2
   comboDelay: 0
 --- !u!114 &529238897561743942
 MonoBehaviour:
@@ -15235,6 +15235,7 @@ MonoBehaviour:
     modifierType: 1
     <BaseValue>k__BackingField: 5
   damageRecFactor: 0.5
+  damageFlashTime: 0.25
   timeBeforeRegen: 5
   m_InvincibilityTime:
     modifierType: 0
