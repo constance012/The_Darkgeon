@@ -127,6 +127,7 @@ public class EquipmentManager : Singleton<EquipmentManager>, ISaveDataTransceive
 		}
 	}
 
+	#region Save and Load Data.
 	public void LoadData(GameData gameData)
 	{
 		ContainerSaveData loadedEquipments = gameData.playerData.equipmentData;
@@ -151,7 +152,8 @@ public class EquipmentManager : Singleton<EquipmentManager>, ISaveDataTransceive
 	{
 		gameData.playerData.equipmentData = new ContainerSaveData(currentEquipments);
 	}
-	
+	#endregion
+
 	private void ReloadUI()
 	{
 		// Clear all the slots first.

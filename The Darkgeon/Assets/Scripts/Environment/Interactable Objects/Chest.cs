@@ -13,23 +13,20 @@ public class Chest : Interactable, ISaveDataTransceiver
 	/// </summary>
 	public enum ChestTier { Wooden, Iron, Silver, Golden }
 
-	[Space]
-	[Header("General Info")]
-	[SerializeField, ReadOnly] private string id;
-
-	[ContextMenu("Generate Chest ID")]
-	private void GenerateChestID()
-	{
-		id = Guid.NewGuid().ToString();
-	}
-
 	public ChestTier tier;
 
+	public List<Item> storedItem = new List<Item>();
+
+	[Space]
+	// List of pre-initialize items for each chest.
+	[SerializeField] private List<DeathLoot> treasures = new List<DeathLoot>();
+
+	// Private fields.
 	/// <summary>
 	/// The quantity of each item type for randomizing if these chests have never been opened for the first time.
 	/// </summary>
 	[Space]
-	private static Dictionary<ItemCategory, int> treasureAmount = new Dictionary<ItemCategory, int>
+	private readonly static Dictionary<ItemCategory, int> _treasureAmount = new Dictionary<ItemCategory, int>
 	{
 		[ItemCategory.Null] = 0,
 		[ItemCategory.Coin] = 1,
@@ -41,20 +38,13 @@ public class Chest : Interactable, ISaveDataTransceiver
 		[ItemCategory.Mineral] = 3
 	};
 
-	public List<Item> storedItem = new List<Item>();
-
-	[Space]
-	// Special items list for each chest.
-	[SerializeField] private List<DeathLoot> treasures = new List<DeathLoot>();
-
-	// Private fields.
 	private Animator animator;
 	private bool firstTimeOpen;
 
 	protected override void Awake()
 	{
 		base.Awake();
-		animator = GetComponent<Animator>();
+		animator = GetComponentInParent<Animator>();
 	}
 
 	private void Start()
@@ -103,16 +93,16 @@ public class Chest : Interactable, ISaveDataTransceiver
 		OpenAndClose();
 	}
 
-	public override void ExecuteRemoteLogic(bool state)
-	{
-		
-	}
-
+	#region Save and Load Data.
 	public void LoadData(GameData gameData)
 	{
-		ContainerSaveData loadedData;
+		bool hasData = gameData.levelData.chestsData.TryGetValue(ID, out ContainerSaveData loadedData);
 
-		gameData.levelData.chestsData.TryGetValue(id, out loadedData);
+		if (!hasData)
+		{
+			InitializeTreasures();
+			return;
+		}
 
 		// If the saved list is not null and not empty.
 		if (loadedData.storedItem != null && loadedData.storedItem.Any())
@@ -158,23 +148,30 @@ public class Chest : Interactable, ISaveDataTransceiver
 
 	public void SaveData(GameData gameData)
 	{
+		if (ID == null || ID.Equals(""))
+		{
+			Debug.LogWarning($"This {tier} Chest doesn't have an ID yet, its data will not be stored.", this);
+			return;
+		}
+
 		LevelData levelData = gameData.levelData;
 
-		if (levelData.chestsData.ContainsKey(id))
+		if (levelData.chestsData.ContainsKey(ID))
 		{
-			levelData.chestsData.Remove(id);
+			levelData.chestsData.Remove(ID);
 		}
 
 		ContainerSaveData dataToSave = new ContainerSaveData(storedItem, firstTimeOpen);
 
-		levelData.chestsData.Add(id, dataToSave);
+		levelData.chestsData.Add(ID, dataToSave);
 	}
+	#endregion
 
 	protected override void CreatePopupLabel()
 	{
 		base.CreatePopupLabel();
 
-		clone.SetObjectName($"{type} chest");
+		clone.SetObjectName($"{tier} chest");
 	}
 
 	private void OpenAndClose()
@@ -185,8 +182,8 @@ public class Chest : Interactable, ISaveDataTransceiver
 			firstTimeOpen = true;
 			
 			// Activate the Inventory canvas if it hasn't already open yet.
-			if (!Inventory.instance.transform.parent.gameObject.activeInHierarchy)
-				Inventory.instance.transform.parent.gameObject.SetActive(true);
+			if (!Inventory.instance.CanvasActive)
+				Inventory.instance.CanvasActive = true;
 
 			ChestStorage.instance.openedChest = this;
 			ChestStorage.instance.gameObject.SetActive(true);
@@ -238,7 +235,7 @@ public class Chest : Interactable, ISaveDataTransceiver
 				currentType = target.loot.category;
 				itemsOfCurrentType = treasures.FindAll(loot => loot.loot.category == currentType);
 
-				numberOfItemsRemaining = treasureAmount[currentType];
+				numberOfItemsRemaining = _treasureAmount[currentType];
 			}
 
 			// Skip this iteration if items of the current type are fully added.

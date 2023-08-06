@@ -78,8 +78,7 @@ public class SaveSlotsMenu : MonoBehaviour
 
 		foreach (SaveSlot slot in saveSlots)
 		{
-			GameData data;
-			saveSlotsData.TryGetValue(slot.SaveSlotID, out data);
+			saveSlotsData.TryGetValue(slot.SaveSlotID, out GameData data);
 			
 			slot.SetData(data);
 		}

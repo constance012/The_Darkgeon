@@ -3,6 +3,7 @@ using UnityEngine.EventSystems;
 using UnityRandom = UnityEngine.Random;
 using CSTGames.DataPersistence;
 using TMPro;
+using UnityEditor.SceneManagement;
 
 public class SaveSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
@@ -20,33 +21,34 @@ public class SaveSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 	public bool HasData { get; private set; }
 	public static DeleteSaveSlotButton DeleteButton { get; set; }
 
-	private const string charsList = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+	private const string CHARS_LIST = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 
 	[ContextMenu("Generate Slot ID")]
 	private void GenerateSlotID()
 	{
 		// abcdefgh-abcd-ab0def - the '0' is the slot index in the hierarchy.
-		char[] stringOfChars = new char[20];
+		char[] arrayOfChars = new char[20];
 
-		for (int i = 0; i < stringOfChars.Length; i++)
+		for (int i = 0; i < arrayOfChars.Length; i++)
 		{
 			if (i == 8 || i == 13)
 			{
-				stringOfChars[i] = '-';
+				arrayOfChars[i] = '-';
 				continue;
 			}
 			
 			if (i == 16)
 			{
-				stringOfChars[i] = (char)('0' | transform.GetSiblingIndex());
+				arrayOfChars[i] = (char)('0' | transform.GetSiblingIndex());
 				continue;
 			}
 
-			int randomIndex = UnityRandom.Range(0, charsList.Length);
-			stringOfChars[i] = charsList[randomIndex];
+			int randomIndex = UnityRandom.Range(0, CHARS_LIST.Length);
+			arrayOfChars[i] = CHARS_LIST[randomIndex];
 		}
 
-		SaveSlotID = new string(stringOfChars);
+		SaveSlotID = new string(arrayOfChars);
+		EditorSceneManager.MarkSceneDirty(gameObject.scene);
 	}
 
 	private void Awake()
@@ -67,7 +69,7 @@ public class SaveSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 
 	public void SetData(GameData gameData)
 	{
-		if (gameData == null || !gameData.allDataLoadedSuccessfully)
+		if (gameData == null || !gameData.AllDataLoadedSuccessfully)
 		{
 			HasData = false;
 			noDataContent.SetActive(true);

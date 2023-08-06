@@ -23,10 +23,11 @@ public class PlayerActions : MonoBehaviour
 
 	[HideInInspector] public float comboDelay;
 
-	public static bool isComboDone { get; set; } = true;
-	public static bool canAttack { get; set; } = true;
+	public static bool IsAttacking { get; set; }
+	public static bool IsComboDone { get; set; } = true;
+	public static bool CanAttack { get; set; } = true;
 
-	private bool canFaceTowardsCursor;
+	private bool _canFaceTowardsCursor;
 
 	private void Awake()
 	{
@@ -36,20 +37,23 @@ public class PlayerActions : MonoBehaviour
 
 	private void Update()
 	{
-		if (!canAttack)
+		if (!CanAttack)
 		{
-			Debug.Log("Can not attack");
+			//Debug.Log("Can not attack");
 			return;
 		}
 
-		canFaceTowardsCursor = Mathf.Round(animator.GetFloat("Speed")) == 0f;
+		_canFaceTowardsCursor = Mathf.Round(animator.GetFloat("Speed")) == 0f;
 		
+		KeyCode mouse0 = InputManager.instance.GetKeyForAction(KeybindingActions.PrimaryAttack);
+		//Debug.Log(mouse0);
+
 		// Check if there is enough time for the next combo to begin.
-		if (InputManager.instance.GetKeyDown(KeybindingActions.PrimaryAttack) && !GameManager.isPause && isComboDone)
+		if (Input.GetKeyDown(mouse0) && !GameManager.IsPause && IsComboDone)
 			Attack();
 
 		// Facing the player in the direction of the mouse when certain conditions are matched.
-		if ((!animator.GetBool("IsRunning") || canFaceTowardsCursor) && !GameManager.isPause)
+		if ((!animator.GetBool("IsRunning") || _canFaceTowardsCursor) && !GameManager.IsPause)
 		{
 			Vector2 facingDir = Input.mousePosition - Camera.main.WorldToScreenPoint(transform.position);
 			float angle = Mathf.Abs(Mathf.Atan2(facingDir.y, facingDir.x) * Mathf.Rad2Deg);
@@ -65,6 +69,8 @@ public class PlayerActions : MonoBehaviour
 	{
 		if (Time.time > comboDelay && !animator.GetBool("IsCrouching") && animator.GetBool("Grounded"))
 		{
+			IsAttacking = true;
+			
 			// Facing the player in the aiming direction before attack.
 			Vector2 aimingDir = Input.mousePosition - Camera.main.WorldToScreenPoint(transform.position);
 
@@ -73,22 +79,19 @@ public class PlayerActions : MonoBehaviour
 
 			comboDelay = m_ComboDelay;
 
-			animator.SetBool("IsAttacking", true);
 			animator.SetBool("IsRunning", false);
 
 			// Perform normal attack if is not dashing.
 			if (!animator.GetCurrentAnimatorStateInfo(0).IsName("Dash"))
-				animator.SetTrigger("Atk1");
+				animator.Play("Attack 1");
 			
-			isComboDone = false;
+			IsComboDone = false;
 		}
 	}
 
 	public void CancelAttacking()
 	{
-		animator.SetBool("IsAttacking", false);
-		animator.SetBool("DashAtk", false);
-		animator.ResetTrigger("Atk1");
+		IsAttacking = false;
 		animator.ResetTrigger("Atk2");
 	}
 

@@ -41,8 +41,8 @@ public class Attack2 : StateMachineBehaviour
 	public override void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
 	{
 		dmgDealt = false;
-		animator.SetBool("IsAttacking", false);
 		action.comboDelay += Time.time;
-		PlayerActions.isComboDone = true;
+		PlayerActions.IsAttacking = false;
+		PlayerActions.IsComboDone = true;
 	}
 }

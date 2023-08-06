@@ -11,52 +11,52 @@ public class Attack1 : StateMachineBehaviour
 	[Header("Fields.")]
 	[Space]
 
-	private bool dmgDealt;
-	private bool isAtk2Triggered;
-	private bool canCrit;
-	private float dmgScale = .8f;
+	private bool _dmgDealt;
+	private bool _isAtk2Triggered;
+	private bool _canCrit;
+	private float _dmgScale = .8f;
 
 	public override void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
 	{
 		action = animator.GetComponent<PlayerActions>();
 		stats = animator.GetComponentInParent<PlayerStats>();
 
-		canCrit = stats.IsCriticalStrike();
+		_canCrit = stats.IsCriticalStrike();
 	}
 
 	public override void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
 	{
-		if (!dmgDealt && stateInfo.normalizedTime > .7f)
+		if (!_dmgDealt && stateInfo.normalizedTime > .7f)
 		{
 			Collider2D[] hitList = Physics2D.OverlapCircleAll(action.atkPoint.position, action.atkRange, action.enemyLayers);
-			float baseDmg = stats.atkDamage.Value * dmgScale;
-			float critDmgMul = canCrit ? 1f + stats.criticalDamage.Value / 100f : 1f;
+			float baseDmg = stats.atkDamage.Value * _dmgScale;
+			float critDmgMul = _canCrit ? 1f + stats.criticalDamage.Value / 100f : 1f;
 			
 			foreach (Collider2D enemy in hitList)
 			{
 				enemy.GetComponent<EnemyStat>().TakeDamage(baseDmg, critDmgMul, stats.knockBackVal.Value);
 			}
 
-			dmgDealt = true;
+			_dmgDealt = true;
 		}
 
 		if (InputManager.instance.GetKeyDown(KeybindingActions.PrimaryAttack))
 		{
 			animator.SetTrigger("Atk2");
-			isAtk2Triggered = true;
+			_isAtk2Triggered = true;
 		}
 	}
 
 	public override void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
 	{
 		// If the 2nd attack is not get triggered.
-		if (!isAtk2Triggered)
+		if (!_isAtk2Triggered)
 		{
-			animator.SetBool("IsAttacking", false);
 			action.comboDelay += Time.time;
-			PlayerActions.isComboDone = true;
+			PlayerActions.IsAttacking = false;
+			PlayerActions.IsComboDone = true;
 		}
 
-		dmgDealt = isAtk2Triggered = false;
+		_dmgDealt = _isAtk2Triggered = false;
 	}
 }

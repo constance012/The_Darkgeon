@@ -34,6 +34,7 @@ INCLUDE ../Variables Persistence/Globals.ink
     
     * [Enter]
         ...But my sword is ready for them.
+        ~ ExternalFunction()
         -> DONE
     
     * [Leave]

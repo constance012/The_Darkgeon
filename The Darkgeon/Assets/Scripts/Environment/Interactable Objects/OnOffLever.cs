@@ -11,7 +11,9 @@ public class OnOffLever : Mechanisms
 
 		hasInteracted = !hasInteracted;
 		transform.localScale = transform.localScale.FlipByScale('x');
-		evaluator.Evaluate();
+		
+		if (evaluator != null)
+			evaluator.Evaluate();
 
 		UpdatePopupLabel();
 

@@ -1,12 +1,31 @@
+using CSTGames.DataPersistence;
 using System;
 using System.Collections;
+using UnityEditor.SceneManagement;
 using UnityEngine;
 
 /// <summary>
 /// Manages all the enemy's stats.
 /// </summary>
-public class EnemyStat : MonoBehaviour
+public class EnemyStat : MonoBehaviour, ISaveDataTransceiver
 {
+	[Header("General Info")]
+	[SerializeField, ReadOnly] private string ID;
+
+	[ContextMenu("Generate Enemy ID")]
+	private void GenerateEnemyID()
+	{
+		ID = Guid.NewGuid().ToString();
+		EditorSceneManager.MarkSceneDirty(gameObject.scene);
+	}
+
+	[ContextMenu("Clear Enemy ID")]
+	private void ClearEnemyID()
+	{
+		ID = "";
+		EditorSceneManager.MarkSceneDirty(gameObject.scene);
+	}
+
 	[Header("Death Loots")]
 	[Space]
 	[SerializeField] private GameObject droppedItemPrefab;
@@ -84,6 +103,12 @@ public class EnemyStat : MonoBehaviour
 
 	private void Start()
 	{
+		if (_isDeath)
+		{
+			Destroy(hpBar.gameObject);
+			Destroy(this.gameObject);
+		}
+
 		currentHP = maxHealth;
 
 		hpBar.SetMaxHealth(maxHealth);
@@ -119,12 +144,40 @@ public class EnemyStat : MonoBehaviour
 		}
 	}
 
+	#region Save and Load Data.
+	public void LoadData(GameData gameData)
+	{
+		gameData.levelData.enemiesDeathData.TryGetValue(ID, out _isDeath);
+	}
+
+	public void SaveData(GameData gameData)
+	{
+		if (ID == null || ID.Equals(""))
+		{
+			Debug.LogWarning($"This {enemyName} doesn't have an ID yet, its data will not be stored.", this);
+			return;
+		}
+
+		LevelData levelData = gameData.levelData;
+
+		if (levelData.enemiesDeathData.ContainsKey(ID))
+		{
+			levelData.enemiesDeathData.Remove(ID);
+		}
+
+		levelData.enemiesDeathData.Add(ID, _isDeath);
+	}
+	#endregion
+
+	#region Enemy's Status.
 	public void TakeDamage(float dmg, float critDmgMul = 1f, float knockBackVal = 0f)
 	{
 		behaviour.spottingTimer = 0f;
 
 		if (currentHP > 0)
 		{
+			AudioManager.instance.Play("Damage Hit");
+
 			// Reduce the damage by armor and then multiply with crit damage.
 			float armorReducedDmg = dmg - armor * armorReduceFactor;
 			int finalDmg = Mathf.RoundToInt(armorReducedDmg * critDmgMul);
@@ -182,7 +235,9 @@ public class EnemyStat : MonoBehaviour
 			Destroy(gameObject);
 		}
 	}
+	#endregion
 
+	#region Drop Loots.
 	private void DropDeathLoots()
 	{
 		void DropLoot(DeathLoot target, GameObject selectedPrefab)
@@ -257,7 +312,9 @@ public class EnemyStat : MonoBehaviour
 				break;
 		}
 	}
+	#endregion
 
+	#region Coroutines.
 	private IEnumerator BeingKnockedBack(float knockBackValue)
 	{
 		// Make sure the object doesn't move.
@@ -291,6 +348,7 @@ public class EnemyStat : MonoBehaviour
 			yield return null;
 		}
 	}
+	#endregion
 }
 
 /// <summary>

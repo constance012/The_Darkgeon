@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -27,14 +28,24 @@ public class DialogueManager : Singleton<DialogueManager>
 
 	[Header("Dialogue Configs")]
 	[Space]
-	[SerializeField] private float dialogueSpeed;
+	[Header("Display Speed")]
+	[SerializeField, Min(0f)] private float dialogueSpeed;
+
+	[Header("Sound Effect")]
+	[SerializeField] private bool useTypingSound;
+	[SerializeField, Range(1, 10), Tooltip("How often do we play the sound effect? (Every n character)")]
+	private int typingSoundFrequency;
+
+	[SerializeField, Range(-3f, 3f)] private float minPitch;
+	[SerializeField, Range(-3f, 3f)] private float maxPitch;
+	[SerializeField, Tooltip("Make each character has a unique sound and pitch using hash code.")]
+	private bool persistentSound;
 
 	public static bool DialogueIsPlaying { get; private set; }
 
 	private Story _currentStory;
 	private IEnumerator _animateRoutine;
 	private InkVariableObserver _globalObserver;
-
 
 	private string _previousSentence = "";
 	private bool _hasChoices;
@@ -125,13 +136,16 @@ public class DialogueManager : Singleton<DialogueManager>
 		_globalObserver.SaveStoryState();
 	}
 
-	public void TriggerDialogue(TextAsset inkJson)
+	#region Dialogue Control.
+	public void TriggerDialogue(TextAsset inkJson, Action externalFunc)
 	{
 		_currentStory = new Story(inkJson.text);
 		_globalObserver.Register(_currentStory);
 
-		PlayerMovement.canMove = false;
-		PlayerActions.canAttack = false;
+		_currentStory.BindExternalFunction("ExternalFunction", externalFunc);
+
+		PlayerMovement.CanMove = false;
+		PlayerActions.CanAttack = false;
 
 		this.gameObject.SetActive(true);
 		DialogueIsPlaying = true;
@@ -151,9 +165,10 @@ public class DialogueManager : Singleton<DialogueManager>
 	private void EndDialogue()
 	{
 		_globalObserver.Unregister(_currentStory);
+		_currentStory.UnbindExternalFunction("ExternalFunction");
 
-		PlayerMovement.canMove = true;
-		PlayerActions.canAttack = true;
+		PlayerMovement.CanMove = true;
+		PlayerActions.CanAttack = true;
 
 		DialogueIsPlaying = false;
 		this.gameObject.SetActive(false);
@@ -167,7 +182,7 @@ public class DialogueManager : Singleton<DialogueManager>
 		{
 			_previousSentence = _currentStory.Continue().ToUpper();
 
-			if (_previousSentence.Equals(""))
+			if (_previousSentence.Equals("") && !_currentStory.canContinue)
 			{
 				EndDialogue();
 				return;
@@ -184,7 +199,9 @@ public class DialogueManager : Singleton<DialogueManager>
 			EndDialogue();
 		}
 	}
+	#endregion
 
+	#region Handle Ink's tags.
 	private void HandleTags()
 	{
 		List<string> storyTags = _currentStory.currentTags;
@@ -217,7 +234,9 @@ public class DialogueManager : Singleton<DialogueManager>
 			}
 		}
 	}
+	#endregion
 
+	#region Choices Control.
 	private void DisplayChoices()
 	{
 		List<Choice> currentChoices = _currentStory.currentChoices;
@@ -258,7 +277,46 @@ public class DialogueManager : Singleton<DialogueManager>
 			_choiceTexts[index].text = $"CHOICE {index}";
 		}
 	}
+	#endregion
 
+	#region Typing Sound Effect.
+	private void PlayTypingSound(int currentVisibleCharIndex)
+	{
+		if (!useTypingSound)
+			return;
+
+		if (currentVisibleCharIndex % typingSoundFrequency == 0)
+		{
+			if (persistentSound)
+			{
+				// Create the hash code for the current character.
+				int hashCode = dialogueText.text[currentVisibleCharIndex] + 200000;
+
+				// Predict index for the sound clip.
+				int index = hashCode % AudioManager.instance.GetAudio("Dialogue Typing").ClipsCount;
+
+				// Predict pitch.
+				int minPitchInt = (int)(minPitch * 100f);
+				int maxPitchInt = (int)(maxPitch * 100f);
+				int pitchRangeInt = maxPitchInt - minPitchInt;
+
+				if (pitchRangeInt != 0)
+				{
+					float predictPitch = ((hashCode % pitchRangeInt) + minPitchInt) / 100f;
+					AudioManager.instance.Play("Dialogue Typing", index, predictPitch);
+				}
+				else
+					AudioManager.instance.Play("Dialogue Typing", index, minPitch);
+			}
+			else
+			{
+				AudioManager.instance.PlayWithRandomPitch("Dialogue Typing", minPitch, maxPitch);
+			}
+		}
+	}
+	#endregion
+
+	#region Coroutines.
 	private IEnumerator AnimateDialogueText(string sentence)
 	{
 		dialogueText.text = sentence;
@@ -282,6 +340,7 @@ public class DialogueManager : Singleton<DialogueManager>
 			// Otherwise, increase the maximum visible characters by 1.
 			else
 			{
+				PlayTypingSound(dialogueText.maxVisibleCharacters);
 				dialogueText.maxVisibleCharacters++;
 				yield return new WaitForSecondsRealtime(dialogueSpeed);
 			}
@@ -291,4 +350,5 @@ public class DialogueManager : Singleton<DialogueManager>
 
 		continueIcon.gameObject.SetActive(true);
 	}
+	#endregion
 }

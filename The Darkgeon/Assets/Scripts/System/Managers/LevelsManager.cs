@@ -35,6 +35,9 @@ public class LevelsManager : Singleton<LevelsManager>, ISaveDataTransceiver
 		LoadLevel(LevelNavigation.LastPlayed);
 	}
 
+	#region Save and Load Data.
+	public void LoadData(GameData gameData) { }
+
 	public void SaveData(GameData gameData)
 	{
 		gameData.levelData.levelIndex = this.currentLevelIndex;
@@ -51,8 +54,7 @@ public class LevelsManager : Singleton<LevelsManager>, ISaveDataTransceiver
 				break;
 		}	
 	}
-
-	public void LoadData(GameData gameData) { }
+	#endregion
 
 	public void RestartLevel()
 	{

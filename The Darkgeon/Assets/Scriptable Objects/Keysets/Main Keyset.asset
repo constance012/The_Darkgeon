@@ -15,9 +15,9 @@ MonoBehaviour:
   keys:
     list:
     - action: 1
-      keyCode: 316
+      keyCode: 323
     - action: 2
-      keyCode: 317
+      keyCode: 324
     - action: 3
       keyCode: 97
     - action: 4

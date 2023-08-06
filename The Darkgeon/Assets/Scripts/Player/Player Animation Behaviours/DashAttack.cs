@@ -19,11 +19,11 @@ public class DashAttack : StateMachineBehaviour
 		action = animator.GetComponent<PlayerActions>();
 		stats = animator.GetComponentInParent<PlayerStats>();
 		dustFx = animator.transform.GetComponentInSibling<ParticleSystem>("Effects/Sword Dust Effect");
-		animator.GetComponent<Rigidbody2D>().velocity = Vector3.zero;
+		animator.GetComponentInParent<Rigidbody2D>().velocity = Vector3.zero;
 
 		canCrit = stats.IsCriticalStrike();
 
-		PlayerMovement.canMove = false;
+		PlayerMovement.CanMove = false;
 	}
 
 	public override void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
@@ -50,10 +50,9 @@ public class DashAttack : StateMachineBehaviour
 	public override void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
 	{
 		dmgDealt = false;
-		animator.SetBool("IsAttacking", false);
-		animator.SetBool("DashAtk", false);  // Disable the bool.
 		action.comboDelay += Time.time;
-		PlayerActions.isComboDone = true;
-		PlayerMovement.canMove = true;  // The player can move again as soon as the animation is completed.
+		PlayerActions.IsAttacking = false;
+		PlayerActions.IsComboDone = true;
+		PlayerMovement.CanMove = true;  // The player can move again as soon as the animation is completed.
 	}
 }

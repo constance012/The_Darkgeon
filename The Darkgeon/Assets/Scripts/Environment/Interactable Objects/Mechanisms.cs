@@ -20,7 +20,7 @@ public abstract class Mechanisms : Interactable
 
 		target.TryGetComponent<LogicEvaluator>(out LogicEvaluator targetEvaluator);
 
-		if (targetEvaluator == evaluator)
+		if (targetEvaluator != null && targetEvaluator == evaluator)
 		{
 			Debug.Log($"The {target.name} is controlled by a logic evaluator, removes its reference from {this.name}.");
 			target = null;

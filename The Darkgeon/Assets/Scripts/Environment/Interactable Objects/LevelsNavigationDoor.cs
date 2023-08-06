@@ -3,8 +3,9 @@ using CSTGames.CommonEnums;
 using TMPro;
 using System.Collections;
 using Ink.Runtime;
+using CSTGames.DataPersistence;
 
-public class LevelsNavigationDoor : Interactable
+public class LevelsNavigationDoor : Interactable, ISaveDataTransceiver
 {
 	public enum DoorDirection { ToNextLevel, ToPreviousLevel, ToMainMenu }
 
@@ -23,44 +24,57 @@ public class LevelsNavigationDoor : Interactable
 	[SerializeField] private Sprite closeSprite;
 
 	// Private fields.
-	private Transform enemiesContainer;
-	
-	private Animator levelClearedText;
+	private Transform _enemiesContainer;
+	private TextMeshProUGUI _levelNameText;
 
-	private ParticleSystem torches;
-	private Flickering[] pointLights;
+	private ParticleSystem _torches;
+	private Flickering[] _pointLights;
+	private IEnumerator _displayTextRoutine;
 
-	private bool levelCleared;
+	private bool _levelCleared;
 
 	protected override void Awake()
 	{
 		base.Awake();
-		enemiesContainer = GameObject.FindWithTag("Enemies Container").transform;
+		_enemiesContainer = GameObject.FindWithTag("Enemies Container").transform;
 
 		if (direction == DoorDirection.ToNextLevel)
 		{
-			levelClearedText = GameObject.FindWithTag("Level UI Canvas").transform.GetComponentInChildren<Animator>("Level Cleared Text");
-			torches = transform.GetComponentInChildren<ParticleSystem>("Torches");
-			pointLights = GetComponentsInChildren<Flickering>(true);
+			_levelNameText = GameObject.FindWithTag("Level UI Canvas").transform.GetComponentInChildren<TextMeshProUGUI>("Level Name Text");
+			_torches = transform.GetComponentInChildren<ParticleSystem>("Torches");
+			_pointLights = GetComponentsInChildren<Flickering>(true);
+		}
+	}
+
+	private void Start()
+	{
+		if (direction == DoorDirection.ToNextLevel)
+		{
+			_levelNameText.text = LevelsManager.instance.currentScene.name.ToUpper();
+
+			_displayTextRoutine = DisplayLevelText();
+			StartCoroutine(_displayTextRoutine);
 		}
 	}
 
 	private void LateUpdate()
 	{
-		if (levelCleared || direction == DoorDirection.ToPreviousLevel || direction == DoorDirection.ToMainMenu)
+		if (_levelCleared || direction != DoorDirection.ToNextLevel)
 			return;
 
-		bool isCleared = enemiesContainer.childCount == 0;
+		bool isCleared = _enemiesContainer.childCount == 0;
 
-		if (levelCleared != isCleared)
+		if (_levelCleared != isCleared)
 		{
-			levelCleared = isCleared;
+			_levelCleared = isCleared;
+			_levelNameText.text = "LEVEL CLEARED!";
 
-			StartCoroutine(DisplayClearedText());
+			StopCoroutine(_displayTextRoutine);
+			StartCoroutine(_displayTextRoutine);
 
-			torches.Play();
+			_torches.Play();
 			
-			foreach (var pointLight in pointLights)
+			foreach (var pointLight in _pointLights)
 				pointLight.gameObject.SetActive(true);
 		}
 	}
@@ -84,26 +98,14 @@ public class LevelsNavigationDoor : Interactable
 	{
 		base.Interact();
 
-		//if (isOpened)
-		//{
-		//	switch (direction)
-		//	{
-		//		case DoorDirection.ToNextLevel:
-		//			if (levelCleared)
-		//				LevelsManager.instance.LoadNextLevel();
-		//			break;
+		if (oneTimeDialogueTriggered && !DialogueManager.DialogueIsPlaying)
+			Enter();
+	}
 
-		//		case DoorDirection.ToPreviousLevel:
-		//			LevelsManager.instance.LoadPreviousLevel();
-		//			break;
-
-		//		case DoorDirection.ToMainMenu:
-		//			GameManager.instance.ReturnToMenu();
-		//			break;
-		//	}
-
-		//	hasInteracted = true;
-		//}
+	public override void InkExternalFunction()
+	{
+		base.InkExternalFunction();
+		Enter();
 	}
 
 	public override void ExecuteRemoteLogic(bool state)
@@ -115,12 +117,68 @@ public class LevelsNavigationDoor : Interactable
 		spriteRenderer.sprite = isOpened ? openSprite : closeSprite;
 	}
 
-	private IEnumerator DisplayClearedText()
+	#region Save and Load Data.
+	public void LoadData(GameData gameData)
 	{
-		levelClearedText.Play("Increase Alpha");
+		gameData.levelData.navigationDoorsData.TryGetValue(ID, out _levelCleared);
+	}
+
+	public void SaveData(GameData gameData)
+	{
+		if (ID == null || ID.Equals("") || direction != DoorDirection.ToNextLevel)
+		{
+			Debug.LogWarning("This Navigation Door doesn't have an ID yet, its data will not be stored.\n" +
+							 "Or this door is not leading to the next Level", this);
+			return;
+		}
+
+		LevelData levelData = gameData.levelData;
+
+		if (levelData.navigationDoorsData.ContainsKey(ID))
+		{
+			levelData.navigationDoorsData.Remove(ID);
+		}
+
+		levelData.navigationDoorsData.Add(ID, _levelCleared);
+	}
+	#endregion
+
+	private void Enter()
+	{
+		if (isOpened)
+		{
+			switch (direction)
+			{
+				case DoorDirection.ToNextLevel:
+					if (_levelCleared)
+						LevelsManager.instance.LoadNextLevel();
+					break;
+
+				case DoorDirection.ToPreviousLevel:
+					LevelsManager.instance.LoadPreviousLevel();
+					break;
+
+				case DoorDirection.ToMainMenu:
+					GameManager.instance.ReturnToMenu();
+					break;
+			}
+
+			hasInteracted = true;
+		}
+	}
+
+	private IEnumerator DisplayLevelText()
+	{
+		Animator textAnim = _levelNameText.GetComponent<Animator>();
+
+		textAnim.Play("Increase Alpha");
 
 		yield return new WaitForSecondsRealtime(2f);
 
-		levelClearedText.Play("Decrease Alpha");
+		textAnim.Play("Decrease Alpha");
+
+		yield return new WaitForSecondsRealtime(.75f);
+
+		_levelNameText.text = LevelsManager.instance.currentScene.name.ToUpper();
 	}
 }

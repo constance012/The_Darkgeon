@@ -13,7 +13,7 @@ public class DeleteSaveSlotButton : Button
 	[HideInInspector] public Rect rect;
 	[SerializeField] private TextMeshProUGUI warningText;
 
-	public bool isClicked;
+	[ReadOnly] public bool isClicked;
 
 	protected override void Awake()
 	{
@@ -25,7 +25,7 @@ public class DeleteSaveSlotButton : Button
 	public void UpdateWarningText()
 	{
 		isClicked = true;
-		warningText.text = $"PERMANENTLY DELETE DATA ON SLOT #{currentSlotIndex + 1}?.\n" +
+		warningText.text = $"PERMANENTLY DELETE DATA ON SLOT #{currentSlotIndex + 1}?\n" +
 						   $"THIS ACTION CAN NOT BE UNDONE.";
 	}
 

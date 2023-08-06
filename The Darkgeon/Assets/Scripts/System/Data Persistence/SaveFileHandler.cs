@@ -11,7 +11,7 @@ public class SaveFileHandler<TData>
 
 	public bool useEncryption { get; set; }
 
-	private readonly string encryptionCode = "hypoxia";
+	private const string ENCRYPTION_CODE = "hypoxia";
 
 	public SaveFileHandler(string directory, string subFolders, string fileName, bool useEncryption)
 	{
@@ -61,7 +61,7 @@ public class SaveFileHandler<TData>
 			catch (Exception ex)
 			{
 				Debug.LogError($"Error occured when trying to load data from file.\n" +
-						   $"At player path: {fullPath}.\n" +
+						   $"At full path: {fullPath}.\n" +
 						   $"Reason: {ex.Message}.");
 			}
 		}
@@ -103,7 +103,7 @@ public class SaveFileHandler<TData>
 			catch (Exception ex)
 			{
 				Debug.LogError($"Error occured when trying to load json from file.\n" +
-						   $"At player path: {fullPath}.\n" +
+						   $"At full path: {fullPath}.\n" +
 						   $"Reason: {ex.Message}.");
 			}
 		}
@@ -147,7 +147,7 @@ public class SaveFileHandler<TData>
 		catch (Exception ex)
 		{
 			Debug.LogError($"Error occured when trying to save data to file.\n" +
-						   $"At player path: {fullPath}.\n" +
+						   $"At full path: {fullPath}.\n" +
 						   $"Reason: {ex.Message}.");
 		}
 	}
@@ -185,7 +185,7 @@ public class SaveFileHandler<TData>
 		catch (Exception ex)
 		{
 			Debug.LogError($"Error occured when trying to save json to file.\n" +
-						   $"At player path: {fullPath}.\n" +
+						   $"At full path: {fullPath}.\n" +
 						   $"Reason: {ex.Message}.");
 		}
 	}
@@ -193,12 +193,12 @@ public class SaveFileHandler<TData>
 	private string EncryptOrDecrypt(string data)
 	{
 		string modifiedData = "";
-		int codeLength = encryptionCode.Length;
+		int codeLength = ENCRYPTION_CODE.Length;
 
 		for (int i = 0; i < data.Length; i++)
 		{
 			// This will cycle back and forth the encryption code.
-			modifiedData += (char) (data[i] ^ encryptionCode[i % codeLength]);
+			modifiedData += (char) (data[i] ^ ENCRYPTION_CODE[i % codeLength]);
 		}
 
 		return modifiedData;

@@ -19,6 +19,12 @@ public class Inventory : ItemStorage, ISaveDataTransceiver
 	public List<Item> items = new List<Item>();
 	public int coins = 0;
 
+	public bool CanvasActive
+	{
+		get { return transform.parent.gameObject.activeInHierarchy; }
+		set { transform.parent.gameObject.SetActive(value); }
+	}
+
 	private InventorySlot[] _slots;
 	private ClickableObject[] _clickables;
 	private CoinSlot _coinSlot;
@@ -28,8 +34,8 @@ public class Inventory : ItemStorage, ISaveDataTransceiver
 	{
 		base.OnEnable();
 
-		PlayerMovement.isModifierKeysOccupied = true;
-		PlayerActions.canAttack = false;
+		PlayerMovement.IsModifierKeysOccupied = true;
+		PlayerActions.CanAttack = false;
 	}
 
 	private void OnDisable()
@@ -41,8 +47,8 @@ public class Inventory : ItemStorage, ISaveDataTransceiver
 		}
 
 		TooltipHandler.Hide();
-		PlayerMovement.isModifierKeysOccupied = false;
-		PlayerActions.canAttack = true;
+		PlayerMovement.IsModifierKeysOccupied = false;
+		PlayerActions.CanAttack = true;
 	}
 
 	protected override void Awake()
@@ -151,6 +157,7 @@ public class Inventory : ItemStorage, ISaveDataTransceiver
 		onItemChanged?.Invoke();
 	}
 
+	#region Save and Load Data.
 	public void LoadData(GameData gameData)
 	{
 		this.coins = gameData.playerData.coinsCollected;
@@ -192,6 +199,7 @@ public class Inventory : ItemStorage, ISaveDataTransceiver
 		playerData.coinsCollected = this.coins;
 		playerData.inventoryData = new ContainerSaveData(items);
 	}
+	#endregion
 
 	protected override void ReloadUI()
 	{

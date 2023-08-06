@@ -30,10 +30,10 @@ public class GameManager : Singleton<GameManager>
 	[SerializeField] private GameObject playerUI;
 	[SerializeField] private GameObject inventoryCanvas;
 
-	public static bool isPlayerDeath { get; private set; } = false;
-	public static bool isPause { get; private set; }
+	public static bool IsPlayerDeath { get; private set; } = false;
+	public static bool IsPause { get; private set; }
 
-	private string[] deathMessages = new string[] { "YOUR SOUL HAS BEEN CONSUMED", "YOUR HEAD WAS DETACHED", 
+	private readonly string[] _deathMessages = new string[] { "YOUR SOUL HAS BEEN CONSUMED", "YOUR HEAD WAS DETACHED", 
 													"YOUR FACE WAS RIPPED OFF", "YOUR BODY WAS EVISCERATED", 
 													"THEY SPLIT YOU IN TWO", "YOUR FATE WAS SHATTERED" };
 
@@ -77,26 +77,27 @@ public class GameManager : Singleton<GameManager>
 
 	private void Update()
 	{
-		if (!isPlayerDeath)
+		if (!IsPlayerDeath && !DialogueManager.DialogueIsPlaying)
 		{
 			if (InputManager.instance.GetKeyDown(KeybindingActions.Pause))
-				Invoke(!isPause ? nameof(Pause) : nameof(Unpause), 0f);
+				Invoke(!IsPause ? nameof(Pause) : nameof(Unpause), 0f);
 
 			if (InputManager.instance.GetKeyDown(KeybindingActions.Inventory))
 				inventoryCanvas.SetActive(!inventoryCanvas.activeInHierarchy);
 		}
 
+		// TODO - Development only.
 		if (Input.GetKeyDown(KeyCode.R))
 			LevelsManager.instance.RestartLevel();
 		
-		if (playerStats.currentHP <= 0 && !isPlayerDeath)
+		if (playerStats.currentHP <= 0 && !IsPlayerDeath)
 		{
 			SetDeathMessage(playerStats.killSource);
 			Die();
 		}
 
 		// If the player is death and grounded, then disable the physics simulation.
-		if (isPlayerDeath)
+		if (IsPlayerDeath)
 		{
 			respawnTimer -= Time.deltaTime;
 
@@ -133,7 +134,7 @@ public class GameManager : Singleton<GameManager>
 		playerAnim.SetBool("IsDeath", false);
 
 		playerStats.transform.position = playerStats.respawnPosition;
-		isPlayerDeath = false;
+		IsPlayerDeath = false;
 	}
 
 	private void Die()
@@ -148,7 +149,7 @@ public class GameManager : Singleton<GameManager>
 
 		moveScript.enabled = actionsScript.enabled = false;
 
-		isPlayerDeath = true;
+		IsPlayerDeath = true;
 	}
 	#endregion
 
@@ -161,15 +162,15 @@ public class GameManager : Singleton<GameManager>
 		op.allowSceneActivation = false;
 
 		Time.timeScale = 1f;
-		isPause = false;
+		IsPause = false;
 
 		op.allowSceneActivation = true;
 	}
 
 	private void SetDeathMessage(KillSources sources)
 	{
-		int randomIndex = Random.Range(0, deathMessages.Length);
-		deathMessageText.text = deathMessages[randomIndex];
+		int randomIndex = Random.Range(0, _deathMessages.Length);
+		deathMessageText.text = _deathMessages[randomIndex];
 
 		killSourceText.text = "KILL BY: " + StringManipulator.AddWhitespaceBeforeCapital(sources.ToString()).ToUpper();
 	}
@@ -179,7 +180,7 @@ public class GameManager : Singleton<GameManager>
 		pauseMenu.SetActive(true);
 		playerUI.SetActive(false);
 		Time.timeScale = 0f;
-		isPause = true;
+		IsPause = true;
 	}
 
 	public void Unpause()
@@ -187,7 +188,7 @@ public class GameManager : Singleton<GameManager>
 		pauseMenu.SetActive(false);
 		playerUI.SetActive(true);
 		Time.timeScale = 1f;
-		isPause = false;
+		IsPause = false;
 	}
 	#endregion
 }

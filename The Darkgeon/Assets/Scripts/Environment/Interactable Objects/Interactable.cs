@@ -1,6 +1,6 @@
-using TMPro;
+using System;
+using UnityEditor.SceneManagement;
 using UnityEngine;
-using CSTGames.CommonEnums;
 
 /// <summary>
 /// Base class for all interactable objects.
@@ -28,6 +28,24 @@ public abstract class Interactable : MonoBehaviour
 		Manual
 	}
 
+	[Space]
+	[Header("General Info")]
+	[SerializeField, ReadOnly] protected string ID;
+
+	[ContextMenu("Generate Unique ID")]
+	private void GenerateID()
+	{
+		ID = Guid.NewGuid().ToString();
+		EditorSceneManager.MarkSceneDirty(gameObject.scene);
+	}
+	
+	[ContextMenu("Clear Unique ID")]
+	private void ClearID()
+	{
+		ID = "";
+		EditorSceneManager.MarkSceneDirty(gameObject.scene);
+	}
+
 	[Header("Type")]
 	public InteractableType type;
 	public InputSource inputSource;
@@ -47,8 +65,9 @@ public abstract class Interactable : MonoBehaviour
 	
 	[SerializeField, ReadOnly] protected bool hasInteracted;
 
-	[Header("Dialogue (Optional)"), ReadOnly]
-	public DialogueTrigger dialogueTrigger;
+	[Header("Dialogue (Optional)")]
+	[ReadOnly] public DialogueTrigger dialogueTrigger;
+	[ReadOnly] public bool oneTimeDialogueTriggered;
 
 	// Protected fields.
 	protected Transform worldCanvas;
@@ -85,7 +104,7 @@ public abstract class Interactable : MonoBehaviour
 
 	public virtual void Interact()
 	{
-		Debug.Log("Interacting with " + transform.name);
+		Debug.Log($"Interacting with {transform.name}.");
 
 		// TODO - call the method in Dialogue Manager asynchronously.
 
@@ -94,9 +113,20 @@ public abstract class Interactable : MonoBehaviour
 	}
 
 	/// <summary>
+	/// Bind this function to an Ink story for external function execution.
+	/// </summary>
+	public virtual void InkExternalFunction()
+	{
+		Debug.Log($"Invoke external function of {transform.name}.");
+	}
+
+	/// <summary>
 	/// This method is responsible for being executed by other <c>Interactable</c> objects.
 	/// </summary>
-	public abstract void ExecuteRemoteLogic(bool state);
+	public virtual void ExecuteRemoteLogic(bool state)
+	{
+		Debug.Log($"Execute logic of {transform.name} remotely.");
+	}
 
 	protected virtual void CheckForInteraction(float mouseDistance, float playerDistance)
 	{

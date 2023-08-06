@@ -75,7 +75,7 @@ public abstract class EnemyBehaviour : MonoBehaviour
 		if (isPatrol)
 			Patrol();
 
-		if (!GameManager.isPlayerDeath)
+		if (!GameManager.IsPlayerDeath)
 		{
 			// Check if the player is in what range of the enemy.
 			float distToPlayer = Vector2.Distance(centerPoint.position, player.transform.position);

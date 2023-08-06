@@ -176,6 +176,78 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1494652453}
     m_Modifications:
+    - target: {fileID: 1671459498715919559, guid: f98d0f39fcc67a34f844abd8a50f2c03, type: 3}
+      propertyPath: m_Name
+      value: Chest
+      objectReference: {fileID: 0}
+    - target: {fileID: 4661749978543252733, guid: f98d0f39fcc67a34f844abd8a50f2c03, type: 3}
+      propertyPath: ID
+      value: 02640bd4-c343-4ad5-ad0d-7530eb6d7a66
+      objectReference: {fileID: 0}
+    - target: {fileID: 4661749978543252733, guid: f98d0f39fcc67a34f844abd8a50f2c03, type: 3}
+      propertyPath: treasures.Array.size
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 4661749978543252733, guid: f98d0f39fcc67a34f844abd8a50f2c03, type: 3}
+      propertyPath: treasures.Array.data[0].loot
+      value: 
+      objectReference: {fileID: 11400000, guid: 58f8c5aac4c879247a788b2917bdde98, type: 2}
+    - target: {fileID: 4661749978543252733, guid: f98d0f39fcc67a34f844abd8a50f2c03, type: 3}
+      propertyPath: treasures.Array.data[1].loot
+      value: 
+      objectReference: {fileID: 11400000, guid: 4487346101b364b4aa64a240fad383d3, type: 2}
+    - target: {fileID: 4661749978543252733, guid: f98d0f39fcc67a34f844abd8a50f2c03, type: 3}
+      propertyPath: treasures.Array.data[2].loot
+      value: 
+      objectReference: {fileID: 11400000, guid: d7c1dbf5b370ff941b18b92881a0675a, type: 2}
+    - target: {fileID: 4661749978543252733, guid: f98d0f39fcc67a34f844abd8a50f2c03, type: 3}
+      propertyPath: treasures.Array.data[3].loot
+      value: 
+      objectReference: {fileID: 11400000, guid: 3603a14138fe15a4baf4cbc9d92b22c5, type: 2}
+    - target: {fileID: 4661749978543252733, guid: f98d0f39fcc67a34f844abd8a50f2c03, type: 3}
+      propertyPath: treasures.Array.data[4].loot
+      value: 
+      objectReference: {fileID: 11400000, guid: 6c8ac6b5c48eb1d40baee656e2148f50, type: 2}
+    - target: {fileID: 4661749978543252733, guid: f98d0f39fcc67a34f844abd8a50f2c03, type: 3}
+      propertyPath: treasures.Array.data[5].loot
+      value: 
+      objectReference: {fileID: 11400000, guid: 6b31ea724bee3d441b5a3de90490bbfd, type: 2}
+    - target: {fileID: 4661749978543252733, guid: f98d0f39fcc67a34f844abd8a50f2c03, type: 3}
+      propertyPath: treasures.Array.data[6].loot
+      value: 
+      objectReference: {fileID: 11400000, guid: 170cf7cb2fbc73842bd968fd52b9e7f3, type: 2}
+    - target: {fileID: 4661749978543252733, guid: f98d0f39fcc67a34f844abd8a50f2c03, type: 3}
+      propertyPath: treasures.Array.data[0].quantity
+      value: 21
+      objectReference: {fileID: 0}
+    - target: {fileID: 4661749978543252733, guid: f98d0f39fcc67a34f844abd8a50f2c03, type: 3}
+      propertyPath: treasures.Array.data[1].quantity
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 4661749978543252733, guid: f98d0f39fcc67a34f844abd8a50f2c03, type: 3}
+      propertyPath: treasures.Array.data[2].quantity
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 4661749978543252733, guid: f98d0f39fcc67a34f844abd8a50f2c03, type: 3}
+      propertyPath: treasures.Array.data[3].quantity
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4661749978543252733, guid: f98d0f39fcc67a34f844abd8a50f2c03, type: 3}
+      propertyPath: treasures.Array.data[4].quantity
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 4661749978543252733, guid: f98d0f39fcc67a34f844abd8a50f2c03, type: 3}
+      propertyPath: treasures.Array.data[5].quantity
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4661749978543252733, guid: f98d0f39fcc67a34f844abd8a50f2c03, type: 3}
+      propertyPath: treasures.Array.data[6].quantity
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4661749978543252733, guid: f98d0f39fcc67a34f844abd8a50f2c03, type: 3}
+      propertyPath: treasures.Array.data[0].isGuaranteed
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6930122694965717508, guid: f98d0f39fcc67a34f844abd8a50f2c03, type: 3}
       propertyPath: m_Name
       value: Chest Wooden
@@ -755,6 +827,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8b0377f70f684dd4289e9d63ab12a8c5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ID: 
   type: 2
   inputSource: 1
   player: {fileID: 0}
@@ -763,6 +836,7 @@ MonoBehaviour:
   interactDistance: 0.5
   hasInteracted: 0
   dialogueTrigger: {fileID: 0}
+  oneTimeDialogueTriggered: 0
   itemSO: {fileID: 11400000, guid: 3603a14138fe15a4baf4cbc9d92b22c5, type: 2}
   pickedItemUIPrefab: {fileID: 9083029984369846302, guid: d719be5a54912e5418688b98f699fdf9, type: 3}
 --- !u!58 &152452470
@@ -1611,6 +1685,10 @@ PrefabInstance:
     m_TransformParent: {fileID: 1494652453}
     m_Modifications:
     - target: {fileID: 4699439563214825404, guid: 5abf20f0457997348bd80242fe916388, type: 3}
+      propertyPath: ID
+      value: afcda665-65aa-4683-adc5-50cae1ffd06a
+      objectReference: {fileID: 0}
+    - target: {fileID: 4699439563214825404, guid: 5abf20f0457997348bd80242fe916388, type: 3}
       propertyPath: treasures.Array.size
       value: 6
       objectReference: {fileID: 0}
@@ -1640,7 +1718,7 @@ PrefabInstance:
       objectReference: {fileID: 11400000, guid: 2a4e842369014604287ab6d92fac5a59, type: 2}
     - target: {fileID: 4699439563214825404, guid: 5abf20f0457997348bd80242fe916388, type: 3}
       propertyPath: treasures.Array.data[0].quantity
-      value: 20
+      value: 35
       objectReference: {fileID: 0}
     - target: {fileID: 4699439563214825404, guid: 5abf20f0457997348bd80242fe916388, type: 3}
       propertyPath: treasures.Array.data[1].quantity
@@ -1801,7 +1879,7 @@ GameObject:
   - component: {fileID: 571407535}
   - component: {fileID: 571407533}
   m_Layer: 5
-  m_Name: Level Cleared Text
+  m_Name: Level Name Text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1847,7 +1925,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: LEVEL CLEARED!
+  m_text: LEVEL NAME GOES HERE
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: b96cdf0352e612243b04f6effb3f6bce, type: 2}
   m_sharedMaterial: {fileID: -8961318894532461179, guid: b96cdf0352e612243b04f6effb3f6bce, type: 2}
@@ -1953,7 +2031,7 @@ CanvasGroup:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 571407531}
   m_Enabled: 1
-  m_Alpha: 0
+  m_Alpha: 0.93
   m_Interactable: 0
   m_BlocksRaycasts: 0
   m_IgnoreParentGroups: 0
@@ -2648,6 +2726,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 316598026}
     m_Modifications:
+    - target: {fileID: 2578213344525721509, guid: bb44e7e7501a34145891367c0b479c90, type: 3}
+      propertyPath: ID
+      value: 6f9b2797-7f2f-4336-b957-4274271500e3
+      objectReference: {fileID: 0}
     - target: {fileID: 6500666223133392909, guid: bb44e7e7501a34145891367c0b479c90, type: 3}
       propertyPath: m_AnchorMax.x
       value: 0
@@ -2777,6 +2859,10 @@ PrefabInstance:
     - target: {fileID: 902604610525632227, guid: 0892b40476ec93e4292b47a06ba4f2b1, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8463974544176908619, guid: 0892b40476ec93e4292b47a06ba4f2b1, type: 3}
+      propertyPath: ID
+      value: 57ef029e-1e7d-464d-8d2e-2b0158912b90
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -5012,6 +5098,10 @@ PrefabInstance:
       propertyPath: m_AnchorMax.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8463974544176908619, guid: 0892b40476ec93e4292b47a06ba4f2b1, type: 3}
+      propertyPath: ID
+      value: 7c2f722d-7512-4641-9f19-748ea67c828b
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -5085,6 +5175,10 @@ PrefabInstance:
     - target: {fileID: 902604610525632227, guid: 0892b40476ec93e4292b47a06ba4f2b1, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8463974544176908619, guid: 0892b40476ec93e4292b47a06ba4f2b1, type: 3}
+      propertyPath: ID
+      value: e05db58e-d372-42ce-a1fd-9d98068b092b
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -18869,6 +18963,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8b0377f70f684dd4289e9d63ab12a8c5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ID: 
   type: 2
   inputSource: 1
   player: {fileID: 0}
@@ -18877,6 +18972,7 @@ MonoBehaviour:
   interactDistance: 0.5
   hasInteracted: 0
   dialogueTrigger: {fileID: 0}
+  oneTimeDialogueTriggered: 0
   itemSO: {fileID: 11400000, guid: e21f47a03238dfe41a441c3bc8d492c9, type: 2}
   pickedItemUIPrefab: {fileID: 9083029984369846302, guid: d719be5a54912e5418688b98f699fdf9, type: 3}
 --- !u!58 &1778729506
@@ -23167,6 +23263,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 316598026}
     m_Modifications:
+    - target: {fileID: 2578213344525721509, guid: bb44e7e7501a34145891367c0b479c90, type: 3}
+      propertyPath: ID
+      value: d3026c35-60e9-4431-8ef8-7e5b76eae451
+      objectReference: {fileID: 0}
     - target: {fileID: 6500666223133392909, guid: bb44e7e7501a34145891367c0b479c90, type: 3}
       propertyPath: m_AnchorMax.x
       value: 0
@@ -23288,6 +23388,10 @@ PrefabInstance:
     - target: {fileID: 4713717484369028, guid: 5808ca7cfa9bad240b1c2c52003f4817, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2254590809258393757, guid: 5808ca7cfa9bad240b1c2c52003f4817, type: 3}
+      propertyPath: ID
+      value: b7b8d198-8893-46c7-bdca-8c572bc9c108
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -23548,6 +23652,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fb5aab6717216584b919447588d58761, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ID: 
   type: 1
   inputSource: 0
   player: {fileID: 0}
@@ -23556,6 +23661,7 @@ MonoBehaviour:
   interactDistance: 0.7
   hasInteracted: 0
   dialogueTrigger: {fileID: 0}
+  oneTimeDialogueTriggered: 0
   isOpened: 0
   direction: 2
   doorDescription: RETURN TO THE MAIN MENU
@@ -23589,6 +23695,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d4df31fb6b33245439b259e57071853f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ID: 8295b549-213a-41bd-98ed-fa14be8e6ff6
   inkJson: {fileID: 4900000, guid: 299de320c205b2c469fdf555534a7620, type: 3}
   triggerOneTime: 1
 --- !u!1001 &7361055771337334244
@@ -23599,6 +23706,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 316598026}
     m_Modifications:
+    - target: {fileID: 2578213344525721509, guid: bb44e7e7501a34145891367c0b479c90, type: 3}
+      propertyPath: ID
+      value: c13604cb-c2d1-492c-89d5-6e98b8e2f2f6
+      objectReference: {fileID: 0}
     - target: {fileID: 6500666223133392909, guid: bb44e7e7501a34145891367c0b479c90, type: 3}
       propertyPath: m_AnchorMax.x
       value: 0

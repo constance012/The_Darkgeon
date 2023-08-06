@@ -75,7 +75,7 @@ public class PostProcessingController : MonoBehaviour
 	{
 		heartBeatSoundPlayed = true;
 
-		while (hpSlider.normalizedValue <= .6f && !GameManager.isPlayerDeath)
+		while (hpSlider.normalizedValue <= .6f && !GameManager.IsPlayerDeath)
 		{
 			yield return new WaitForSeconds(heartbeatInterval);
 			AudioManager.instance.Play("Heartbeat");

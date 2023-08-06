@@ -61,8 +61,8 @@ public class PlayerStats : MonoBehaviour, ISaveDataTransceiver
 	[HideInInspector] public Transform attacker = null;  // Position of the attacker.
 
 	// Private fields
-	private float invincibilityTime = .5f;
-	private float regenDelay;
+	private float _invincibilityTime = .5f;
+	private float _regenDelay;
 	[HideInInspector] public bool canRegen = true;
 
 	private void Awake()
@@ -81,19 +81,19 @@ public class PlayerStats : MonoBehaviour, ISaveDataTransceiver
 		hpBar.SetMaxHealth(maxHP.Value);
 		respawnPosition = new Vector3(transform.position.x, transform.position.y, transform.position.z);
 		
-		invincibilityTime = m_InvincibilityTime.Value;
-		regenDelay = 1 / m_RegenRate.Value;
+		_invincibilityTime = m_InvincibilityTime.Value;
+		_regenDelay = 1 / m_RegenRate.Value;
 
 		EquipmentManager.instance.onEquipmentChanged.AddListener(OnEquipmentChanged);
 	}
 
 	private void Update()
 	{
-		if (invincibilityTime < 0f && Physics2D.GetIgnoreLayerCollision(3, 8) && !CharacterController2D.m_IsDashing)
+		if (_invincibilityTime < 0f && Physics2D.GetIgnoreLayerCollision(3, 8) && !CharacterController2D.m_IsDashing)
 			Physics2D.IgnoreLayerCollision(3, 8, false);
 
-		if (invincibilityTime > 0f)
-			invincibilityTime -= Time.deltaTime;
+		if (_invincibilityTime > 0f)
+			_invincibilityTime -= Time.deltaTime;
 
 		if (Time.time - lastDamagedTime > timeBeforeRegen)
 			Regenerate();
@@ -105,15 +105,19 @@ public class PlayerStats : MonoBehaviour, ISaveDataTransceiver
 		killSource = source;  // The kill source, default is unknown.
 
 		// Only receive damage if the player is alive and runs out of invincibily time.
-		if (currentHP > 0 && invincibilityTime <= 0f)
+		if (currentHP > 0 && _invincibilityTime <= 0f)
 		{
+			AudioManager.instance.PlayWithRandomPitch("Damage Hit", .7f, 1.4f);
+
 			int finalDmg = Mathf.RoundToInt(dmg - armor.Value * damageRecFactor);
 			currentHP -= finalDmg;
 			currentHP = Mathf.Clamp(currentHP, 0f, maxHP.Value);
 			
 			hpBar.SetCurrentHealth(currentHP);
 
-			animator.SetTrigger("TakingDamage");
+			if (!GameManager.IsPlayerDeath && !PlayerActions.IsAttacking)
+				animator.Play("Hurt");
+
 			StartCoroutine(TriggerDamageFlash());
 
 			DamageText.Generate(dmgTextPrefab, dmgTextLoc.position, finalDmg.ToString());
@@ -122,7 +126,7 @@ public class PlayerStats : MonoBehaviour, ISaveDataTransceiver
 			Physics2D.IgnoreLayerCollision(3, 8, true);
 			
 			lastDamagedTime = Time.time;
-			invincibilityTime = m_InvincibilityTime.Value;
+			_invincibilityTime = m_InvincibilityTime.Value;
 		}
 	}
 
@@ -145,6 +149,7 @@ public class PlayerStats : MonoBehaviour, ISaveDataTransceiver
 	/// <returns></returns>
 	public bool IsCriticalStrike() => Random.Range(0f, 100f) <= criticalChance.Value;
 
+	#region Save and Load Data.
 	public void LoadData(GameData gameData)
 	{
 		transform.position = gameData.playerData.playerPosition;
@@ -154,18 +159,19 @@ public class PlayerStats : MonoBehaviour, ISaveDataTransceiver
 	{
 		gameData.playerData.playerPosition = transform.position;
 	}
+	#endregion
 
 	private void Regenerate()
 	{
-		regenDelay -= Time.deltaTime;
+		_regenDelay -= Time.deltaTime;
 
-		if (currentHP > 0 && regenDelay < 0f && canRegen)
+		if (currentHP > 0 && _regenDelay < 0f && canRegen)
 		{
 			currentHP += 1f;
 			currentHP = Mathf.Clamp(currentHP, 0f, maxHP.Value);
 			hpBar.SetCurrentHealth(currentHP);
 
-			regenDelay = 1 / m_RegenRate.Value;
+			_regenDelay = 1 / m_RegenRate.Value;
 		}
 	}
 	
@@ -209,7 +215,7 @@ public class PlayerStats : MonoBehaviour, ISaveDataTransceiver
 
 		// Update the health bar limit.
 		hpBar.SetMaxHealth(maxHP.Value, false);
-		regenDelay = 1 / m_RegenRate.Value;
+		_regenDelay = 1 / m_RegenRate.Value;
 	}
 
 	private IEnumerator BeingKnockedBack(float knockBackValue)

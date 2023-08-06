@@ -200,7 +200,7 @@ public class MainMenu : MonoBehaviour
 		FadeOutPanel.FadeOut();
 
 		// Activate the scene when the fading process is completed.
-		yield return new WaitUntil(() => FadeOutPanel.alpha == 1f);
+		yield return new WaitUntil(() => FadeOutPanel.Alpha == 1f);
 		
 		loadSceneOp.allowSceneActivation = true;
 	}
@@ -220,7 +220,7 @@ public class MainMenu : MonoBehaviour
 		FadeOutPanel.FadeOut();
 
 		// Activate the scene when the fading process is completed.
-		yield return new WaitUntil(() => FadeOutPanel.alpha == 1f);
+		yield return new WaitUntil(() => FadeOutPanel.Alpha == 1f);
 
 		loadSceneOp.allowSceneActivation = true;
 	}

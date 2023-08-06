@@ -304,7 +304,7 @@ public class CharacterController2D : MonoBehaviour
 	{
 		// Switch the way the player is labelled as facing when she is not attacking.
 		// Also switch the direction of the running dust particles.
-		if (PlayerActions.isComboDone)
+		if (PlayerActions.IsComboDone)
 		{
 			m_FacingRight = !m_FacingRight;
 			transform.Rotate(0f, 180f, 0f);
@@ -326,7 +326,7 @@ public class CharacterController2D : MonoBehaviour
 	private IEnumerator Dash()
 	{
 		m_IsDashing = true;
-		m_Animator.SetTrigger("IsDashing");
+		m_Animator.Play("Dash");
 		Physics2D.IgnoreLayerCollision(3, 8, true);
 
 		float originalGravity = m_Rigidbody2D.gravityScale;

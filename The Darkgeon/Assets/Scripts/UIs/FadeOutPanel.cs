@@ -1,29 +1,20 @@
 ﻿using UnityEngine;
 
 [RequireComponent (typeof(Animator), typeof(CanvasGroup))]
-public class FadeOutPanel : MonoBehaviour
+public class FadeOutPanel : Singleton<FadeOutPanel>
 {
-	private static FadeOutPanel instance;
-
 	private CanvasGroup canvasGroup;
 	private Animator animator;
 	
 	// Properties.
-	public static float alpha
+	public static float Alpha
 	{
 		get { return instance.canvasGroup.alpha; }
 	}
 
-	private void Awake()
+	protected override void Awake()
 	{
-		if (instance == null)
-			instance = this;
-		else
-		{
-			Debug.LogWarning("More than 1 instance of Fade Out Panel found!! Destroy the newest one.");
-			Destroy(gameObject);
-			return;
-		}
+		base.Awake();
 
 		canvasGroup = GetComponent<CanvasGroup>();
 		animator = GetComponent<Animator>();

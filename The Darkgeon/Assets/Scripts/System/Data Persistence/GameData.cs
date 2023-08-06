@@ -66,6 +66,10 @@ namespace CSTGames.DataPersistence
 		/// </summary>
 		public Dictionary<string, ContainerSaveData> chestsData;
 
+		public Dictionary<string, bool> dialogueTriggersData;
+		public Dictionary<string, bool> navigationDoorsData;
+		public Dictionary<string, bool> enemiesDeathData;
+
 		/// <summary>
 		/// The values defined within this constructor will be set to the first level for a new game.
 		/// <para />
@@ -73,16 +77,24 @@ namespace CSTGames.DataPersistence
 		/// </summary>
 		public LevelData()
 		{
-			levelIndex = 3;
-			levelName = "Tutorial";
-			chestsData = new Dictionary<string, ContainerSaveData>();
+			this.levelIndex = 3;
+			this.levelName = "Tutorial";
+
+			this.chestsData = new Dictionary<string, ContainerSaveData>();
+			this.dialogueTriggersData = new Dictionary<string, bool>();
+			this.navigationDoorsData = new Dictionary<string, bool>();
+			this.enemiesDeathData = new Dictionary<string, bool>();
 		}
 
 		public LevelData(int levelIndex, string levelName)
 		{
 			this.levelIndex = levelIndex;
 			this.levelName = levelName;
+
 			this.chestsData = new Dictionary<string, ContainerSaveData>();
+			this.dialogueTriggersData = new Dictionary<string, bool>();
+			this.navigationDoorsData = new Dictionary<string, bool>();
+			this.enemiesDeathData = new Dictionary<string, bool>();
 		}
 	}
 
@@ -92,7 +104,7 @@ namespace CSTGames.DataPersistence
 		/// <summary>
 		/// Store the total played time of this data (totalHours, minutes, seconds). 
 		/// </summary>
-		[SerializeField] private Vector3Int totalPlayedTime = Vector3Int.zero;
+		private Vector3Int totalPlayedTime = Vector3Int.zero;
 		public Vector3Int TotalPlayedTime
 		{
 			get { return totalPlayedTime; }
@@ -137,15 +149,9 @@ namespace CSTGames.DataPersistence
 		public PlayerData playerData { get; set; }
 		public LevelData levelData { get; set; }
 
-		public bool hasPlayerData
-		{
-			get { return this.playerData != null; }
-		}
+		public bool HasPlayerData => this.playerData != null;
 
-		public bool allDataLoadedSuccessfully 
-		{ 
-			get { return this.playerData != null && this.levelData != null; }
-		}
+		public bool AllDataLoadedSuccessfully => this.playerData != null && this.levelData != null;
 
 		public GameData(bool isNull = false)
 		{
